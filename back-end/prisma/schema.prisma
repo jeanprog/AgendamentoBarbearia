@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model tbLogin {
+  userId       Int      @id @default(autoincrement())
+  password String
+
+  nameUser String
+  user     tbUser   @relation(fields: [userId], references: [id])
+}
+
+model tbUser { 
+  id Int @id @default(autoincrement())
+  name String 
+  cpf  String
+  email String 
+  tbLogin tbLogin[]
+  tbClientes tbCliente[] 
+}
+// ...
+
+model tbCliente {
+  id      Int    @id @default(autoincrement())
+  nome    String
+  telefone String
+  userId  Int    // Chave estrangeira referenciando tbUser
+  user    tbUser @relation(fields: [userId], references: [id])
+  tbAgendamento tbAgendamento[]
+  
+}
+
+
+// ... outros modelos ...
+
+model tbServico {
+  id        Int          @id @default(autoincrement())
+  nome      String
+  duracao   Int          // Duração do serviço em minutos
+  preco     Float
+  descricao String
+  categoria String
+  // Adicione outras propriedades conforme necessário
+
+  // Relacionamento com tbAgendamento, indicando que um serviço pode ser associado a vários agendamentos
+  tbAgendamento tbAgendamento[]
+}
+
+model tbAgendamento {
+  id           Int       @id @default(autoincrement())
+  horario      DateTime
+  // Adicione outras propriedades conforme necessário
+
+  // Relacionamento com tbServico, indicando que um agendamento está associado a um serviço
+  servicoId    Int
+  tbServico    tbServico @relation(fields: [servicoId], references: [id])
+
+  // Relacionamento com tbCliente, indicando que um agendamento está associado a um cliente
+  clienteId    Int
+  tbCliente    tbCliente @relation(fields: [clienteId], references: [id])
+}
+
+// ... outros modelos ...
+
+

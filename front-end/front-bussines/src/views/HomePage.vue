@@ -1,0 +1,95 @@
+<template>
+  <body class="body-dashboard">
+    <div class="container-form">
+      <h2>Business Cardápio</h2>
+      <v-form fast-fail @submit.prevent="handleSubmit" class="form-login">
+        <v-text-field v-model="login" label="Login"></v-text-field>
+
+        <v-text-field
+          v-model="password"
+          label="Password"
+          type="password"
+        ></v-text-field>
+
+        <v-btn type="submit" block class="text-none" color="#4c0677"
+          >Acessar painel</v-btn
+        >
+      </v-form>
+      <h4 class="redifinir-senha">Redefina sua senha aqui</h4>
+    </div>
+  </body>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
+import { router } from '../router'
+
+/* import jwt from 'jsonwebtoken';
+ */
+let login = ref<string>('')
+let password = ref<string>('')
+
+const handleSubmit = async () => {
+  console.log(login.value, password.value)
+
+  const data = {
+    nameUser: login.value,
+    password: password.value,
+  }
+
+  try {
+    // Realize a solicitação POST com o Axios
+    const response = await axios.post('http://localhost:3000/auth-user', data)
+
+    // A solicitação foi bem-sucedida, você pode processar a resposta aqui
+    console.log('Resposta do servidor:', response.data)
+
+    const token = response.data.access_token
+    const decoded: { nameUser: string } = jwtDecode(token)
+
+    console.log(decoded.nameUser)
+
+    let user = decoded.nameUser
+
+    router.push({ name: 'dashboard', params: { user } })
+  } catch (error) {
+    // Lidar com erros de rede ou outros erros
+    console.error('Erro na solicitação:', error)
+  }
+}
+</script>
+
+<style scoped>
+.container-form {
+  height: 70vh;
+
+  width: 80%;
+  background-color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.form-login {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  padding: 24px;
+}
+.body-dashboard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2f0549;
+}
+
+.redifinir-senha {
+  margin-top: 24px;
+}
+</style>
