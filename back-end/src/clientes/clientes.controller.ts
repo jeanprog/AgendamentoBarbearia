@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ClientesService } from './ClientesService';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
@@ -10,7 +18,7 @@ export class ClientesController {
   @Post()
   async create(@Body() createClienteDto: CreateClienteDto) {
     const newCliente = await this.clientesService.create(createClienteDto);
-    return 'adicionado com sucesso'
+    return 'adicionado com sucesso';
   }
 
   @Get()

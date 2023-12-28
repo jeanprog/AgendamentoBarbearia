@@ -1,5 +1,5 @@
 <template>
-  <v-app style="height: 10%">
+  <v-app class="cabeçalho">
     <v-app-bar app class="menu-btn">
       <v-btn class="btn-voltar" @click="RedirecionarInicio"> voltar </v-btn>
       <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
@@ -31,10 +31,14 @@ const RedirecionarInicio = () => {
   padding-left: 4%;
   background-color: #2f0549 !important;
   color: white !important;
+  height: 10%;
 }
 .btn-voltar {
   width: 20%;
   border-radius: 50%;
   color: rgb(136, 255, 0);
+}
+.cabeçalho {
+  height: 10%;
 }
 </style>

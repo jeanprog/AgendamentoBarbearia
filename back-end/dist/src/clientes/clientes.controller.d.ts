@@ -17,6 +17,11 @@ export declare class ClientesController {
         telefone: string;
         userId: number;
     }>;
-    update(id: string, updateClienteDto: UpdateClienteDto): Promise<any>;
+    update(id: string, updateClienteDto: UpdateClienteDto): Promise<string | {
+        id: number;
+        nome: string;
+        telefone: string;
+        userId: number;
+    }>;
     remove(id: string): string;
 }

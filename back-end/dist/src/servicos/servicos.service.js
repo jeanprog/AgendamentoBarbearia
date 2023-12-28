@@ -28,8 +28,18 @@ let ServicosService = class ServicosService {
     findOne(id) {
         return `This action returns a #${id} servico`;
     }
-    update(id, updateServicoDto) {
-        return `This action updates a #${id} servico`;
+    async update(id, updateServicoDto) {
+        const existingServico = await this.prisma.tbCliente.findUnique({
+            where: { id },
+        });
+        if (!existingServico) {
+            return `Cliente #${id} não encontrado`;
+        }
+        const updatedServico = await this.prisma.tbServico.update({
+            where: { id },
+            data: updateServicoDto,
+        });
+        return updatedServico;
     }
     remove(id) {
         return `This action removes a #${id} servico`;

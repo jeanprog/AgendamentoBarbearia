@@ -14,6 +14,13 @@ export declare class ServicosController {
         categoria: string;
     }[]>;
     findOne(id: string): string;
-    update(id: string, updateServicoDto: UpdateServicoDto): string;
+    update(id: string, updateServicoDto: UpdateServicoDto): Promise<string | {
+        id: number;
+        nome: string;
+        duracao: number;
+        preco: number;
+        descricao: string;
+        categoria: string;
+    }>;
     remove(id: string): string;
 }

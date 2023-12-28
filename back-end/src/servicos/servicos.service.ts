@@ -21,8 +21,22 @@ export class ServicosService {
     return `This action returns a #${id} servico`;
   }
 
-  update(id: number, updateServicoDto: UpdateServicoDto) {
-    return `This action updates a #${id} servico`;
+  async update(id: number, updateServicoDto: UpdateServicoDto) {
+    const existingServico = await this.prisma.tbCliente.findUnique({
+      where: { id },
+    });
+
+    if (!existingServico) {
+      return `Cliente #${id} não encontrado`;
+    }
+
+    // Atualiza os campos fornecidos no DTO
+    const updatedServico = await this.prisma.tbServico.update({
+      where: { id },
+      data: updateServicoDto,
+    });
+
+    return updatedServico;
   }
 
   remove(id: number) {

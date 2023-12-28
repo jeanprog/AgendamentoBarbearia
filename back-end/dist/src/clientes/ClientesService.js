@@ -18,7 +18,7 @@ let ClientesService = class ClientesService {
     }
     async create(createClienteDto) {
         const newCliente = await this.prisma.tbCliente.create({
-            data: createClienteDto
+            data: createClienteDto,
         });
         return newCliente;
     }
@@ -26,20 +26,22 @@ let ClientesService = class ClientesService {
         return this.prisma.tbCliente.findMany();
     }
     async findOne(id) {
-        const cliente = await this.prisma.tbCliente.findUnique({ where: { id: Number(id) } });
+        const cliente = await this.prisma.tbCliente.findUnique({
+            where: { id: Number(id) },
+        });
         if (!cliente) {
             return `User with ID #${id} não foi encontrado`;
         }
         return cliente;
     }
     async update(id, updateClienteDto) {
-        const existingCliente = await this.prisma.client.tbCliente.findUnique({
+        const existingCliente = await this.prisma.tbCliente.findUnique({
             where: { id },
         });
         if (!existingCliente) {
-            throw new common_1.NotFoundException(`Cliente #${id} não encontrado`);
+            return `Cliente #${id} não encontrado`;
         }
-        const updatedCliente = await this.prisma.client.tbCliente.update({
+        const updatedCliente = await this.prisma.tbCliente.update({
             where: { id },
             data: updateClienteDto,
         });

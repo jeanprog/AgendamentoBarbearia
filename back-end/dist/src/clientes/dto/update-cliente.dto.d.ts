@@ -3,6 +3,5 @@ declare const UpdateClienteDto_base: import("@nestjs/mapped-types").MappedType<P
 export declare class UpdateClienteDto extends UpdateClienteDto_base {
     nome?: string;
     telefone?: string;
-    userId?: number;
 }
 export {};

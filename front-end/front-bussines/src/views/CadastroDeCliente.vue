@@ -21,28 +21,87 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import HeaderVoltar from '../components/HeaderVoltar.vue'
 import axios from 'axios'
+import { useRoute } from 'vue-router'
+/* import { router } from '@/router' */
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 let nome = ref<string>('')
 let telefone = ref<string>('')
 const titlepage = ref('Cadastro de Clientes')
+let editCliente = ref<boolean>(false)
+let id = ref<number>()
+
+/* 
+interface cliente  { 
+   nome: string ; 
+   cliente: string ; 
+} */
+
+const notify = () => {
+  toast('Cadastrada com sucesso', {
+    autoClose: 1000,
+  }) // ToastOptions
+}
+
+onMounted(() => {
+  // Acessar os parâmetros da rota usando route.query
+  const route = useRoute()
+  nome.value = route.query.nome as string
+  telefone.value = route.query.telefone as string
+  id.value = route.query.id ? parseInt(route.query.id as string, 10) : undefined
+  console.log('verificando id', id.value)
+  if (nome.value && telefone.value && id.value) {
+    console.log('cai aqui')
+    editCliente.value = true
+  }
+  console.log(id.value)
+})
 
 const submitForm = async () => {
   const data = {
     nome: nome.value,
     telefone: telefone.value,
-    userId: 1,
+    userId: id.value,
   }
   try {
     if (data.nome != '' && data.telefone != '') {
-      const response = await axios.post('http://localhost:3000/clientes', data)
-      nome.value = ''
-      telefone.value = ''
+      if (editCliente.value === true) {
+        const data = {
+          nome: nome.value,
+          telefone: telefone.value,
+          userId: id.value,
+        }
 
-      console.log('Resposta do servidor:', response.data)
+        const response = await axios.patch(
+          `http://localhost:3000/clientes/${id.value}`,
+          data
+        )
+
+        console.log(response.data)
+        nome.value = ''
+        telefone.value = ''
+      } else {
+        const data = {
+          nome: nome.value,
+          telefone: telefone.value,
+          userId: 1,
+        }
+        const response = await axios.post(
+          'http://localhost:3000/clientes',
+          data
+        )
+
+        nome.value = ''
+        telefone.value = ''
+        notify()
+
+        console.log('Resposta do servidor:', response.data)
+      }
     } else {
       console.log('preencha todos os campos')
     }
@@ -61,6 +120,7 @@ const submitForm = async () => {
 .formNewCliente {
   margin-top: 30%;
   width: 90%;
+  color: white;
 }
 
 .btn-submit {

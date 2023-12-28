@@ -1,59 +1,59 @@
 <template>
+  <Header />
+  <div class="main">
+    <!-- Conteúdo da Dashboard -->
+    <h3 class="title">Confira sua semana</h3>
 
-    <Header/>
-    <div class="main">
-      <!-- Conteúdo da Dashboard -->
-      <h3 class="title">Clientes agendados pra hoje </h3>
+    <div class="bodydash">
+      <div class="diasdasemana">
+        <p>18</p>
+        <p>seg</p>
+      </div>
+      <div class="cardsleft" style="display: flex">
+        <v-card class="card-customize" color="indigo">
+          <p class="text-card">
+            Serviços: <br />
+            10
+          </p>
 
-     
-      <v-card 
-      class="card-customize" 
-      max-width="600" 
-      variant="outlined" 
-      color="indigo"
-      
-      >
-          <v-card-item>
-            <div>
-              <div class="text-overline mb-1">
-               
-              </div>
-              <div class="text-h6 mb-1">
-                José henrique da silva
-              </div>
-              <div class="text-caption">Corte navalhado + pigmentação  R$ 50,00</div>
-              <div class="text-time">Tempo estimado 1:00 hr</div>
-              <div class="text-time">Horário do agendamento 9:30 as 10:30</div>
-
-
-
-            </div>
-          </v-card-item>
-
-          <v-card-actions>
-            <v-btn>
-              Checkin
-            </v-btn>
-            <v-btn>
-              Desistir
-            </v-btn>
-          </v-card-actions>
+          <p class="text-card">Próximo: <br />Jean Roberto</p>
         </v-card>
-   
+      </div>
     </div>
+  </div>
 
-  
-
+  <div class="footer">
+    <v-col cols="auto">
+      <v-btn
+        density="default"
+        icon="fa-solid fa-plus"
+        class="adicionarAgendamento"
+        @click="RedirectNovoAgendamento"
+      >
+      </v-btn>
+    </v-col>
+  </div>
 </template>
 
 <script setup lang="ts">
-import Header from '../components/Header.vue';
+import Header from '../components/Header.vue'
+
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { router } from '../router'
+
+const route = useRoute()
+
+const user = ref(route.params.user)
+
+const RedirectNovoAgendamento = () => {
+  router.push({ name: 'novoAgendamento', params: { user: user.value } })
+  console.log('evento acionado')
+}
 </script>
 
 <style scoped>
-
-.main { 
-  
+.main {
   width: 100% !important;
   overflow: hidden !important;
   display: flex;
@@ -61,12 +61,51 @@ import Header from '../components/Header.vue';
   justify-content: center;
   flex-direction: column;
 }
-.card-customize { 
-  width: 95%;
+
+.bodydash {
+  display: flex;
+  flex-direction: row;
+
+  width: 100% !important;
 }
-.title{ 
-  color: indigo;
-  
+
+.diasdasemana {
+  width: 20% !important ;
+  color: white;
+  margin: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.card-customize {
+  width: 74vw;
+  height: 12vh;
+  display: flex !important;
+  justify-content: space-between !important ;
+  flex-direction: row !important;
+}
+.title {
+  color: white;
+  size: 24px;
+  margin: 2%;
+}
+.text-card {
+  margin: 8%;
+}
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Alinha na parte inferior */
+  position: fixed;
+  bottom: 0;
+  /* Cor de fundo do footer, ajuste conforme necessário */
+}
+
+.adicionarAgendamento {
+  background-color: #2f0549;
+  color: white;
 }
 
 /* Adicione estilos adicionais conforme necessário */

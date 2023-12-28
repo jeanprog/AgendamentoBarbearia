@@ -24,9 +24,26 @@ model tbUser {
   name String 
   cpf  String
   email String 
+  situacao String @default("A")
   tbLogin tbLogin[]
-  tbClientes tbCliente[] 
+  tbClientes tbCliente[]
+  tbAgendamento tbAgendamento[]
+  tbBarbearia tbBarbearia[]
 }
+model tbBarbearia {
+  id              Int      @id @default(autoincrement())
+  nome            String 
+  diasAbertos     Int[]    // Array de inteiros representando os dias da semana (1 a 7)
+  horarioAbertura DateTime // Horário de abertura da barbearia
+  horarioFechamento DateTime // Horário de fechamento da barbearia
+  situacao        String   // Pode ser um enum ou string, dependendo dos valores possíveis
+  userId          Int      // Chave estrangeira referenciando tbUser
+  user            tbUser   @relation(fields: [userId], references: [id])
+}
+  // Adicione outras propriedades conforme necessário
+
+  // Relacionamento com outros modelos, se necessário
+  // ...
 // ...
 
 model tbCliente {
@@ -57,16 +74,21 @@ model tbServico {
 
 model tbAgendamento {
   id           Int       @id @default(autoincrement())
+  dia          DateTime
   horario      DateTime
-  // Adicione outras propriedades conforme necessário
+  disponivel    Boolean   @default(true)
 
   // Relacionamento com tbServico, indicando que um agendamento está associado a um serviço
   servicoId    Int
-  tbServico    tbServico @relation(fields: [servicoId], references: [id])
+  tbServico    tbServico  @relation(fields: [servicoId], references: [id])
 
   // Relacionamento com tbCliente, indicando que um agendamento está associado a um cliente
   clienteId    Int
-  tbCliente    tbCliente @relation(fields: [clienteId], references: [id])
+  tbCliente    tbCliente  @relation(fields: [clienteId], references: [id])
+
+  // Relacionamento com tbUser, indicando que um agendamento está associado a um usuário
+  userId       Int
+  tbUser       tbUser     @relation(fields: [userId], references: [id])
 }
 
 // ... outros modelos ...

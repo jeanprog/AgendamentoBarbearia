@@ -10,12 +10,14 @@ export declare class UserController {
         name: string;
         cpf: string;
         email: string;
+        situacao: string;
     }[]>;
     findOne(id: string): Promise<string | {
         id: number;
         name: string;
         cpf: string;
         email: string;
+        situacao: string;
     }>;
     update(id: string, updateUserDto: UpdateUserDto): string;
     remove(id: string): string;

@@ -22,6 +22,11 @@ export declare class ClientesService {
         telefone: string;
         userId: number;
     }>;
-    update(id: number, updateClienteDto: UpdateClienteDto): Promise<any>;
+    update(id: number, updateClienteDto: UpdateClienteDto): Promise<string | {
+        id: number;
+        nome: string;
+        telefone: string;
+        userId: number;
+    }>;
     remove(id: number): string;
 }

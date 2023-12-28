@@ -1,7 +1,7 @@
 <template>
   <body class="body-dashboard">
     <div class="container-form">
-      <h2>Business Cardápio</h2>
+      <h2>Barber Schedule</h2>
       <v-form fast-fail @submit.prevent="handleSubmit" class="form-login">
         <v-text-field v-model="login" label="Login"></v-text-field>
 
@@ -25,11 +25,31 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { router } from '../router'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 /* import jwt from 'jsonwebtoken';
  */
 let login = ref<string>('')
 let password = ref<string>('')
+
+/* const notifyServidor = () => {
+  toast('Error no servidor', {
+    autoClose: 1000,
+  })
+} */
+
+const notifyCredencaisInvalidas = () => {
+  toast('usuários e senhas invalidas', {
+    autoClose: 1000,
+  })
+}
+
+const notifyCamposNulos = () => {
+  toast('Os campos não podem ser vazios', {
+    autoClose: 1000,
+  })
+}
 
 const handleSubmit = async () => {
   console.log(login.value, password.value)
@@ -39,24 +59,30 @@ const handleSubmit = async () => {
     password: password.value,
   }
 
-  try {
-    // Realize a solicitação POST com o Axios
-    const response = await axios.post('http://localhost:3000/auth-user', data)
+  if (data.nameUser && data.password) {
+    try {
+      // Realize a solicitação POST com o Axios
+      const response = await axios.post('http://localhost:3000/auth-user', data)
 
-    // A solicitação foi bem-sucedida, você pode processar a resposta aqui
-    console.log('Resposta do servidor:', response.data)
+      // A solicitação foi bem-sucedida, você pode processar a resposta aqui
+      console.log('Resposta do servidor:', response.data)
 
-    const token = response.data.access_token
-    const decoded: { nameUser: string } = jwtDecode(token)
+      const token = response.data.access_token
+      const decoded: { nameUser: string } = jwtDecode(token)
 
-    console.log(decoded.nameUser)
+      console.log(decoded.nameUser)
 
-    let user = decoded.nameUser
+      let user = decoded.nameUser
 
-    router.push({ name: 'dashboard', params: { user } })
-  } catch (error) {
-    // Lidar com erros de rede ou outros erros
-    console.error('Erro na solicitação:', error)
+      router.push({ name: 'dashboard', params: { user } })
+    } catch (error) {
+      // Lidar com erros de rede ou outros erros
+      console.error('Erro na solicitação:', error)
+      notifyCredencaisInvalidas()
+      return
+    }
+  } else {
+    notifyCamposNulos()
   }
 }
 </script>

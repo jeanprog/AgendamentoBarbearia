@@ -1,5 +1,5 @@
 <template>
-  <v-app style="height: 10%">
+  <v-app class="cabeçalho">
     <v-app-bar app class="menu-btn">
       <v-icon :class="{ rotated: drawer }" @click="toggleDrawer">{{
         drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'
@@ -23,27 +23,33 @@
 
         <v-list density="compact" nav>
           <v-list-item
-            prepend-icon="mdi-view-dashboard"
+            prepend-icon="fa-solid fa-plus"
             title="Serviços"
             value="servicos"
             @click="RedirectCadastroDeServico"
           ></v-list-item>
           <v-list-item
-            prepend-icon="mdi-forum"
+            prepend-icon="fa-solid fa-users"
             title="Consultar Clientes"
             value="cliente"
             @click="RedirectConsultaDecliente"
           ></v-list-item>
           <v-list-item
-            prepend-icon="mdi-forum"
+            prepend-icon="fa-solid fa-address-book"
             title="Consultar Agenda"
             value="Agenda"
           ></v-list-item>
           <v-list-item
-            prepend-icon="mdi-forum"
+            prepend-icon="fa-solid fa-user"
             title="Cadastrar Clientes"
             value="newClientes"
             @click="RedirectCadastroDecliente"
+          ></v-list-item>
+          <v-list-item
+            prepend-icon="fa-solid fa-gear"
+            title="Configurações"
+            value="config"
+            @click="RedirectConfiguracoes"
           ></v-list-item>
         </v-list>
       </div>
@@ -76,6 +82,11 @@ const RedirectCadastroDeServico = () => {
   router.push({ name: 'CadastroDeServico', params: { user: user.value } })
   console.log('evento acionado')
 }
+
+const RedirectConfiguracoes = () => {
+  router.push({ name: 'configLoja', params: { user: user.value } })
+  console.log('evento acionado')
+}
 console.log(user)
 
 const toggleDrawer = () => {
@@ -89,6 +100,7 @@ const toggleDrawer = () => {
   padding-left: 4%;
   background-color: #2f0549 !important;
   color: white !important;
+  height: 10%;
 }
 .menu {
   background-color: #2f0549 !important;
@@ -98,5 +110,9 @@ const toggleDrawer = () => {
 .rotated {
   transition: transform 0.3s ease;
   transform: rotate(180deg);
+}
+.cabeçalho {
+  height: 10%;
+  font-family: 'Montserrat', sans-serif;
 }
 </style>

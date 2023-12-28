@@ -5,12 +5,12 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-     /* Alias resolving */
-     "baseUrl": ".",
-     "paths": {
-       "@/*": ["./src/*"]
-     },
-     "types": ["jsonwebtoken"], 
+    /* Alias resolving */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["jsonwebtoken", "vue3-toastify/global"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
