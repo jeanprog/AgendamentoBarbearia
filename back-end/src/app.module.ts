@@ -10,6 +10,7 @@ import { AuthUserModule } from './auth-user/auth-user.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { ServicosModule } from './servicos/servicos.module';
 import { ConfigLojaModule } from './config-loja/config-loja.module';
+import { FiltersModule } from './filters/filters.module';
 
 
 
@@ -18,7 +19,7 @@ import { ConfigLojaModule } from './config-loja/config-loja.module';
 
 
 @Module({
-  imports: [PrismaModule , UserModule, UserLoginModule, AuthUserModule, ClientesModule, ServicosModule, ConfigLojaModule  ], // Importe o PrismaModule
+  imports: [PrismaModule , UserModule, UserLoginModule, AuthUserModule, ClientesModule, ServicosModule, ConfigLojaModule, FiltersModule  ], // Importe o PrismaModule
   controllers: [AppController],
   providers: [AppService, ],
 })

@@ -7,26 +7,37 @@ export declare class ClientesService {
     create(createClienteDto: CreateClienteDto): Promise<{
         id: number;
         nome: string;
+        empresa: string;
         telefone: string;
-        userId: number;
+        redeId: number;
     }>;
+    findClientesByRedeId(redeId: number): Promise<{
+        id: number;
+        nome: string;
+        empresa: string;
+        telefone: string;
+        redeId: number;
+    }[]>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
         id: number;
         nome: string;
+        empresa: string;
         telefone: string;
-        userId: number;
+        redeId: number;
     }[]>;
     findOne(id: number): Promise<string | {
         id: number;
         nome: string;
+        empresa: string;
         telefone: string;
-        userId: number;
+        redeId: number;
     }>;
     update(id: number, updateClienteDto: UpdateClienteDto): Promise<string | {
         id: number;
         nome: string;
+        empresa: string;
         telefone: string;
-        userId: number;
+        redeId: number;
     }>;
     remove(id: number): string;
 }

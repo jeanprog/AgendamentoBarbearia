@@ -14,6 +14,14 @@ export class ClientesService {
     return newCliente;
   }
 
+  async findClientesByRedeId(redeId: number) {
+    return this.prisma.tbCliente.findMany({
+      where: {
+        redeId: redeId,
+      },
+    });
+  }
+
   findAll() {
     return this.prisma.tbCliente.findMany();
   }

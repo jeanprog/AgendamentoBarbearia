@@ -25,6 +25,10 @@ let ClientesController = class ClientesController {
         const newCliente = await this.clientesService.create(createClienteDto);
         return 'adicionado com sucesso';
     }
+    async findClientesByRedeId(redeId) {
+        const result = await this.clientesService.findClientesByRedeId(parseInt(redeId, 10));
+        return result;
+    }
     findAll() {
         return this.clientesService.findAll();
     }
@@ -47,13 +51,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ClientesController.prototype, "create", null);
 __decorate([
+    (0, common_1.Get)(':redeId'),
+    __param(0, (0, common_1.Param)('redeId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClientesController.prototype, "findClientesByRedeId", null);
+__decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ClientesController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)(':empresas/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

@@ -21,12 +21,20 @@ export class ClientesController {
     return 'adicionado com sucesso';
   }
 
+  @Get(':redeId')
+  async findClientesByRedeId(@Param('redeId') redeId: string) {
+    const result = await this.clientesService.findClientesByRedeId(
+      parseInt(redeId, 10),
+    );
+    return result;
+  }
+
   @Get()
   findAll() {
     return this.clientesService.findAll();
   }
 
-  @Get(':id')
+  @Get(':empresas/:id')
   findOne(@Param('id') id: string) {
     return this.clientesService.findOne(+id);
   }

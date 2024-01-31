@@ -33,12 +33,16 @@ let AuthUserService = class AuthUserService {
         if (!isPasswordValid) {
             return null;
         }
+        console.log(user, 'teste retorno');
         return await this.gerarToken(user);
-        ;
     }
     async gerarToken(payload) {
         return {
-            access_token: this.jwtService.sign({ nameUser: payload.nameUser }, {
+            access_token: this.jwtService.sign({
+                nameUser: payload.nameUser,
+                idRede: payload.redeId,
+                idUser: payload.Id,
+            }, {
                 secret: 'topSecret512',
                 expiresIn: '50s',
             }),
@@ -60,6 +64,8 @@ let AuthUserService = class AuthUserService {
 exports.AuthUserService = AuthUserService;
 exports.AuthUserService = AuthUserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, jwt_1.JwtService, password_service_1.PasswordService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        jwt_1.JwtService,
+        password_service_1.PasswordService])
 ], AuthUserService);
 //# sourceMappingURL=auth-user.service.js.map

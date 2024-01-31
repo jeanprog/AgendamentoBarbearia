@@ -12,84 +12,91 @@ datasource db {
 
 
 model tbLogin {
-  userId       Int      @id @default(autoincrement())
+  Id       Int      @id @default(autoincrement())
   password String
 
   nameUser String
-  user     tbUser   @relation(fields: [userId], references: [id])
-}
+  cargo String 
+  redeId  Int    // Chave estrangeira referenciando tbUser
+  idRede    tbRede @relation(fields: [redeId], references: [id])
+  tbChamado tbChamado[]
+  tbStatusChamado tbStatusChamado[]
 
-model tbUser { 
+}
+// esta tabela referencia a empresa em que o analista trabalha 
+model tbRede { 
   id Int @id @default(autoincrement())
-  name String 
-  cpf  String
+  nameRede String 
+  cnpj  String
   email String 
   situacao String @default("A")
   tbLogin tbLogin[]
   tbClientes tbCliente[]
-  tbAgendamento tbAgendamento[]
-  tbBarbearia tbBarbearia[]
+  tbChamado tbChamado[]
 }
-model tbBarbearia {
-  id              Int      @id @default(autoincrement())
-  nome            String 
-  diasAbertos     Int[]    // Array de inteiros representando os dias da semana (1 a 7)
-  horarioAbertura DateTime // Horário de abertura da barbearia
-  horarioFechamento DateTime // Horário de fechamento da barbearia
-  situacao        String   // Pode ser um enum ou string, dependendo dos valores possíveis
-  userId          Int      // Chave estrangeira referenciando tbUser
-  user            tbUser   @relation(fields: [userId], references: [id])
-}
+
   // Adicione outras propriedades conforme necessário
 
   // Relacionamento com outros modelos, se necessário
   // ...
 // ...
-
 model tbCliente {
   id      Int    @id @default(autoincrement())
   nome    String
+  empresa String
   telefone String
-  userId  Int    // Chave estrangeira referenciando tbUser
-  user    tbUser @relation(fields: [userId], references: [id])
-  tbAgendamento tbAgendamento[]
+  redeId  Int    // Chave estrangeira referenciando tbUser
+  idRede    tbRede @relation(fields: [redeId], references: [id]) // troquei pra começar a fazer mudança para o idUsuario 
+  tbChamado tbChamado[]
+
+}
+
+model tbStatusChamado {
+  id           Int      @id @default(autoincrement())
+
+  status        Int
+  dataAlteracao DateTime
+  usuarioId    Int      // Chave estrangeira referenciando tbLogin
+  idUsuario    tbLogin  @relation(fields: [usuarioId], references: [Id])
+  chamadoId    Int
+  idChamado tbChamado @relation(fields:[chamadoId], references: [id])
+
+}
+
+
+model tbChamado {
+  id             Int            @id @default(autoincrement())
+  titulo         String
+
+  prioridade     String
+  sistema        String
+  dAbertura           DateTime
+  dFechamento DateTime
+  descricao      String
+  tbStatusChamado tbStatusChamado[]
+ 
+  usuarioId    Int      // Chave estrangeira referenciando tbLogin
+  idUsuario    tbLogin  @relation(fields: [usuarioId], references: [Id])
   
-}
+  redeId    Int      // Chave estrangeira referenciando tbRede
+  idRede    tbRede   @relation(fields: [redeId], references: [id])
+  // ... outras informações do chamado
+  clienteId Int      // Chave estrangeira referenciando tbCliente
+  idCliente tbCliente @relation(fields: [clienteId], references: [id])
+  
+  statusChamadoAtual  Int             // Chave estrangeira referenciando tbStatusChamado
+ }
+ 
+ // proximas tabelas seria crair uma tabela pra registos de empresas clientes , pra associar ao um novo usuário. 
+ 
 
 
-// ... outros modelos ...
 
-model tbServico {
-  id        Int          @id @default(autoincrement())
-  nome      String
-  duracao   Int          // Duração do serviço em minutos
-  preco     Float
-  descricao String
-  categoria String
-  // Adicione outras propriedades conforme necessário
 
-  // Relacionamento com tbAgendamento, indicando que um serviço pode ser associado a vários agendamentos
-  tbAgendamento tbAgendamento[]
-}
 
-model tbAgendamento {
-  id           Int       @id @default(autoincrement())
-  dia          DateTime
-  horario      DateTime
-  disponivel    Boolean   @default(true)
 
-  // Relacionamento com tbServico, indicando que um agendamento está associado a um serviço
-  servicoId    Int
-  tbServico    tbServico  @relation(fields: [servicoId], references: [id])
+// ... outros modelos ... 
 
-  // Relacionamento com tbCliente, indicando que um agendamento está associado a um cliente
-  clienteId    Int
-  tbCliente    tbCliente  @relation(fields: [clienteId], references: [id])
-
-  // Relacionamento com tbUser, indicando que um agendamento está associado a um usuário
-  userId       Int
-  tbUser       tbUser     @relation(fields: [userId], references: [id])
-}
 
 // ... outros modelos ...
 

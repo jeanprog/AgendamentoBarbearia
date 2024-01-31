@@ -3,6 +3,14 @@
 
   <div class="bodyapp">
     <div class="searchbar">
+      <v-select
+        class="inputFiltro"
+        label="Selecione o campo da busca"
+        :items="['nome', 'empresa', 'telefone']"
+        bg-color="#1E1E26"
+        density="compact"
+        v-model="tipoBusca"
+      ></v-select>
       <v-text-field
         class="inputSearch"
         density="compact"
@@ -25,6 +33,7 @@
           v-for="(cliente, index) in clientes"
           :key="index"
           variant="outlined"
+          @click="iniciaChamado(cliente)"
         >
           <v-card-item>
             <div>
@@ -33,6 +42,9 @@
               </div>
               <div class="text-card">
                 <span class="label-card">Telefone:</span> {{ cliente.telefone }}
+              </div>
+              <div class="text-card">
+                <span class="label-card">Empresa:</span> {{ cliente.empresa }}
               </div>
             </div>
           </v-card-item>
@@ -60,7 +72,7 @@
             <v-btn color="#E82D92" class="botaoCard">
               <icon
                 id="icon-cards"
-                class="fa-solid fa-calendar"
+                class="fa-solid fa-users-gear"
                 style="font-size: 24px; color: #e82d92"
               ></icon>
             </v-btn>
@@ -75,7 +87,6 @@
         @click="redirecionarCadastroDeCliente(cliente)"
         >Novo Cliente</v-btn
       >
-      <v-btn class="addCliente" color="#E82D92">agendar</v-btn>
     </div>
   </div>
 </template>
@@ -85,22 +96,34 @@ import HeaderVoltar from '../components/HeaderVoltar.vue'
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import { router } from '../router'
-/* import { useRoute } from 'vue-router' */
+import { useStore } from 'vuex'
+/*  import { useRoute } from 'vue-router'  */
 
 interface Cliente {
   id: number
   nome: string
   telefone: string
+  empresa: string
 }
+const store = useStore()
 
 let clienteBusca = ref<string>('')
 let clientes = ref<Cliente[]>([])
 const titlepage = ref('Consulta de Clientes')
 let cliente = ref<Cliente | null>(null)
+let tipoBusca = ref<string>('')
+let chamado = ref<number>(1)
 
 /* 
- const route = useRoute()
-  const user = ref(route.params.user)   */
+ const route = useRoute() */
+
+const iniciaChamado = async (cliente: Cliente) => {
+  const novoCliente = cliente
+  console.log(novoCliente)
+  await store.dispatch('atualizarCliente', novoCliente)
+
+  router.push({ name: 'CadastroDeServico', query: { chamado: chamado.value } })
+}
 
 const listaDeClientes = async () => {
   try {
@@ -119,13 +142,34 @@ const filteredClientes = () => {
     listaDeClientes()
   } else {
     // Caso contrário, realiza o filtro
-    const filtro = clientes.value.filter((cliente) => {
-      return cliente.nome
-        .toLowerCase()
-        .includes(clienteBusca.value.toLowerCase())
-    })
-    clientes.value = filtro
-    console.log(filtro)
+    if (tipoBusca.value === '' || tipoBusca.value === 'nome') {
+      const filtro = clientes.value.filter((cliente) => {
+        return cliente.nome
+          .toLowerCase()
+          .includes(clienteBusca.value.toLowerCase())
+      })
+      clientes.value = filtro
+      console.log(filtro)
+      console.log('case nome e default')
+    } else if (tipoBusca.value === 'empresa') {
+      const filtro = clientes.value.filter((cliente) => {
+        return cliente.empresa
+          .toLowerCase()
+          .includes(clienteBusca.value.toLowerCase())
+      })
+      clientes.value = filtro
+      console.log(filtro)
+      console.log('case empresa')
+    } else if (tipoBusca.value === 'telefone') {
+      console.log('case telefone')
+      const filtro = clientes.value.filter((cliente) => {
+        return cliente.telefone
+          .toLowerCase()
+          .includes(clienteBusca.value.toLowerCase())
+      })
+      clientes.value = filtro
+      console.log(filtro)
+    }
   }
 }
 
@@ -138,15 +182,22 @@ const redirecionarCadastroDeCliente = (cliente: Cliente | null = null) => {
       query: {
         id: cliente.id,
         nome: cliente.nome,
-        telefone: cliente.telefone
+        telefone: cliente.telefone,
+        empresa: cliente.empresa
       }
     })
 
-    console.log('consulta', cliente.nome, cliente.telefone, cliente.id)
+    console.log(
+      'consulta',
+      cliente.nome,
+      cliente.telefone,
+      cliente.id,
+      cliente.empresa
+    )
   } else {
     router.push({ name: 'CadastroDeCliente' })
   }
-  /* 
+  /*
   router.push({ name: 'CadastroDeCliente' }) */
 }
 
@@ -176,35 +227,56 @@ onMounted(() => {
   border-radius: 8px;
   background: #19181f;
   display: flex !important;
-  flex-direction: column;
-  align-items: center;
+
+  align-items: center !important;
   justify-content: center !important;
 }
 .card-customize {
-  margin: 2%;
+  margin-top: 2%;
 
   background: none;
-  width: 96%;
+  width: 86%;
+  min-height: 30%;
+  display: flex;
 
   border: solid 2px;
 }
 .scrollable-container {
   max-height: 100%; /* Garante que o conteúdo não ultrapasse a altura máxima da div pai */
-  overflow-y: auto;
+  overflow-y: auto !important;
   width: 100%;
+  height: 100% !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
 }
 .searchbar {
   width: 100%;
+
+  height: 12vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.inputFiltro {
+  max-width: 30vw !important;
+  margin-top: 1%;
+  margin-right: 2%;
+  height: 8vh !important;
+  border-radius: 8px !important;
 }
 .inputSearch {
   border-radius: 8px !important;
+  max-width: 50vw !important;
 }
 .container-botao {
   width: 100%;
   justify-content: space-around !important;
 
   display: flex;
-
   padding: 2%;
 }
 .botaoCard {
@@ -228,12 +300,14 @@ onMounted(() => {
   width: 100%;
 
   display: flex;
-  flex-direction: column;
-  padding: 2%;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .addCliente {
   border: none;
+  width: 50%;
   background-color: white;
   margin: 2%;
   border-radius: 8px;

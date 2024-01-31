@@ -1,18 +1,18 @@
-import { formToJSON } from 'axios';
 <script setup lang="ts">
 import { ref } from 'vue'
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
+import axios from 'axios'
 
 let titlepage = ref('Configurações')
-let cordefundo = ref('')
-let listaDiasFuncionamento = ref<array>([])
+
+let listaDiasFuncionamento = ref([])
 const form = ref({
   nome: '',
-  diasAbertos: [],
+  diasAbertos: [] as number[],
   horarioAbertura: '',
   horarioFechamento: '',
   situacao: '',
-  userId: null
+  userId: 1
 })
 
 const diasSemanaOptions = [
@@ -24,15 +24,22 @@ const diasSemanaOptions = [
   { text: 'Sex', value: 6 },
   { text: 'Sab', value: 7 }
 ]
-const submitForm = () => {
+
+const submitForm = async () => {
   // Aqui você pode enviar os dados para o backend, por exemplo, usando uma chamada de API
   console.log('Formulário enviado:', form.value)
+
+  const response = await axios.post(
+    'http://localhost:3000/config-loja',
+    form.value
+  ) /// requisição com problema no campo date continuar quando voltar
+  console.log(response)
 }
-const isDiaSelected = (dayValue) => {
+const isDiaSelected = (dayValue: number) => {
   return listaDiasFuncionamento.value.includes(dayValue)
 }
 
-const toggleDaySelection = (dayValue) => {
+const toggleDaySelection = (dayValue: number) => {
   console.log('teste aqui', dayValue)
 
   const index = listaDiasFuncionamento.value.indexOf(dayValue)
@@ -43,14 +50,14 @@ const toggleDaySelection = (dayValue) => {
     listaDiasFuncionamento.value.push(dayValue)
   }
 
-  form.diasAbertos = [...listaDiasFuncionamento.value]
-  console.log(form.diasAbertos)
+  form.value.diasAbertos = [...listaDiasFuncionamento.value]
+  console.log(form.value.diasAbertos)
 }
 
-const verificaDiaSelecionado = (dayvalue) => {
-  /* const result = form.diasAbertos.includes(dayvalue) */
+/* const verificaDiaSelecionado = (dayvalue: any) => {
+   const result = form.diasAbertos.includes(dayvalue) 
   return console.log('teste aqui', dayvalue)
-}
+} */
 </script>
 
 <template>
@@ -92,6 +99,7 @@ const verificaDiaSelecionado = (dayvalue) => {
             v-model="form.horarioAbertura"
             label="Horário de Abertura"
             required
+            type="time"
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="6">
@@ -99,6 +107,8 @@ const verificaDiaSelecionado = (dayvalue) => {
             v-model="form.horarioFechamento"
             label="Horário de Fechamento"
             required
+            maxlength="2"
+            type="time"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -108,6 +118,7 @@ const verificaDiaSelecionado = (dayvalue) => {
           <v-select
             label="Situação da loja"
             :items="['Ativo', 'Inativo']"
+            v-model="form.situacao"
           ></v-select>
         </v-col>
       </v-row>

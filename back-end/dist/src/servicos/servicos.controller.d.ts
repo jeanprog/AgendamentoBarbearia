@@ -1,26 +1,23 @@
 import { ServicosService } from './servicos.service';
-import { CreateServicoDto } from './dto/create-servico.dto';
+import { CreateChamadoDto } from './dto/create-servico.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 export declare class ServicosController {
     private readonly servicosService;
     constructor(servicosService: ServicosService);
-    create(createServicoDto: CreateServicoDto): Promise<string>;
-    findAll(): import(".prisma/client").Prisma.PrismaPromise<{
+    create(createChamadoDto: CreateChamadoDto): Promise<string>;
+    retornaStatusChamado(): Promise<{
         id: number;
-        nome: string;
-        duracao: number;
-        preco: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
         descricao: string;
-        categoria: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
     }[]>;
     findOne(id: string): string;
-    update(id: string, updateServicoDto: UpdateServicoDto): Promise<string | {
-        id: number;
-        nome: string;
-        duracao: number;
-        preco: number;
-        descricao: string;
-        categoria: string;
-    }>;
-    remove(id: string): string;
+    update(id: string, updateServicoDto: UpdateServicoDto): Promise<string>;
 }

@@ -1,5 +1,6 @@
 export declare class CreateUserLoginDto {
     password: string;
     nameUser: string;
-    userId: number;
+    redeId: number;
+    cargo: string;
 }

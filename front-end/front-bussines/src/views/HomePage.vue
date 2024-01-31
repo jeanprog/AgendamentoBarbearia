@@ -1,7 +1,7 @@
 <template>
   <body class="body-dashboard">
     <div class="container-form">
-      <h2>Barber Schedule</h2>
+      <h2>Gerenciador de tarefas</h2>
       <v-form fast-fail @submit.prevent="handleSubmit" class="form-login">
         <v-text-field v-model="login" label="Login"></v-text-field>
 
@@ -41,13 +41,13 @@ let password = ref<string>('')
 
 const notifyCredencaisInvalidas = () => {
   toast('usuários e senhas invalidas', {
-    autoClose: 1000,
+    autoClose: 1000
   })
 }
 
 const notifyCamposNulos = () => {
   toast('Os campos não podem ser vazios', {
-    autoClose: 1000,
+    autoClose: 1000
   })
 }
 
@@ -56,7 +56,7 @@ const handleSubmit = async () => {
 
   const data = {
     nameUser: login.value,
-    password: password.value,
+    password: password.value
   }
 
   if (data.nameUser && data.password) {
@@ -68,13 +68,25 @@ const handleSubmit = async () => {
       console.log('Resposta do servidor:', response.data)
 
       const token = response.data.access_token
-      const decoded: { nameUser: string } = jwtDecode(token)
+      const decoded: { nameUser: string; idRede: number; idUser: number } =
+        jwtDecode(token)
 
-      console.log(decoded.nameUser)
+      console.log(decoded.nameUser, decoded.idRede, decoded.idUser)
 
       let user = decoded.nameUser
+      let rede = decoded.idRede
+      let idUser = decoded.idUser
 
-      router.push({ name: 'dashboard', params: { user } })
+      //pra teste salvando no local storage
+
+      const jsonData = {
+        user: user,
+        rede: rede,
+        id: idUser
+      }
+      localStorage.setItem('user', JSON.stringify(jsonData))
+
+      router.push({ name: 'dashboard', params: { user, rede } })
     } catch (error) {
       // Lidar com erros de rede ou outros erros
       console.error('Erro na solicitação:', error)

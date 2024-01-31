@@ -1,7 +1,20 @@
-export class CreateServicoDto {
-  nome: string;
-  duracao: number;
-  preco: number;
+export class CreateChamadoDto {
+  titulo: string;
+
+  prioridade: string;
+
+  sistema: string;
+
+  dAbertura: Date;
+
+  dFechamento: Date;
+
   descricao: string;
-  categoria: string;
+
+  usuarioId: number;
+  clienteId: number;
+
+  redeId: number;
+
+  statusChamadoAtual: number;
 }

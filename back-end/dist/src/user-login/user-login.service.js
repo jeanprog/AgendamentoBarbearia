@@ -25,12 +25,17 @@ let UserLoginService = class UserLoginService {
             data: {
                 ...otherUserProps,
                 password: hashedPassword,
-            }
+            },
         });
         return `Usuario adicionado com sucesso - 200 OK`;
     }
     findAll() {
-        return `This action returns all userLogin`;
+        return this.prisma.tbLogin.findMany({
+            select: {
+                Id: true,
+                nameUser: true,
+            },
+        });
     }
     findOne(id) {
         return `This action returns a #${id} userLogin`;

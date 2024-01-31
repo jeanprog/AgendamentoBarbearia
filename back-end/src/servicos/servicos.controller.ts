@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { StatusChamadoDTO } from './dto/create-status-chamado.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ServicosService } from './servicos.service';
-import { CreateServicoDto } from './dto/create-servico.dto';
+import { CreateChamadoDto } from './dto/create-servico.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 
 @Controller('servicos')
@@ -8,12 +17,13 @@ export class ServicosController {
   constructor(private readonly servicosService: ServicosService) {}
 
   @Post()
-  create(@Body() createServicoDto: CreateServicoDto) {
-    return this.servicosService.create(createServicoDto);
+  create(@Body() createChamadoDto: CreateChamadoDto) {
+    const newChamado =
+      this.servicosService.adicionarChamadoComStatusAberto(createChamadoDto);
+    return newChamado;
   }
-
   @Get()
-  findAll() {
+  retornaStatusChamado() {
     return this.servicosService.findAll();
   }
 
@@ -24,11 +34,11 @@ export class ServicosController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServicoDto: UpdateServicoDto) {
-    return this.servicosService.update(+id, updateServicoDto);
+    return this.servicosService.atualizarChamadoEStatus(+id, updateServicoDto);
   }
 
-  @Delete(':id')
+  /*  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.servicosService.remove(+id);
-  }
+  } */
 }

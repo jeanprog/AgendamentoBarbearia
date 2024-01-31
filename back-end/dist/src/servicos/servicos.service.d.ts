@@ -1,26 +1,24 @@
-import { CreateServicoDto } from './dto/create-servico.dto';
+import { CreateChamadoDto } from './dto/create-servico.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 import { PrismaService } from '../database/prisma.service';
 export declare class ServicosService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(createServicoDto: CreateServicoDto): Promise<string>;
-    findAll(): import(".prisma/client").Prisma.PrismaPromise<{
+    private createStatusData;
+    adicionarChamadoComStatusAberto(createChamadoDto: CreateChamadoDto): Promise<string>;
+    findAll(): Promise<{
         id: number;
-        nome: string;
-        duracao: number;
-        preco: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
         descricao: string;
-        categoria: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
     }[]>;
     findOne(id: number): string;
-    update(id: number, updateServicoDto: UpdateServicoDto): Promise<string | {
-        id: number;
-        nome: string;
-        duracao: number;
-        preco: number;
-        descricao: string;
-        categoria: string;
-    }>;
-    remove(id: number): string;
+    atualizarChamadoEStatus(IdChamado: number, updateChamado: UpdateServicoDto): Promise<string>;
 }

@@ -17,16 +17,15 @@ let UserService = class UserService {
         this.prisma = prisma;
     }
     async create(createUserDto) {
-        const newUser = await this.prisma.tbUser.create({
-            data: createUserDto
-        });
         return 'Status 200 ok salvo com sucesso ';
     }
     allUsers() {
-        return this.prisma.tbUser.findMany();
+        return this.prisma.tbRede.findMany();
     }
     async findOne(id) {
-        const user = await this.prisma.tbUser.findUnique({ where: { id: Number(id) } });
+        const user = await this.prisma.tbRede.findUnique({
+            where: { id: Number(id) },
+        });
         if (!user) {
             return `User with ID #${id} não foi encontrado`;
         }

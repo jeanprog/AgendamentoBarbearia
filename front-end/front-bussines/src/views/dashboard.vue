@@ -2,27 +2,30 @@
   <Header />
   <div class="main">
     <!-- Conteúdo da Dashboard -->
-    <h3 class="title">Confira sua semana</h3>
+    <h3 class="title">Suporte e Gerencimaento de sistemas e clientes</h3>
 
     <div class="bodydash">
-      <div class="diasdasemana">
-        <p>18</p>
-        <p>seg</p>
-      </div>
-      <div class="cardsleft" style="display: flex">
-        <v-card class="card-customize" color="indigo">
-          <p class="text-card">
-            Serviços: <br />
-            10
-          </p>
-
-          <p class="text-card">Próximo: <br />Jean Roberto</p>
+      <div class="cardsleft">
+        <v-card
+          class="card-customize"
+          color="indigo"
+          @click="RedirectCadastroDeServico"
+        >
+          <icon class="fa-solid fa-users-gear" id="IconeChamado"></icon>
+          <p class="text-card">Iniciar Chamado</p>
         </v-card>
+        <v-card class="card-customize" color="indigo">
+          <icon class="fa-solid fa-user-tie" id="IconeChamado"></icon>
+          <p class="text-card">Iniciar Consultoria</p>
+        </v-card>
+      </div>
+      <div class="img-dashboard">
+        <img src="../assets/semfundopng.png" alt="" />
       </div>
     </div>
   </div>
 
-  <div class="footer">
+  <!--  <div class="footer">
     <v-col cols="auto">
       <v-btn
         density="default"
@@ -32,13 +35,13 @@
       >
       </v-btn>
     </v-col>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
 import Header from '../components/Header.vue'
 
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { router } from '../router'
 
@@ -46,8 +49,13 @@ const route = useRoute()
 
 const user = ref(route.params.user)
 
-const RedirectNovoAgendamento = () => {
-  router.push({ name: 'novoAgendamento', params: { user: user.value } })
+onMounted(() => {
+  const date = new Date()
+  console.log(date)
+})
+
+const RedirectCadastroDeServico = () => {
+  router.push({ name: 'CadastroDeServico', params: { user: user.value } })
   console.log('evento acionado')
 }
 </script>
@@ -67,6 +75,7 @@ const RedirectNovoAgendamento = () => {
   flex-direction: row;
 
   width: 100% !important;
+  max-height: 100vh !important;
 }
 
 .diasdasemana {
@@ -79,11 +88,16 @@ const RedirectNovoAgendamento = () => {
   flex-direction: column;
 }
 .card-customize {
-  width: 74vw;
-  height: 12vh;
+  width: 20vw !important;
+  height: 30vh;
   display: flex !important;
-  justify-content: space-between !important ;
+  justify-content: center !important ;
+  align-items: center !important;
   flex-direction: row !important;
+  margin: 2% 2% 2% 36%;
+}
+#IconeChamado {
+  font-size: 36px;
 }
 .title {
   color: white;
@@ -108,5 +122,12 @@ const RedirectNovoAgendamento = () => {
   color: white;
 }
 
+.cardsleft {
+  max-height: 76vh !important;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+}
 /* Adicione estilos adicionais conforme necessário */
 </style>

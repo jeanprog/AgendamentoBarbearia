@@ -22,6 +22,13 @@ let ClientesService = class ClientesService {
         });
         return newCliente;
     }
+    async findClientesByRedeId(redeId) {
+        return this.prisma.tbCliente.findMany({
+            where: {
+                redeId: redeId,
+            },
+        });
+    }
     findAll() {
         return this.prisma.tbCliente.findMany();
     }

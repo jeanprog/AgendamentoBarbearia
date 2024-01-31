@@ -24,7 +24,7 @@
         <v-list density="compact" nav>
           <v-list-item
             prepend-icon="fa-solid fa-plus"
-            title="Serviços"
+            title="Chamados"
             value="servicos"
             @click="RedirectCadastroDeServico"
           ></v-list-item>
@@ -38,6 +38,7 @@
             prepend-icon="fa-solid fa-address-book"
             title="Consultar Agenda"
             value="Agenda"
+            @click="RedirectAgendamento"
           ></v-list-item>
           <v-list-item
             prepend-icon="fa-solid fa-user"
@@ -85,6 +86,11 @@ const RedirectCadastroDeServico = () => {
 
 const RedirectConfiguracoes = () => {
   router.push({ name: 'configLoja', params: { user: user.value } })
+  console.log('evento acionado')
+}
+
+const RedirectAgendamento = () => {
+  router.push({ name: 'agentamentoDia', params: { user: user.value } })
   console.log('evento acionado')
 }
 console.log(user)

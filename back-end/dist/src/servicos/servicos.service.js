@@ -16,33 +16,58 @@ let ServicosService = class ServicosService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(createServicoDto) {
-        const newServico = await this.prisma.tbServico.create({
-            data: createServicoDto,
-        });
-        return 'This action adds a new servico';
+    createStatusData(chamadoData, novoChamadoId) {
+        return {
+            data: {
+                status: chamadoData.statusChamadoAtual,
+                dataAlteracao: new Date(),
+                usuarioId: chamadoData.usuarioId,
+                chamadoId: novoChamadoId,
+            },
+        };
     }
-    findAll() {
-        return this.prisma.tbServico.findMany();
+    async adicionarChamadoComStatusAberto(createChamadoDto) {
+        const novoChamado = await this.prisma.tbChamado.create({
+            data: createChamadoDto,
+        });
+        const statusDto = this.createStatusData(createChamadoDto, novoChamado.id);
+        const novoStatusChamado = await this.prisma.tbStatusChamado.create({
+            data: statusDto.data,
+        });
+        return 'salvo no banco ';
+    }
+    async findAll() {
+        const chamado = await this.prisma.tbChamado.findMany();
+        return chamado;
     }
     findOne(id) {
         return `This action returns a #${id} servico`;
     }
-    async update(id, updateServicoDto) {
-        const existingServico = await this.prisma.tbCliente.findUnique({
-            where: { id },
+    async atualizarChamadoEStatus(IdChamado, updateChamado) {
+        const chamadoExistente = await this.prisma.tbChamado.findUnique({
+            where: { id: IdChamado },
         });
-        if (!existingServico) {
-            return `Cliente #${id} não encontrado`;
+        if (!chamadoExistente) {
+            throw new common_1.NotFoundException(`Chamado com ID ${IdChamado} não encontrado.`);
         }
-        const updatedServico = await this.prisma.tbServico.update({
-            where: { id },
-            data: updateServicoDto,
+        await this.prisma.tbChamado.update({
+            where: { id: IdChamado },
+            data: updateChamado,
         });
-        return updatedServico;
-    }
-    remove(id) {
-        return `This action removes a #${id} servico`;
+        const statusMaisRecente = await this.prisma.tbStatusChamado.findFirst({
+            where: { chamadoId: IdChamado },
+            orderBy: { dataAlteracao: 'desc' },
+        });
+        if (statusMaisRecente) {
+            await this.prisma.tbStatusChamado.update({
+                where: { id: statusMaisRecente.id },
+                data: {
+                    status: updateChamado.statusChamadoAtual,
+                    dataAlteracao: new Date(),
+                },
+            });
+        }
+        return 'Chamado e status atualizados no banco';
     }
 };
 exports.ServicosService = ServicosService;

@@ -17,12 +17,13 @@ const auth_user_module_1 = require("./auth-user/auth-user.module");
 const clientes_module_1 = require("./clientes/clientes.module");
 const servicos_module_1 = require("./servicos/servicos.module");
 const config_loja_module_1 = require("./config-loja/config-loja.module");
+const filters_module_1 = require("./filters/filters.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, user_module_1.UserModule, user_login_module_1.UserLoginModule, auth_user_module_1.AuthUserModule, clientes_module_1.ClientesModule, servicos_module_1.ServicosModule, config_loja_module_1.ConfigLojaModule],
+        imports: [prisma_module_1.PrismaModule, user_module_1.UserModule, user_login_module_1.UserLoginModule, auth_user_module_1.AuthUserModule, clientes_module_1.ClientesModule, servicos_module_1.ServicosModule, config_loja_module_1.ConfigLojaModule, filters_module_1.FiltersModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService,],
     })

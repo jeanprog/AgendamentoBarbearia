@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateServicoDto = void 0;
-class CreateServicoDto {
+exports.CreateChamadoDto = void 0;
+class CreateChamadoDto {
 }
-exports.CreateServicoDto = CreateServicoDto;
+exports.CreateChamadoDto = CreateChamadoDto;
 //# sourceMappingURL=create-servico.dto.js.map

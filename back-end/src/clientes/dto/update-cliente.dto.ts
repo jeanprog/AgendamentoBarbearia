@@ -4,4 +4,5 @@ import { CreateClienteDto } from './create-cliente.dto';
 export class UpdateClienteDto extends PartialType(CreateClienteDto) {
   nome?: string;
   telefone?: string;
+  empresa?: string;
 }

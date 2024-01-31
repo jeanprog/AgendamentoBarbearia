@@ -14,7 +14,7 @@
   width: 100%;
   height: 100vh;
   font-family: 'Montserrat', sans-serif;
-
+  overflow: hidden !important;
   background-color: #19181f;
 }
 </style>

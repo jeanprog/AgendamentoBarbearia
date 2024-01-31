@@ -6,6 +6,10 @@
         v-model="nome"
         label="Digite nome do cliente"
       ></v-text-field>
+      <v-text-field
+        v-model="empresa"
+        label="Digite nome do empresa"
+      ></v-text-field>
 
       <v-text-field
         v-model="telefone"
@@ -16,8 +20,12 @@
       <v-btn type="submit" class="btn-submit" @click="submitForm"
         >Cadastrar</v-btn
       >
+      <v-btn type="submit" class="btn-submit" @click="submitForm"
+        >Cadastrar e iniciar chamado</v-btn
+      >
     </v-form>
   </div>
+  <tabelaChamados />
 </template>
 
 <script setup lang="ts">
@@ -29,12 +37,17 @@ import { useRoute } from 'vue-router'
 /* import { router } from '@/router' */
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+import { router } from '../router'
+
+const route = useRoute()
 
 let nome = ref<string>('')
 let telefone = ref<string>('')
 const titlepage = ref('Cadastro de Clientes')
 let editCliente = ref<boolean>(false)
 let id = ref<number>()
+let empresa = ref<string>('')
+const user = ref(route.params.user)
 
 /* 
 interface cliente  { 
@@ -44,8 +57,14 @@ interface cliente  {
 
 const notify = () => {
   toast('Cadastrada com sucesso', {
-    autoClose: 1000,
+    autoClose: 1000
   }) // ToastOptions
+}
+
+const notifyEdit = () => {
+  toast('Alterado com sucesso', {
+    autoClose: 2000
+  })
 }
 
 onMounted(() => {
@@ -53,6 +72,7 @@ onMounted(() => {
   const route = useRoute()
   nome.value = route.query.nome as string
   telefone.value = route.query.telefone as string
+  empresa.value = route.query.empresa as string
   id.value = route.query.id ? parseInt(route.query.id as string, 10) : undefined
   console.log('verificando id', id.value)
   if (nome.value && telefone.value && id.value) {
@@ -63,25 +83,47 @@ onMounted(() => {
 })
 
 const submitForm = async () => {
+  let redeId
+  const storedData = localStorage.getItem('user')
+
+  if (storedData) {
+    // Convertendo a string JSON de volta para um objeto
+    const parsedData = JSON.parse(storedData)
+
+    // Acessando as propriedades
+    const userName = parsedData.user
+    redeId = parsedData.rede
+    console.log('teste aqui', userName, redeId)
+  }
+
   const data = {
     nome: nome.value,
     telefone: telefone.value,
-    userId: id.value,
+    empresa: empresa.value,
+    redeId: redeId // trocar por id de config localstorage
   }
+
   try {
     if (data.nome != '' && data.telefone != '') {
+      console.log(editCliente.value)
       if (editCliente.value === true) {
         const data = {
           nome: nome.value,
           telefone: telefone.value,
-          userId: id.value,
+          empresa: empresa.value,
+          redeId: parseInt(redeId) // trocar por id de config localstorage
         }
 
         const response = await axios.patch(
           `http://localhost:3000/clientes/${id.value}`,
           data
         )
-
+        notifyEdit()
+        router.push({
+          name: 'ConsultaDeCliente',
+          params: { user: user.value }
+        })
+        router.push({ name: 'ConsultaDeCliente', params: { user: user.value } })
         console.log(response.data)
         nome.value = ''
         telefone.value = ''
@@ -89,8 +131,10 @@ const submitForm = async () => {
         const data = {
           nome: nome.value,
           telefone: telefone.value,
-          userId: 1,
+          empresa: empresa.value,
+          redeId: parseInt(redeId)
         }
+        console.log(data)
         const response = await axios.post(
           'http://localhost:3000/clientes',
           data
@@ -98,7 +142,9 @@ const submitForm = async () => {
 
         nome.value = ''
         telefone.value = ''
+        empresa.value = ''
         notify()
+        router.push({ name: 'ConsultaDeCliente', params: { user: user.value } })
 
         console.log('Resposta do servidor:', response.data)
       }
@@ -118,15 +164,15 @@ const submitForm = async () => {
   align-items: center;
 }
 .formNewCliente {
-  margin-top: 30%;
-  width: 90%;
+  margin: 12% 2% 2% 2%;
+  width: 60%;
   color: white;
 }
 
 .btn-submit {
   background-color: indigo;
   color: white;
-  margin-top: 10%;
+  margin: 2%;
   width: 100%;
 }
 </style>

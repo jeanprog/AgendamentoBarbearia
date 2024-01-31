@@ -7,15 +7,15 @@ export declare class UserController {
     create(createUserDto: CreateUserDto): Promise<string>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
         id: number;
-        name: string;
-        cpf: string;
+        nameRede: string;
+        cnpj: string;
         email: string;
         situacao: string;
     }[]>;
     findOne(id: string): Promise<string | {
         id: number;
-        name: string;
-        cpf: string;
+        nameRede: string;
+        cnpj: string;
         email: string;
         situacao: string;
     }>;

@@ -21,20 +21,18 @@ let ServicosController = class ServicosController {
     constructor(servicosService) {
         this.servicosService = servicosService;
     }
-    create(createServicoDto) {
-        return this.servicosService.create(createServicoDto);
+    create(createChamadoDto) {
+        const newChamado = this.servicosService.adicionarChamadoComStatusAberto(createChamadoDto);
+        return newChamado;
     }
-    findAll() {
+    retornaStatusChamado() {
         return this.servicosService.findAll();
     }
     findOne(id) {
         return this.servicosService.findOne(+id);
     }
     update(id, updateServicoDto) {
-        return this.servicosService.update(+id, updateServicoDto);
-    }
-    remove(id) {
-        return this.servicosService.remove(+id);
+        return this.servicosService.atualizarChamadoEStatus(+id, updateServicoDto);
     }
 };
 exports.ServicosController = ServicosController;
@@ -42,7 +40,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_servico_dto_1.CreateServicoDto]),
+    __metadata("design:paramtypes", [create_servico_dto_1.CreateChamadoDto]),
     __metadata("design:returntype", void 0)
 ], ServicosController.prototype, "create", null);
 __decorate([
@@ -50,7 +48,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], ServicosController.prototype, "findAll", null);
+], ServicosController.prototype, "retornaStatusChamado", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
@@ -66,13 +64,6 @@ __decorate([
     __metadata("design:paramtypes", [String, update_servico_dto_1.UpdateServicoDto]),
     __metadata("design:returntype", void 0)
 ], ServicosController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ServicosController.prototype, "remove", null);
 exports.ServicosController = ServicosController = __decorate([
     (0, common_1.Controller)('servicos'),
     __metadata("design:paramtypes", [servicos_service_1.ServicosService])

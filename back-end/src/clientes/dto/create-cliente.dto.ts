@@ -1,5 +1,6 @@
 export class CreateClienteDto {
   nome: string;
   telefone: string;
-  userId: number;
+  empresa: string;
+  redeId: number;
 }

@@ -5,7 +5,10 @@ export declare class UserLoginController {
     private readonly userLoginService;
     constructor(userLoginService: UserLoginService);
     create(createUserLoginDto: CreateUserLoginDto): Promise<string>;
-    findAll(): string;
+    findAll(): import(".prisma/client").Prisma.PrismaPromise<{
+        nameUser: string;
+        Id: number;
+    }[]>;
     findOne(id: string): string;
     update(id: string, updateUserLoginDto: UpdateUserLoginDto): string;
     remove(id: string): string;

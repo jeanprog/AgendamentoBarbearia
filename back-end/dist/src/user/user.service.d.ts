@@ -7,15 +7,15 @@ export declare class UserService {
     create(createUserDto: CreateUserDto): Promise<string>;
     allUsers(): import(".prisma/client").Prisma.PrismaPromise<{
         id: number;
-        name: string;
-        cpf: string;
+        nameRede: string;
+        cnpj: string;
         email: string;
         situacao: string;
     }[]>;
     findOne(id: number): Promise<string | {
         id: number;
-        name: string;
-        cpf: string;
+        nameRede: string;
+        cnpj: string;
         email: string;
         situacao: string;
     }>;
