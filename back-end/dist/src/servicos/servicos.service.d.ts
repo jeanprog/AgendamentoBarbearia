@@ -19,6 +19,19 @@ export declare class ServicosService {
         clienteId: number;
         statusChamadoAtual: number;
     }[]>;
+    findAllidUsuario(id: number): Promise<{
+        id: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
+        descricao: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
+    }[]>;
     findOne(id: number): string;
     atualizarChamadoEStatus(IdChamado: number, updateChamado: UpdateServicoDto): Promise<string>;
 }

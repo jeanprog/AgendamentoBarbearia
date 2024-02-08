@@ -17,7 +17,7 @@
 
   <div class="containerServicos">
     <div class="scrollable-container">
-      <TabelaChamados />
+      <TabelaChamados @editar="abrirModalEditar" :mensagem="mensagem" />
     </div>
     <div class="container-botao">
       <v-btn
@@ -37,6 +37,7 @@
         @chamadoAdicionado="handleChamadoAdicionado"
         @submitChamado="obterDadosFormularios"
         @consultarClientes="escolherCliente"
+        :editarChamado="itemEditar"
       />
     </div>
   </div>
@@ -54,6 +55,10 @@ import TabelaChamados from '../components/TabelaChamados.vue'
 import { useRoute } from 'vue-router'
 import { router } from '../router'
 import retornaNumberStatus from '../utils/formatStatus.ts'
+import { postChamado, atualizarChamado } from '../services/RequestsChamados.ts'
+import { parse } from 'date-fns'
+import { toast } from 'vue3-toastify'
+import { useStore } from 'vuex'
 
 const route = useRoute()
 const emit = defineEmits()
@@ -63,43 +68,135 @@ const abrirChamado = ref()
 const manipulaEstadoDaTabela = ref(false)
 const idRede = ref<number>()
 const idUser = ref<number>()
+const itemEditar = ref()
+const novoChamado = ref<number>()
+const store = useStore()
+
+const mensagem = ref(false)
+
+onMounted(() => {
+  const route = useRoute()
+
+  obterDadosAuthLogin()
+  console.log
+  abrirChamado.value = route.query.abrirModal
+  console.log('vendo chamado', abrirChamado.value)
+
+  if (parseInt(abrirChamado.value) === 1) {
+    dialog.value = true
+  }
+})
 
 const user = ref(route.params.user)
 
 const obterDadosFormularios = (item: any) => {
-  console.log('teste foi', item)
-  const statusNumber = retornaNumberStatus(item.StatusChamado)
+  console.log('verificando item no evento de saida decisão', item)
+  const statusNumber = retornaNumberStatus(item.statusChamadoString)
 
-  const data = {
-    ...item,
-    idUser: idUser.value,
-    redeId: idRede.value,
-    dAbertura: new Date(),
-    dFechamento: new Date(),
-    statusChamado: statusNumber
+  if (item.id) {
+    console.log('estou atualizando um item')
+
+    if (statusNumber === 3) {
+      const data = {
+        ...item,
+
+        dFechamento: new Date(),
+        statusChamadoAtual: statusNumber
+      }
+      const { statusChamadoString, nomeCliente, empresa, ...dataFormat } = data
+
+      submitAtualizarChamado(dataFormat)
+    } else {
+      const data = {
+        ...item,
+
+        statusChamadoAtual: statusNumber
+      }
+      const {
+        statusChamadoString,
+        nomeCliente,
+        empresa,
+        usuarioId,
+        redeId,
+        ...dataFormat
+      } = data
+
+      console.log('atualizando o item sem statuss', dataFormat)
+      submitAtualizarChamado(dataFormat)
+    }
+  } else {
+    console.log('estou mandando um novo item', item)
+    const data = {
+      ...item,
+      dAbertura: new Date(),
+      dFechamento: new Date(),
+      statusChamadoAtual: statusNumber
+    }
+    const { statusChamadoString, nomeCliente, empresa, ...dataFormat } = data
+
+    console.log('saida final para submit de novo chamado', dataFormat)
+    submitChamado(dataFormat)
   }
-
-  console.log(data)
-  // Adicione lógica adicional aqui, se necessário
 }
 
-const escolherCliente = () => {
-  router.push({ name: 'ConsultaDeCliente', params: { user: user.value } })
+const submitAtualizarChamado = async (data: any) => {
+  const response = await atualizarChamado(data)
+  notifyAtualizachamado()
+  fecharModal()
+  mensagem.value = true
+  store.commit('limpaChamado')
+
+  store.commit('limpaCliente')
+  store.commit('limpaValores')
+  return console.log(response)
+
+  /*  if (data) {
+    const response = await atualizaChamado(data)
+    return console.log(response)
+  }
+  return */
 }
-/* const abrirModalEditar = (item: any) => {
+
+const submitChamado = async (data: any) => {
+  try {
+    console.log('pescando a ultima mudou', data)
+    const response = await postChamado(data)
+    store.commit('limpaChamado')
+    store.commit('limpaCliente')
+    store.commit('limpaValores')
+    fecharModal()
+    mensagem.value = true
+    notifyAddchamado()
+    return console.log(response)
+  } catch (error) {
+    return console.log('error ao enviar form', error)
+  }
+}
+
+const escolherCliente = (item: any) => {
+  console.log(item, 'saida do data aqui na busca cliente')
+
+  router.push({
+    name: 'ConsultaDeCliente',
+    params: { user: user.value }
+  })
+  store.dispatch('salvaValores', item)
+}
+const abrirModalEditar = (item: any) => {
   dialog.value = true
 
-  console.log('evento acionado', dialog.value)
-} */
+  itemEditar.value = item
+  novoChamado.value = 1
+}
 
 const abrirModal = () => {
   dialog.value = true
+  itemEditar.value = undefined
 
   console.log('evento acionado', dialog.value)
 }
 const fecharModal = () => {
   dialog.value = false
-  console.log('Evento fecharModal acionado no componente pai')
 }
 const obterDadosAuthLogin = () => {
   const dadosLogin = localStorage.getItem('user')
@@ -111,20 +208,6 @@ const obterDadosAuthLogin = () => {
   }
 }
 
-onMounted(() => {
-  const route = useRoute()
-
-  obterDadosAuthLogin()
-
-  abrirChamado.value = route.query.chamado
-  console.log(abrirChamado.value, 'teste aqui')
-
-  if (parseInt(abrirChamado.value) === 1) {
-    dialog.value = true
-    console.log('cai no quase')
-  }
-})
-
 const handleChamadoAdicionado = () => {
   // Propagar o evento para o componente filho (TabelaChamados)
   /* const tabelaChamadosComponent = ref('tabelaChamados').value;
@@ -133,22 +216,16 @@ const handleChamadoAdicionado = () => {
   manipulaEstadoDaTabela.value = true
 }
 
-const RedirectConsultaDecliente = async () => {
-  /*  const dataForm = {
-    titulo: titulo.value,
-    prioridade: prioridade.value,
-    sistema: sistema.value,
-    dAbertura: new Date(),
-    dFechamento: '',
-    descricao: descricao.value,
-    usuarioId: idUser.value,
-    redeId: redeId.value,
-    clienteId: idCliente.value,
-    statusChamadoAtual: StatusChamadoString.value,
-    modoEditar: modoEditar.value
-  } */
-  /* await store.dispatch('atualizaChamado', dataForm) */
-  /*  router.push({ name: 'ConsultaDeCliente', params: { user: user.value } }) */
+const notifyAddchamado = () => {
+  toast('Chamado adicionado com sucesso', {
+    autoClose: 1000
+  })
+}
+
+const notifyAtualizachamado = () => {
+  toast('Atualizado com sucesso', {
+    autoClose: 1000
+  })
 }
 </script>
 

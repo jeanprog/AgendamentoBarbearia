@@ -11,4 +11,18 @@ const retornaNumberStatus = (status: any) => {
   }
 }
 
+const retornaStringStatus = (status: number) => {
+  switch (status) {
+    case 1:
+      return 'aberto'
+    case 2:
+      return 'pendente'
+    case 3:
+      return 'fechado'
+    default:
+      return 'nada' // Valor padrão caso o status não seja reconhecido
+  }
+}
+
 export default retornaNumberStatus
+retornaStringStatus

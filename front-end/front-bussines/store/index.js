@@ -8,6 +8,7 @@ const store = createStore({
       // Seu estado inicial aqui
       cliente: null,
       chamado: null,
+      valores: null,
     };
   },
   mutations: {
@@ -26,6 +27,15 @@ const store = createStore({
     limpaChamado(state) {
       state.chamado = null;
     },
+
+    novoChamadoRecuperaValores(state, valoresForm) {
+      state.valores = valoresForm;
+      console.log(valoresForm, "salvei o estado");
+    },
+
+    limpaValores(state) {
+      state.valores = null;
+    },
   },
   actions: {
     // Suas ações aqui --> dá um set no estado , igual react state e set
@@ -35,11 +45,16 @@ const store = createStore({
     atualizaChamado({ commit }, novoChamado) {
       commit("estadoChamado", novoChamado);
     },
+
+    salvaValores({ commit }, valores) {
+      commit("novoChamadoRecuperaValores", valores);
+    },
   },
   getters: {
     // Seus getters aqui
     obterCliente: (state) => state.cliente,
     recuperarChamado: (state) => state.chamado,
+    recuperarValoresForm: (state) => state.valores,
   },
 });
 

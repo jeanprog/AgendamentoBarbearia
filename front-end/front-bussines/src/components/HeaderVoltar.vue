@@ -12,6 +12,9 @@
 import { ref, defineProps } from 'vue'
 import { router } from '../router'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const route = useRoute()
 const props = defineProps(['title'])
@@ -22,6 +25,7 @@ const user = ref(route.params.user)
 const RedirecionarInicio = () => {
   router.push({ name: 'dashboard', params: { user: user.value } })
   console.log('evento acionado')
+  store.commit('limpaValores')
 }
 </script>
 

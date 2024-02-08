@@ -32,8 +32,14 @@ export class ServicosController {
     return this.servicosService.findOne(+id);
   }
 
+  @Get('user/:id')
+  findChamadosUser(@Param('id') id: string) {
+    return this.servicosService.findAllidUsuario(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServicoDto: UpdateServicoDto) {
+    console.log(id, UpdateServicoDto);
     return this.servicosService.atualizarChamadoEStatus(+id, updateServicoDto);
   }
 

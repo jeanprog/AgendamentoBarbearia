@@ -31,7 +31,11 @@ let ServicosController = class ServicosController {
     findOne(id) {
         return this.servicosService.findOne(+id);
     }
+    findChamadosUser(id) {
+        return this.servicosService.findAllidUsuario(+id);
+    }
     update(id, updateServicoDto) {
+        console.log(id, update_servico_dto_1.UpdateServicoDto);
         return this.servicosService.atualizarChamadoEStatus(+id, updateServicoDto);
     }
 };
@@ -56,6 +60,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ServicosController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('user/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ServicosController.prototype, "findChamadosUser", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

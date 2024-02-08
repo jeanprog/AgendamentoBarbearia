@@ -40,6 +40,17 @@ let ServicosService = class ServicosService {
         const chamado = await this.prisma.tbChamado.findMany();
         return chamado;
     }
+    async findAllidUsuario(id) {
+        const chamadosUsuario = await this.prisma.tbChamado.findMany({
+            where: {
+                usuarioId: id,
+            },
+            orderBy: {
+                id: 'desc',
+            },
+        });
+        return chamadosUsuario;
+    }
     findOne(id) {
         return `This action returns a #${id} servico`;
     }

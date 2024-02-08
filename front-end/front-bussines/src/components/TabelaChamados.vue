@@ -12,7 +12,7 @@
       <v-btn
         variant="outlined"
         class="fa-solid fa-rotate-right"
-        @click="AtualizaTabela()"
+        @click="atualizarTabela()"
       ></v-btn>
     </template>
 
@@ -42,14 +42,18 @@
 import { ref, onMounted, defineEmits, defineProps } from 'vue'
 import axios from 'axios'
 import { format } from 'date-fns'
+import { watch } from 'vue'
 
 import { useStore } from 'vuex'
 
 const search = ref('')
 const store = useStore()
+const emit = defineEmits()
 
 const headers = ref<[]>([])
 const listaResultado = ref<[]>([])
+const idUser = ref<number>()
+const idRede = ref<number>()
 
 headers.value = [
   { align: 'start', key: 'Empresa', sortable: false, title: 'Empresa' },
@@ -72,18 +76,37 @@ interface Chamado {
 }
 
 const chamados = ref<Chamado[]>([])
-
-const emit = defineEmits()
-const props = defineProps()
+const props = defineProps(['mensagem'])
 
 onMounted(() => {
-  obterDadosTratadosChamado()
-})
+  obterDadosAuthLogin() //refatorar essa chamado se repete em muitos componentes
 
+  obterDadosTratadosChamado()
+  console.log(props.mensagem, 'agora')
+})
+watch(
+  () => props.mensagem,
+  (newValue, oldValue) => {
+    console.log(props.mensagem)
+    if (newValue === true) {
+      // Chamar a função para obter os dados dos formulários
+      obterDadosTratadosChamado()
+      console.log('cai no case')
+    }
+  }
+)
+
+const obterDadosAuthLogin = () => {
+  const dadosLogin = localStorage.getItem('user')
+  if (dadosLogin) {
+    const dadosJson = JSON.parse(dadosLogin)
+    idUser.value = parseInt(dadosJson.id)
+    idRede.value = parseInt(dadosJson.rede)
+  }
+}
 const handleEditar = async (item: any) => {
-  await store.dispatch('atualizaChamado', item)
+  /*  await store.dispatch('atualizaChamado', item) */
   emit('editar', item)
-  console.log('acionado', item)
 }
 
 const handleExcluir = (item: any) => {
@@ -95,20 +118,12 @@ const formatarData = (data: any) => {
   return dataFormatada
 }
 
-const AtualizaTabela = () => {
-  console.log(
-    'teste aqui atualizando tabela dentro do componente',
-    props.manipulaEstadoDaTabela
-  )
-  if (props.manipulaEstadoDaTabela === true) {
-    obterDadosTratadosChamado()
-  }
-}
-
 const obterDadosTratadosChamado = async () => {
   try {
     const responseClientes = await axios.get(`http://localhost:3000/clientes`)
-    const responseChamados = await axios.get('http://localhost:3000/servicos') // refatorar aqui promisse allslteld
+    const responseChamados = await axios.get(
+      `http://localhost:3000/servicos/user/${idUser.value}`
+    ) // refatorar aqui promisse allslteld
     const responseUser = await axios.get(`http://localhost:3000/user-login`)
 
     const listaClientes = responseClientes.data
@@ -152,11 +167,11 @@ const obterDadosTratadosChamado = async () => {
 const getStatusText = (status: number): string => {
   switch (status) {
     case 1:
-      return 'Aberto'
+      return 'aberto'
     case 2:
-      return 'Pendente'
+      return 'pendente'
     case 3:
-      return 'Fechado'
+      return 'fechado'
     default:
       return 'Desconhecido'
   }

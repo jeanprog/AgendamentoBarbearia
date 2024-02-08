@@ -14,29 +14,26 @@ interface chamado {
   statusChamadoAtual: number | null
 }
 
-export default {
+const postChamado = async (chamado: chamado) => {
+  try {
+    const response = await axios.post('http://localhost:3000/servicos', chamado)
 
-  async postChamado(chamado: Chamado) { 
-    try {
-        const response  = await axios.post('http://localhost:3000/servicos' , chamado )
-
-        return response 
-    } catch (error) {
-        console.log('error ao enviar requisição')
-    }
-  }
-
-
-
-  async atualizaChamado(id: number, chamado: chamado) {
-    try {
-      const response = axios.patch(
-        `http://localhost:3000/servicos/${id}`,
-        chamado
-      )
-      return response
-    } catch (error) {
-      console.log('erro em obter atualização', error)
-    }
+    return response
+  } catch (error) {
+    console.log('error ao enviar requisição')
   }
 }
+
+const atualizarChamado = async (chamado: any) => {
+  const { id, ...parteChamado } = chamado
+  console.log(chamado, 'aqui estou no service', chamado.id)
+  await console.log(parteChamado)
+  const response = await axios.patch(
+    `http://localhost:3000/servicos/${chamado.id}`,
+    parteChamado
+  )
+
+  console.log(chamado.id)
+}
+
+export { postChamado, atualizarChamado }

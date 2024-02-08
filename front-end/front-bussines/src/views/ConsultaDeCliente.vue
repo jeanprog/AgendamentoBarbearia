@@ -97,6 +97,8 @@ import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import { router } from '../router'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { atualizarChamado } from '@/services/RequestsChamados'
 /*  import { useRoute } from 'vue-router'  */
 
 interface Cliente {
@@ -106,7 +108,7 @@ interface Cliente {
   empresa: string
 }
 const store = useStore()
-
+const route = useRoute()
 let clienteBusca = ref<string>('')
 let clientes = ref<Cliente[]>([])
 const titlepage = ref('Consulta de Clientes')
@@ -114,15 +116,21 @@ let cliente = ref<Cliente | null>(null)
 let tipoBusca = ref<string>('')
 let chamado = ref<number>(1)
 
+onMounted(() => {
+  listaDeClientes()
+
+  const atualizaChamado = ref(route.query.atualizarChamado)
+  console.log(atualizaChamado.value)
+})
 /* 
  const route = useRoute() */
 
-const iniciaChamado = async (cliente: Cliente) => {
+const iniciaChamado = (cliente: Cliente) => {
   const novoCliente = cliente
   console.log(novoCliente)
-  await store.dispatch('atualizarCliente', novoCliente)
+  store.dispatch('atualizarCliente', novoCliente)
 
-  router.push({ name: 'CadastroDeServico', query: { chamado: chamado.value } })
+  router.push({ name: 'CadastroDeServico', query: { abrirModal: 1 } })
 }
 
 const listaDeClientes = async () => {
@@ -200,10 +208,6 @@ const redirecionarCadastroDeCliente = (cliente: Cliente | null = null) => {
   /*
   router.push({ name: 'CadastroDeCliente' }) */
 }
-
-onMounted(() => {
-  listaDeClientes()
-})
 </script>
 
 <style scoped>

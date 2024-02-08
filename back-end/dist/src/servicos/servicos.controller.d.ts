@@ -19,5 +19,18 @@ export declare class ServicosController {
         statusChamadoAtual: number;
     }[]>;
     findOne(id: string): string;
+    findChamadosUser(id: string): Promise<{
+        id: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
+        descricao: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
+    }[]>;
     update(id: string, updateServicoDto: UpdateServicoDto): Promise<string>;
 }

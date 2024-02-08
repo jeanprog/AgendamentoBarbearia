@@ -37,7 +37,20 @@ export class ServicosService {
   async findAll() {
     const chamado = await this.prisma.tbChamado.findMany();
     return chamado;
-    /*  const chamados = await this.prisma.tbChamado.findMany({
+  }
+  async findAllidUsuario(id: number) {
+    const chamadosUsuario = await this.prisma.tbChamado.findMany({
+      where: {
+        usuarioId: id,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return chamadosUsuario;
+  }
+
+  /*  const chamados = await this.prisma.tbChamado.findMany({
       select: {
         clienteId: true,
       },
@@ -64,7 +77,6 @@ export class ServicosService {
     const nomesClientes = clientes.map((cliente) => cliente.nome);
 
     return nomesClientes; */
-  }
 
   findOne(id: number) {
     return `This action returns a #${id} servico`;
