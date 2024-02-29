@@ -1,18 +1,19 @@
 <template class="body-clientes">
   <HeaderVoltar :title="titlepage" />
 
-  <div class="bodyapp">
-    <div class="searchbar">
+  <div class="w-100 h-100 border">
+    <div class="w-100 h-20 flex flex-col align-center">
       <v-select
-        class="inputFiltro"
+        class="mt-2 w-50 rounded"
         label="Selecione o campo da busca"
         :items="['nome', 'empresa', 'telefone']"
         bg-color="#1E1E26"
+        :elevation="12"
         density="compact"
         v-model="tipoBusca"
       ></v-select>
       <v-text-field
-        class="inputSearch"
+        class="w-50"
         density="compact"
         variant="solo"
         label="Buscar clientes"
@@ -21,10 +22,12 @@
         hide-details
         v-model="clienteBusca"
         @input="filteredClientes"
+        :elevation="12"
         bg-color="#1E1E26"
       ></v-text-field>
     </div>
-    <div class="container-cards">
+
+    <!-- <div class="container-cards">
       <div class="scrollable-container">
         <v-card
           class="card-customize"
@@ -32,7 +35,7 @@
           color="#67159C"
           v-for="(cliente, index) in clientes"
           :key="index"
-          variant="outlined"
+          
           @click="iniciaChamado(cliente)"
         >
           <v-card-item>
@@ -79,11 +82,64 @@
           </div>
         </v-card>
       </div>
+    </div> -->
+    <div class="mt-10">
+      <v-card class="mx-auto ml-40" max-width="700" :elevation="8">
+        <v-card-item class="bg-indigo">
+          <v-card-title> LISTA DE CLIENTES </v-card-title>
+
+          <template v-slot:append>
+            <v-btn color="white" icon="fa-solid fa-user" size="small"></v-btn>
+          </template>
+        </v-card-item>
+
+        <v-card-text class="pt-4 bg-grey-darken-4">
+          Clicando em um Cliente, inicie um novo chamado
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-virtual-scroll :items="clientes" height="300" item-height="50">
+          <template v-slot:default="{ item }">
+            <v-list-item class="bg-grey-darken-4 border">
+              <template v-slot:prepend>
+                <v-avatar class="text-white" size="40">
+                  <i class="fa-solid fa-user"></i>
+                </v-avatar>
+              </template>
+
+              <v-list-item-title
+                class="cursor-pointer"
+                @click="iniciaChamado(item)"
+              >
+                Empresa: {{ item.empresa }} <br />
+                <p class="text-[12px]">Cliente: {{ item.nome }}</p>
+                <p class="text-[12px]">Telefone: {{ item.telefone }}</p>
+              </v-list-item-title>
+
+              <template v-slot:append>
+                <v-btn
+                  @click="redirecionarCadastroDeCliente(item)"
+                  size="small"
+                  variant="tonal"
+                >
+                  editar Cliente
+
+                  <v-icon color="white" end
+                    ><i class="fa-solid fa-pen-to-square"></i>
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-list-item>
+          </template>
+        </v-virtual-scroll>
+      </v-card>
     </div>
     <div class="botoesRedirect">
       <v-btn
+        :elevation="12"
         class="addCliente"
-        color="#67159C"
+        color="indigo"
         @click="redirecionarCadastroDeCliente(cliente)"
         >Novo Cliente</v-btn
       >
@@ -125,10 +181,10 @@ onMounted(() => {
 /* 
  const route = useRoute() */
 
-const iniciaChamado = (cliente: Cliente) => {
+const iniciaChamado = async (cliente: Cliente) => {
   const novoCliente = cliente
   console.log(novoCliente)
-  store.dispatch('atualizarCliente', novoCliente)
+  await store.dispatch('atualizarCliente', novoCliente)
 
   router.push({ name: 'CadastroDeServico', query: { abrirModal: 1 } })
 }
@@ -226,7 +282,7 @@ const redirecionarCadastroDeCliente = (cliente: Cliente | null = null) => {
 }
 .container-cards {
   width: 100%;
-  height: 60vh;
+  height: 100%vh;
   overflow-y: auto;
   border-radius: 8px;
   background: #19181f;
@@ -258,15 +314,16 @@ const redirecionarCadastroDeCliente = (cliente: Cliente | null = null) => {
   flex-direction: column;
 }
 .searchbar {
-  width: 100%;
+  width: 100% !important;
 
   height: 12vh;
   justify-content: center;
   align-items: center;
   display: flex;
+  flex-direction: column;
+  border: solid 2px;
 }
 .inputFiltro {
-  max-width: 30vw !important;
   margin-top: 1%;
   margin-right: 2%;
   height: 8vh !important;

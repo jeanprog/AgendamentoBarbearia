@@ -19,7 +19,33 @@ export declare class ServicosController {
         statusChamadoAtual: number;
     }[]>;
     findOne(id: string): string;
+    findChamadosDiauser(id: string, dataInicio: string, dataFim: string): Promise<{
+        id: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
+        descricao: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
+    }[]>;
     findChamadosUser(id: string): Promise<{
+        id: number;
+        titulo: string;
+        prioridade: string;
+        sistema: string;
+        dAbertura: Date;
+        dFechamento: Date;
+        descricao: string;
+        usuarioId: number;
+        redeId: number;
+        clienteId: number;
+        statusChamadoAtual: number;
+    }[]>;
+    findChamadoDiaAtual(id: string): Promise<{
         id: number;
         titulo: string;
         prioridade: string;

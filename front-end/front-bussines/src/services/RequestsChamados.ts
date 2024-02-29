@@ -1,4 +1,5 @@
 import axios from 'axios'
+import format from 'date-fns'
 
 interface chamado {
   titulo: string | null
@@ -33,7 +34,37 @@ const atualizarChamado = async (chamado: any) => {
     parteChamado
   )
 
-  console.log(chamado.id)
+  console.log(chamado.id, response)
 }
 
-export { postChamado, atualizarChamado }
+const getChamadosPorData = async (
+  id: number,
+  dataInicio: Date,
+  dataFim: Date
+) => {
+  console.log('teste chamei a função ', id, dataInicio, dataFim)
+  const baseUrl = `http://localhost:3000/servicos/user/chamadosdia/${id}`
+
+  const response = await axios.get(baseUrl, {
+    params: {
+      dataInicio: dataInicio,
+      dataFim: dataFim
+    }
+  })
+  return response
+  console.log(response)
+}
+
+const getChamadosDiaAtual = async (id: number) => {
+  const url = `http://localhost:3000/servicos/user/date/${id}`
+  const response = axios.get(url)
+
+  return response
+}
+
+export {
+  postChamado,
+  atualizarChamado,
+  getChamadosPorData,
+  getChamadosDiaAtual
+}

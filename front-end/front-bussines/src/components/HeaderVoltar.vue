@@ -35,7 +35,7 @@ const RedirecionarInicio = () => {
   padding-left: 4%;
   background-color: #2f0549 !important;
   color: white !important;
-  height: 10%;
+  max-height: 8%;
 }
 .btn-voltar {
   width: 20%;
@@ -43,6 +43,6 @@ const RedirecionarInicio = () => {
   color: rgb(136, 255, 0);
 }
 .cabeçalho {
-  height: 10%;
+  max-height: 8%;
 }
 </style>

@@ -5,55 +5,6 @@ import axios from 'axios'
 
 let titlepage = ref('Configurações')
 
-let listaDiasFuncionamento = ref([])
-const form = ref({
-  nome: '',
-  diasAbertos: [] as number[],
-  horarioAbertura: '',
-  horarioFechamento: '',
-  situacao: '',
-  userId: 1
-})
-
-const diasSemanaOptions = [
-  { text: 'Dom', value: 1 },
-  { text: 'Seg', value: 2 },
-  { text: 'Ter', value: 3 },
-  { text: 'Qua', value: 4 },
-  { text: 'Qui', value: 5 },
-  { text: 'Sex', value: 6 },
-  { text: 'Sab', value: 7 }
-]
-
-const submitForm = async () => {
-  // Aqui você pode enviar os dados para o backend, por exemplo, usando uma chamada de API
-  console.log('Formulário enviado:', form.value)
-
-  const response = await axios.post(
-    'http://localhost:3000/config-loja',
-    form.value
-  ) /// requisição com problema no campo date continuar quando voltar
-  console.log(response)
-}
-const isDiaSelected = (dayValue: number) => {
-  return listaDiasFuncionamento.value.includes(dayValue)
-}
-
-const toggleDaySelection = (dayValue: number) => {
-  console.log('teste aqui', dayValue)
-
-  const index = listaDiasFuncionamento.value.indexOf(dayValue)
-
-  if (index !== -1) {
-    listaDiasFuncionamento.value.splice(index, 1)
-  } else {
-    listaDiasFuncionamento.value.push(dayValue)
-  }
-
-  form.value.diasAbertos = [...listaDiasFuncionamento.value]
-  console.log(form.value.diasAbertos)
-}
-
 /* const verificaDiaSelecionado = (dayvalue: any) => {
    const result = form.diasAbertos.includes(dayvalue) 
   return console.log('teste aqui', dayvalue)
@@ -62,70 +13,8 @@ const toggleDaySelection = (dayValue: number) => {
 
 <template>
   <HeaderVoltar :title="titlepage" />
-  <v-container>
-    <v-form class="form-config" @submit.prevent="submitForm">
-      <v-row class="row-dias">
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="form.nome"
-            label="Nome"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="2">
-          <p>Dias de Funcionamento</p>
 
-          <v-btn
-            v-for="(dia, index) in diasSemanaOptions"
-            :key="index"
-            :value="dia.value"
-            v-model="form.diasAbertos"
-            multiple
-            variant="outlined"
-            :class="{
-              'btn-selected': isDiaSelected(dia.value),
-              'btns-dias': !isDiaSelected(dia.value)
-            }"
-            @click="toggleDaySelection(dia.value, index)"
-          >
-            {{ dia.text }}
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="form.horarioAbertura"
-            label="Horário de Abertura"
-            required
-            type="time"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="form.horarioFechamento"
-            label="Horário de Fechamento"
-            required
-            maxlength="2"
-            type="time"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <v-select
-            label="Situação da loja"
-            :items="['Ativo', 'Inativo']"
-            v-model="form.situacao"
-          ></v-select>
-        </v-col>
-      </v-row>
-
-      <v-btn type="submit" color="#e82d92">Salvar</v-btn>
-    </v-form>
-  </v-container>
+  estou aqui nas configurações do
 </template>
 
 <style scooped>

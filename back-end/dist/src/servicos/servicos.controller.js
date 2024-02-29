@@ -31,8 +31,21 @@ let ServicosController = class ServicosController {
     findOne(id) {
         return this.servicosService.findOne(+id);
     }
+    findChamadosDiauser(id, dataInicio, dataFim) {
+        const dataInicioDate = new Date(dataInicio);
+        const dataFimDate = new Date(dataFim);
+        console.log('ID do usuário:', id);
+        console.log('Data de início:', dataInicio);
+        console.log('Data de fim:', dataFim);
+        return this.servicosService.retornaChamadosDia(+id, dataInicioDate, dataFimDate);
+    }
     findChamadosUser(id) {
         return this.servicosService.findAllidUsuario(+id);
+    }
+    findChamadoDiaAtual(id) {
+        const dataAtual = new Date();
+        console.log(dataAtual);
+        return this.servicosService.todosChamadoDodia(+id, dataAtual);
     }
     update(id, updateServicoDto) {
         console.log(id, update_servico_dto_1.UpdateServicoDto);
@@ -61,12 +74,28 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ServicosController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.Get)('user/chamadosdia/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('dataInicio')),
+    __param(2, (0, common_1.Query)('dataFim')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], ServicosController.prototype, "findChamadosDiauser", null);
+__decorate([
     (0, common_1.Get)('user/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ServicosController.prototype, "findChamadosUser", null);
+__decorate([
+    (0, common_1.Get)('user/date/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ServicosController.prototype, "findChamadoDiaAtual", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

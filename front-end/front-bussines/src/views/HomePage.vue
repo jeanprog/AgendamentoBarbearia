@@ -62,7 +62,7 @@ const handleSubmit = async () => {
   if (data.nameUser && data.password) {
     try {
       // Realize a solicitação POST com o Axios
-      const response = await axios.post('http://localhost:3000/auth-user', data)
+      const response = await axios.post('http://192.168.1.108:3000/auth-user', data)
 
       // A solicitação foi bem-sucedida, você pode processar a resposta aqui
       console.log('Resposta do servidor:', response.data)

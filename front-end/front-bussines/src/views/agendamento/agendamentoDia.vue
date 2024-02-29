@@ -1,6 +1,7 @@
 <script setup>
 import { router } from '../../router'
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
+import ModalAddChamado from '../../components/ModalAddChamado.vue'
 
 /* const titlepage = ref('Cadastro de Serviço') */
 </script>
@@ -60,6 +61,21 @@ import HeaderVoltar from '../../components/HeaderVoltar.vue'
         <v-card class="cards-processos" variant="outlined">
           <p>em andamento</p>
           <v-card class="card-chamado" color="indigo" variant="elevated">
+            <v-card-item>
+              <div class="text-caption">Empresa:</div>
+              <div class="text-caption">Cliente:</div>
+              <div class="text-caption">problema:</div>
+            </v-card-item>
+            <v-card-item>
+              <div class="text-caption">Empresa:</div>
+              <div class="text-caption">Cliente:</div>
+              <div class="text-caption">problema:</div>
+            </v-card-item>
+            <v-card-item>
+              <div class="text-caption">Empresa:</div>
+              <div class="text-caption">Cliente:</div>
+              <div class="text-caption">problema:</div>
+            </v-card-item>
             <v-card-item>
               <div class="text-caption">Empresa:</div>
               <div class="text-caption">Cliente:</div>

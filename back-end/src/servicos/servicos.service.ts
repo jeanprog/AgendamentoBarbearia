@@ -3,7 +3,7 @@ import { CreateChamadoDto } from './dto/create-servico.dto';
 import { StatusChamadoDTO } from './dto/create-status-chamado.dto';
 import { UpdateServicoDto } from './dto/update-servico.dto';
 import { PrismaService } from '../database/prisma.service';
-
+import { startOfDay, endOfDay } from 'date-fns';
 @Injectable()
 export class ServicosService {
   constructor(private prisma: PrismaService) {}
@@ -42,6 +42,22 @@ export class ServicosService {
     const chamadosUsuario = await this.prisma.tbChamado.findMany({
       where: {
         usuarioId: id,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return chamadosUsuario;
+  }
+
+  async todosChamadoDodia(id: number, dataAtual: Date) {
+    const chamadosUsuario = await this.prisma.tbChamado.findMany({
+      where: {
+        usuarioId: id,
+        dAbertura: {
+          gte: startOfDay(dataAtual), // Início do dia atual
+          lte: endOfDay(dataAtual), // Fim do dia atual
+        },
       },
       orderBy: {
         id: 'desc',
@@ -120,6 +136,22 @@ export class ServicosService {
     }
 
     return 'Chamado e status atualizados no banco';
+  }
+
+  async retornaChamadosDia(id: number, dataInicio: Date, dataFim: Date) {
+    const chamadosUsuario = await this.prisma.tbChamado.findMany({
+      where: {
+        usuarioId: id,
+        dAbertura: {
+          gte: dataInicio,
+          lte: dataFim,
+        },
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    return chamadosUsuario;
   }
 }
 

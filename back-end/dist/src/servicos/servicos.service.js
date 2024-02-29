@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServicosService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../database/prisma.service");
+const date_fns_1 = require("date-fns");
 let ServicosService = class ServicosService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -51,6 +52,21 @@ let ServicosService = class ServicosService {
         });
         return chamadosUsuario;
     }
+    async todosChamadoDodia(id, dataAtual) {
+        const chamadosUsuario = await this.prisma.tbChamado.findMany({
+            where: {
+                usuarioId: id,
+                dAbertura: {
+                    gte: (0, date_fns_1.startOfDay)(dataAtual),
+                    lte: (0, date_fns_1.endOfDay)(dataAtual),
+                },
+            },
+            orderBy: {
+                id: 'desc',
+            },
+        });
+        return chamadosUsuario;
+    }
     findOne(id) {
         return `This action returns a #${id} servico`;
     }
@@ -79,6 +95,21 @@ let ServicosService = class ServicosService {
             });
         }
         return 'Chamado e status atualizados no banco';
+    }
+    async retornaChamadosDia(id, dataInicio, dataFim) {
+        const chamadosUsuario = await this.prisma.tbChamado.findMany({
+            where: {
+                usuarioId: id,
+                dAbertura: {
+                    gte: dataInicio,
+                    lte: dataFim,
+                },
+            },
+            orderBy: {
+                id: 'desc',
+            },
+        });
+        return chamadosUsuario;
     }
 };
 exports.ServicosService = ServicosService;
