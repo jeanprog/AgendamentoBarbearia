@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
 import axios from 'axios'
 
-let titlepage = ref('Configurações')
+let titlepage = ref('Solicitações desenvolvimento')
 
 /* const verificaDiaSelecionado = (dayvalue: any) => {
    const result = form.diasAbertos.includes(dayvalue) 

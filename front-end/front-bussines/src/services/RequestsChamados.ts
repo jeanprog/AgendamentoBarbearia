@@ -17,7 +17,10 @@ interface chamado {
 
 const postChamado = async (chamado: chamado) => {
   try {
-    const response = await axios.post('http://localhost:3000/servicos', chamado)
+    const response = await axios.post(
+      'http://192.168.1.108:3000/servicos',
+      chamado
+    )
 
     return response
   } catch (error) {
@@ -27,10 +30,9 @@ const postChamado = async (chamado: chamado) => {
 
 const atualizarChamado = async (chamado: any) => {
   const { id, ...parteChamado } = chamado
-  console.log(chamado, 'aqui estou no service', chamado.id)
-  await console.log(parteChamado)
+
   const response = await axios.patch(
-    `http://localhost:3000/servicos/${chamado.id}`,
+    `http://192.168.1.108:3000/servicos/${chamado.id}`,
     parteChamado
   )
 
@@ -43,7 +45,7 @@ const getChamadosPorData = async (
   dataFim: Date
 ) => {
   console.log('teste chamei a função ', id, dataInicio, dataFim)
-  const baseUrl = `http://localhost:3000/servicos/user/chamadosdia/${id}`
+  const baseUrl = `http://192.168.1.108:3000/servicos/user/chamadosdia/${id}`
 
   const response = await axios.get(baseUrl, {
     params: {
@@ -56,7 +58,7 @@ const getChamadosPorData = async (
 }
 
 const getChamadosDiaAtual = async (id: number) => {
-  const url = `http://localhost:3000/servicos/user/date/${id}`
+  const url = `http://192.168.1.108:3000/servicos/user/date/${id}`
   const response = axios.get(url)
 
   return response

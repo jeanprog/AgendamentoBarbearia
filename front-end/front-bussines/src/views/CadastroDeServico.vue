@@ -4,6 +4,7 @@
   <div class="body">
     <HeaderVoltar :title="titlepage" />
     <div class="body-left">
+      <p class="py-2">Chamados {{ hoje }}</p>
       <div class="cards" v-if="!dialog">
         <div class="itens">
           <p class="titulo-box">Abertos ({{ listaChamadoAberto.length }})</p>
@@ -103,7 +104,7 @@
                           <CardContent
                             class="flex aspect-square items-center p-6"
                           >
-                            <div class="flex flex-col">
+                            <div class="flex flex-col max-h-[48px]">
                               <span class="text-[12px] font-semibold">{{
                                 chamado.Empresa
                               }}</span>
@@ -224,15 +225,12 @@
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
       <p v-if="!dialog" class="mt-16">Todos os chamados Recentes</p>
-      <TabelaChamados
-        v-if="!dialog"
+      <tabela
+        v-if="!dialog && listaPronta"
         @chamados="listaChamadosAbertos"
         @editar="abrirModalEditar"
-        @chamadoPendente="listaChamadosPendentes"
-        @chamadoFechado="listaChamadosFechados"
-        @allChamado="listaPrioridadeChamado"
-        :listaFiltrada="_listaFiltrada"
-        :mensagem="mensagem"
+        :listaFiltrada="novaLista"
+        :itensTabela="itensChamado"
       />
     </div>
   </div>
@@ -240,6 +238,7 @@
 
 <script setup lang="ts">
 import popoverTeste from '../components/popoverTeste.vue'
+import tabela from '../components/tabela.vue'
 
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -308,17 +307,28 @@ const dateEnd = ref<Date>()
 const _listaFiltrada = ref<unknown[]>([])
 const _listaChamadosDiaAtual = ref<[]>([])
 const recarregar = ref<Boolean>(false)
-const fecharCard = ref<Boolean>(false)
+const hoje = ref<String>('')
+const listaResultado = ref<Array>([])
+const itensChamado = ref<Array>([])
+const novaLista = ref<Array>([])
 
-const mensagem = ref(false)
+const mensagem = ref<Boolean>(false)
+const listaPronta = ref<Boolean>(false)
 const user = ref(route.params.user)
 
 onMounted(() => {
   const route = useRoute()
+
+  console.log((hoje.value = format(new Date(), 'dd/MM/yyyy')))
+  if (listaResultado.value.length > 0) {
+    console.log('executei depois')
+  }
+
   retornaChamadosIgualDiaAtual()
+  obterDadosTratadosChamado()
 
   obterDadosAuthLogin()
-  console.log
+
   abrirChamado.value = route.query.abrirModal
   console.log('vendo chamado', abrirChamado.value)
 
@@ -327,7 +337,7 @@ onMounted(() => {
   }
 })
 
-watch(
+/* watch(
   () => recarregar.value,
   (newValue, oldValue) => {
     if (newValue === true) {
@@ -336,7 +346,7 @@ watch(
       console.log('cai no case')
     }
   }
-)
+) */
 
 const atualizarStatusFechado = async (item: any) => {
   console.log(item.statusChamadoAtual, 'capturando item')
@@ -346,12 +356,11 @@ const atualizarStatusFechado = async (item: any) => {
   }
   const response = await atualizarChamado(data)
   notifyAtualizachamado()
-  mensagem.value = true
-  recarregar.value = true
-  fecharCard.value = true
-  return console.log(response)
-}
+  obterDadosTratadosChamado()
+  retornaChamadosIgualDiaAtual()
 
+  return /* console.log(response) */
+}
 const retornaChamadosIgualDiaAtual = async () => {
   const storedData = localStorage.getItem('user')
 
@@ -360,11 +369,15 @@ const retornaChamadosIgualDiaAtual = async () => {
     const id = parsedData.id
     const response = await getChamadosDiaAtual(id)
     try {
-      const responseClientes = await axios.get(`http://localhost:3000/clientes`)
+      const responseClientes = await axios.get(
+        `http://192.168.1.108:3000/clientes`
+      )
       /* const responseChamados = await axios.get(
       `http://localhost:3000/servicos/user/${idUser.value}`
     )  */ // refatorar aqui promisse allslteld
-      const responseUser = await axios.get(`http://localhost:3000/user-login`)
+      const responseUser = await axios.get(
+        `http://192.168.1.108:3000/user-login`
+      )
 
       const listaClientes = responseClientes.data
       const listaChamados = response.data
@@ -477,11 +490,125 @@ const filtrarPorDatas = async () => {
       )
       _listaFiltrada.value = response.data
       console.log(_listaFiltrada.value)
+      chamadosFiltrados()
     }
   } else {
     console.log('case sem datas preenchidas ')
   }
 }
+
+const obterDadosTratadosChamado = async () => {
+  try {
+    const responseClientes = await axios.get(
+      `http://192.168.1.108:3000/clientes`
+    )
+    const responseChamados = await axios.get(
+      `http://192.168.1.108:3000/servicos/user/${idUser.value}`
+    ) // refatorar aqui promisse allslteld
+    const responseUser = await axios.get(`http://192.168.1.108:3000/user-login`)
+
+    const listaClientes = responseClientes.data
+    const listaChamados = responseChamados.data
+    const listaAnalista = responseUser.data
+
+    if (listaClientes.length > 0 && listaChamados.length > 0) {
+      listaResultado.value = listaChamados.map((chamado: any) => {
+        const clienteCorrespondente = listaClientes.find(
+          (cliente: any) => cliente.id === chamado.clienteId
+        )
+        const AnalistaCorrespondente = listaAnalista.find((analista: any) => {
+          return analista.Id === chamado.usuarioId
+        })
+
+        return {
+          ...chamado,
+          Analista: AnalistaCorrespondente
+            ? AnalistaCorrespondente.nameUser
+            : 'nada',
+          Empresa: clienteCorrespondente
+            ? clienteCorrespondente.empresa
+            : 'N/A',
+          Cliente: clienteCorrespondente ? clienteCorrespondente.nome : 'n/a',
+          status: getStatusText(chamado.statusChamadoAtual),
+          dAbertura: formatarData(chamado.dAbertura)
+        }
+      })
+      console.log(
+        listaResultado.value,
+        'teste da lista aqui no cadastro de serviço'
+      )
+
+      listaPrioridadeChamado()
+      if (listaResultado.value.length > 0) {
+        console.log('executei depois', listaResultado.value)
+        itensChamado.value = listaResultado.value
+        listaPronta.value = true
+
+        console.log(itensChamado.value)
+      }
+      /*   emit('allChamado', listaResultado.value)
+      recarregar.value = false */
+    } else {
+      console.log('lista vazia ')
+      return []
+    }
+  } catch (error) {
+    console.error('Erro ao obter dados:', error)
+    return []
+  }
+}
+
+const chamadosFiltrados = async () => {
+  try {
+    const responseClientes = await axios.get(
+      `http://192.168.1.108:3000/clientes`
+    )
+    /* const responseChamados = await axios.get(
+      `http://localhost:3000/servicos/user/${idUser.value}`
+    )  */ // refatorar aqui promisse allslteld
+    const responseUser = await axios.get(`http://192.168.1.108:3000/user-login`)
+
+    const listaClientes = responseClientes.data
+    const listaChamados = _listaFiltrada.value
+    const listaAnalista = responseUser.data
+
+    if (listaClientes.length > 0 && _listaFiltrada.value.length > 0) {
+      listaResultado.value = listaChamados.map((chamado: any) => {
+        const clienteCorrespondente = listaClientes.find(
+          (cliente: any) => cliente.id === chamado.clienteId
+        )
+        const AnalistaCorrespondente = listaAnalista.find((analista: any) => {
+          return analista.Id === chamado.usuarioId
+        })
+
+        return {
+          ...chamado,
+          Analista: AnalistaCorrespondente
+            ? AnalistaCorrespondente.nameUser
+            : 'nada',
+          Empresa: clienteCorrespondente
+            ? clienteCorrespondente.empresa
+            : 'N/A',
+          Cliente: clienteCorrespondente ? clienteCorrespondente.nome : 'n/a',
+          status: getStatusText(chamado.statusChamadoAtual),
+          dAbertura: formatarData(chamado.dAbertura)
+        }
+      })
+      console.log('lista final ', listaResultado.value)
+      if (listaResultado.value.length > 0) {
+        novaLista.value = listaResultado.value
+        console.log(novaLista.value, 'lista filtrada')
+      }
+    } else {
+      console.log('lista vazia ')
+      return []
+    }
+  } catch (error) {
+    console.error('Erro ao obter dados:', error)
+    return []
+  }
+}
+
 const abrirCardsPrioridade = (item: any) => {
   console.log('cards', openModalPrioridade.value, item)
   openModalPrioridade.value = true
@@ -542,12 +669,15 @@ const submitAtualizarChamado = async (data: any) => {
   const response = await atualizarChamado(data)
   notifyAtualizachamado()
   fecharModal()
+  obterDadosTratadosChamado()
+  retornaChamadosIgualDiaAtual()
   mensagem.value = true
   recarregar.value = true
   store.commit('limpaChamado')
 
   store.commit('limpaCliente')
   store.commit('limpaValores')
+
   return console.log(response)
 
   /*  if (data) {
@@ -568,6 +698,8 @@ const submitChamado = async (data: any) => {
     mensagem.value = true
     recarregar.value = true
     notifyAddchamado()
+    obterDadosTratadosChamado()
+    retornaChamadosIgualDiaAtual()
     return console.log(response)
   } catch (error) {
     return console.log('error ao enviar form', error)
@@ -629,23 +761,11 @@ const notifyAtualizachamado = () => {
   })
 }
 
-const listaChamadosAbertos = (item: any) => {
-  listaChamadoAberto.value = item
-}
-
-const listaChamadosPendentes = (item: any) => {
-  listaChamadoPendente.value = item
-}
-
-const listaChamadosFechados = (item: any) => {
-  listaChamadoFechado.value = item
-}
-
-const listaPrioridadeChamado = (item: any) => {
-  listaChamadoAll.value = item
-  if (listaChamadoAll.value.length > 0) {
-    listaChamadoPrioridade.value = listaChamadoAll.value.filter(
-      (chamado) => chamado.prioridade === 'Alta'
+const listaPrioridadeChamado = () => {
+  if (listaResultado.value.length > 0) {
+    listaChamadoPrioridade.value = listaResultado.value.filter(
+      (chamado) =>
+        chamado.prioridade === 'Alta' && chamado.statusChamadoAtual != 3
     )
   }
   console.log('só chamados em Alta', listaChamadoPrioridade.value)
@@ -769,7 +889,7 @@ const listaPrioridadeChamado = (item: any) => {
   box-shadow: 0px 4px 6px rgb(54, 0, 92);
   width: 50%;
   min-height: 30%;
-  right: 5%;
+  right: 10%;
 }
 
 /* .ModalAdicionarServiço {

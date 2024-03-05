@@ -7,7 +7,7 @@ import ConsultaDeCliente from './views/ConsultaDeCliente.vue'
 import CadastroDeServico from './views/CadastroDeServico.vue'
 import agendamentoDia from '../src/views/agendamento/agendamentoDia.vue'
 import novoAgendamento from '../src/views/agendamento/novoAgendamento.vue'
-import configLoja from '../src/views/configuracaoLoja/configLoja.vue'
+import desenv from '../src/views/desenvs/desenv.vue'
 
 export const routes = [
   {
@@ -50,9 +50,9 @@ export const routes = [
   },
 
   {
-    path: '/configloja/:user',
-    name: 'configLoja',
-    component: configLoja
+    path: '/desenv/:user',
+    name: 'desenv',
+    component: desenv
   }
 
   // For lazy loading components

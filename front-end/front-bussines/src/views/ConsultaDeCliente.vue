@@ -191,7 +191,7 @@ const iniciaChamado = async (cliente: Cliente) => {
 
 const listaDeClientes = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/clientes')
+    const response = await axios.get('http://192.168.1.108:3000/clientes')
 
     console.log(response.data)
     clientes.value = response.data // Assumindo que a resposta contém um array de clientes

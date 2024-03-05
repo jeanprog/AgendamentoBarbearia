@@ -4,7 +4,7 @@
       >Todos os chamados do dia 09/02/2024</TableCaption
     >
   </div> -->
-  <Table
+  <!-- <Table
     v-if="tableFilter"
     class="max-h-50 text-white text-[12px] overflow-y-scroll rounded-lg"
     id="table"
@@ -45,9 +45,8 @@
       </TableRow>
     </TableBody>
   </Table>
-
+ -->
   <Table
-    v-if="!tableFilter"
     class="max-h-50 text-white text-[12px] overflow-y-scroll rounded-lg"
     id="table"
   >
@@ -81,7 +80,8 @@
             variant="outlined"
             class="botoesAcoes"
             @click="handleExcluir(item)"
-            ><i class="fa-solid fa-eye"></i></v-btn>
+            ><i class="fa-solid fa-eye"></i
+          ></v-btn>
         </div>
       </TableRow>
     </TableBody>
@@ -112,6 +112,8 @@ const listaChamadoFechado = ref<[]>([])
 const listaChamadoPendente = ref<[]>([]) */
 const chamadosData = ref<Array>([])
 const tableFilter = ref<Boolean>(false)
+const recarregar = ref<Boolean>(false)
+/* const mensagem = ref(props.mensagem) */
 /*
 headers.value = [
   { align: 'start', key: 'Empresa', sortable: false, title: 'Empresa' },
@@ -134,42 +136,58 @@ interface Chamado {
 }
 
 const chamados = ref<Chamado[]>([])
-const props = defineProps(['mensagem', 'listaFiltrada'])
+const props = defineProps(['mensagem', 'listaFiltrada', 'itensTabela'])
 
 onMounted(() => {
   obterDadosAuthLogin() //refatorar essa chamado se repete em muitos componentes
-  console.log(props.listaFiltrada, 'vendo a props')
-  obterDadosTratadosChamado()
+  chamadosData.value = props.itensTabela
+
+  console.log(chamadosData.value)
+  console.log('executou')
+  if (chamadosData.value) {
+    listaTabela()
+  }
+  /*   obterDadosTratadosChamado() */
+  /*  console.log(props.itensTabela, 'teste aqu') */
 })
+
+const listaTabela = () => {
+  listaResultado.value = props.itensTabela
+  console.log('executou')
+  console.log('saida chamados data ', listaResultado.value)
+}
+
+/* 
 watch(
   () => props.mensagem,
-  (newValue, oldValue) => {
-    if (newValue === true) {
+  (newValue) => {
+    console.log(newValue, 'vendo alterações')
+    if (newValue) {
       // Chamar a função para obter os dados dos formulários
-      obterDadosTratadosChamado()
-      console.log('cai no case')
+      /*  obterDadosTratadosChamado() 
+
+      console.log('cai no case dentro da tabela recarregar')
     }
   }
-)
-watch(
+) */
+/* watch(
   () => props.listaFiltrada,
-  (newValue, oldValue) => {
+  (newValue) => {
     if (newValue) {
       // Chamar a função para obter os dados dos formulários
 
       console.log('cai no case de filtragem', props.listaFiltrada)
       chamadosData.value = props.listaFiltrada
       tableFilter.value = true
-      chamadosFiltrados()
     }
   }
-)
-const chamadosFiltrados = async () => {
+) */
+/* const chamadosFiltrados = async () => {
   try {
     const responseClientes = await axios.get(`http://localhost:3000/clientes`)
     /* const responseChamados = await axios.get(
       `http://localhost:3000/servicos/user/${idUser.value}`
-    )  */ // refatorar aqui promisse allslteld
+    )   // refatorar aqui promisse allslteld
     const responseUser = await axios.get(`http://localhost:3000/user-login`)
 
     const listaClientes = responseClientes.data
@@ -199,6 +217,7 @@ const chamadosFiltrados = async () => {
         }
       })
       emit('allChamado', listaResultado.value)
+      recarregar.value = false
     } else {
       console.log('lista vazia ')
       return []
@@ -207,7 +226,7 @@ const chamadosFiltrados = async () => {
     console.error('Erro ao obter dados:', error)
     return []
   }
-}
+} */
 const obterDadosAuthLogin = () => {
   const dadosLogin = localStorage.getItem('user')
   if (dadosLogin) {
@@ -225,12 +244,12 @@ const handleExcluir = (item: any) => {
   console.log(item)
 }
 
-const formatarData = (data: any) => {
+/* const formatarData = (data: any) => {
   const dataFormatada = format(new Date(data), 'dd/MM/yyyy')
   return dataFormatada
-}
+} */
 
-const obterDadosTratadosChamado = async () => {
+/* const obterDadosTratadosChamado = async () => {
   try {
     const responseClientes = await axios.get(`http://localhost:3000/clientes`)
     const responseChamados = await axios.get(
@@ -265,6 +284,7 @@ const obterDadosTratadosChamado = async () => {
         }
       })
       emit('allChamado', listaResultado.value)
+      recarregar.value = false
     } else {
       console.log('lista vazia ')
       return []
@@ -286,7 +306,7 @@ const getStatusText = (status: number): string => {
     default:
       return 'Desconhecido'
   }
-}
+} */
 </script>
 
 <style scoped>

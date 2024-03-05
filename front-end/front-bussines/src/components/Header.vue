@@ -48,9 +48,9 @@
           ></v-list-item>
           <v-list-item
             prepend-icon="fa-solid fa-gear"
-            title="Configurações"
-            value="config"
-            @click="RedirectConfiguracoes"
+            title="Solicitações Desenv"
+            value="desenv"
+            @click="RedirectDesenv"
           ></v-list-item>
         </v-list>
       </div>
@@ -84,8 +84,8 @@ const RedirectCadastroDeServico = () => {
   console.log('evento acionado')
 }
 
-const RedirectConfiguracoes = () => {
-  router.push({ name: 'configLoja', params: { user: user.value } })
+const RedirectDesenv = () => {
+  router.push({ name: 'desenv', params: { user: user.value } })
   console.log('evento acionado')
 }
 
