@@ -1,8 +1,7 @@
 <template>
   <!--    -->
-
+  <HeaderVoltar :title="titlepage" />
   <div class="body">
-    <HeaderVoltar :title="titlepage" />
     <div class="body-left">
       <p class="py-2">Chamados {{ hoje }}</p>
       <div class="cards" v-if="!dialog">
@@ -12,7 +11,7 @@
           <v-card
             class="card-customize"
             max-width="600"
-            color="#67159C"
+            color="#3f51b5"
             v-for="(chamado, index) in listaChamadoAberto"
             :key="index"
             variant="outlined"
@@ -38,7 +37,7 @@
           <v-card
             class="card-customize"
             max-width="600"
-            color="#67159C"
+            color="#3f51b5"
             v-for="(chamado, index) in listaChamadoPendente"
             :key="index"
             variant="outlined"
@@ -61,7 +60,7 @@
           <v-card
             class="card-customize"
             max-width="600"
-            color="#67159C"
+            color="#3f51b5"
             v-for="(chamado, index) in listaChamadoFechado"
             :key="index"
             variant="outlined"
@@ -100,7 +99,7 @@
                   <div class="p-1" @click="abrirCardsPrioridade(chamado)">
                     <Dialog>
                       <DialogTrigger as-child>
-                        <Card class="bg-indigo cursor-pointer">
+                        <Card class="bg-zinc-800 cursor-pointer">
                           <CardContent
                             class="flex aspect-square items-center p-6"
                           >
@@ -151,7 +150,7 @@
                         </div>
                         <DialogFooter>
                           <Button
-                            class="bg-customPurple rounded-lg rounded-sm transition-opacity hover:opacity-100 focus:outline-none"
+                            class="bg-[#3f51b5] rounded-lg rounded-sm transition-opacity hover:opacity-100 focus:outline-none"
                             type="submit"
                             @click="atualizarStatusFechado(chamado)"
                           >
@@ -175,7 +174,7 @@
 
         <v-btn
           v-if="!dialog"
-          color="#67159C"
+          color="#3f51b5"
           class="btn-chamado"
           @click="abrirModal"
           @fecharModal="fecharModal"
@@ -194,44 +193,253 @@
       </div>
     </div>
     <div class="body-right">
-      <div v-if="!dialog" class="flex flex-grid-2 gap 2">
-        <v-text-field
-          class="w-80 m-6"
-          density="compact"
-          variant="solo"
-          label="Buscar Chamados"
-          append-inner-icon="fa-brands fa-searchengin"
-          single-line
-          hide-details
-          bg-color="#1E1E26"
-        ></v-text-field>
-      </div>
-      <p v-if="!dialog">Filtrar por data</p>
-      <div v-if="!dialog" class="flex flex-grid-2 gap-4">
-        <div class="max-w-50">
-          <popoverTeste
-            dataTitulo="Data inicio"
-            isStart="true"
-            @dataInicio="recebeDatainicio"
-          />
+      <div class="flex h-80">
+        <div
+          v-if="!dialog"
+          class="flex flex-col gap-2 w-50 p-4 bg-zinc-800 rounded-[14px] p-2 ml-2"
+        >
+          <div class="flex gap-2">
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Total</p>
+              <p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-white text-[14px]">{{ itensChamado.length }}</p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Dia</p>
+              <p class="text-white text-[14px]">
+                {{ _listaChamadosDiaAtual.length }}
+              </p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">PDV</p>
+              <p class="text-white text-[14px]">{{ chamadosPDV.length }}</p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Retaguarda</p>
+              <p class="text-white text-[14px]">
+                {{ chamadosRetaguarda.length }}
+              </p>
+            </Card>
+          </div>
+          <div class="flex gap-2">
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Ecommerce</p>
+              <p class="text-white text-[14px]">
+                {{ chamadosEcommerce.length }}
+              </p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Emissor</p>
+              <p class="text-white text-[14px]">{{ chamadosEmissor.length }}</p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Etiquetas</p>
+              <p class="text-white text-[14px]">
+                {{ chamadosEtiquetas.length }}
+              </p>
+            </Card>
+            <Card
+              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              ><p class="text-zinc-400 text-[12px]">Chamados</p>
+              <p class="text-zinc-400 text-[12px]">Pré venda</p>
+              <p class="text-white text-[14px]">
+                {{ chamadosPreVenda.length }}
+              </p>
+            </Card>
+          </div>
+          <div
+            class="bg-zinc-600 w-full h-full rounded-[12px] flex flex-col items-center"
+          >
+            <p class="text-[12px] text-zinc-200">Ultimo Chamado Registrado</p>
+            <p class="text-[12px]" v-if="itensChamado.length > 0">
+              Status: <span class="pl-2">{{ itensChamado[0].status }}</span>
+            </p>
+            <p class="text-[12px]" v-if="itensChamado.length > 0">
+              Empresa: <span class="pl-2">{{ itensChamado[0].Empresa }}</span>
+            </p>
+            <p class="text-[12px]" v-if="itensChamado.length > 0">
+              Funcionário:
+              <span class="pl-2">{{ itensChamado[0].Cliente }}</span>
+            </p>
+            <Dialog>
+              <DialogTrigger as-child>
+                <Button
+                  variant="outline"
+                  class="rounded-[12px] h-6 text-[12px] hover:bg-[#3f51b5] mt-2 bg-zinc-900"
+                >
+                  visualizar
+                </Button>
+              </DialogTrigger>
+              <DialogContent
+                class="sm:max-w-[425px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[70dvh] bg-zinc-800 text-white"
+              >
+                <DialogHeader class="p-6 pb-0">
+                  <DialogTitle class="text-zinc-400"
+                    >Chamado Completo</DialogTitle
+                  >
+                </DialogHeader>
+                <div class="grid gap-4 py-4 overflow-y-auto px-6 text-white">
+                  <div class="flex flex-col">
+                    <p class="" v-if="itensChamado.length > 0">
+                      Empresa:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].Empresa
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Funcionário:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].Cliente
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Titulo:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].titulo
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Descricao:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].descricao
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Status:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].status
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Data:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].dAbertura
+                      }}</span>
+                    </p>
+                    <p class="" v-if="itensChamado.length > 0">
+                      Prioridade:
+                      <span class="pl-2 text-zinc-400">{{
+                        itensChamado[0].prioridade
+                      }}</span>
+                    </p>
+                  </div>
+                </div>
+                <DialogFooter class="p-6 pt-0">
+                  <Button
+                    class="bg-[#3f51b5] mt-2 hover:bg-zinc-900 text-white rounded-[12px]"
+                    @click="atualizarStatusFechado(itensChamado[0])"
+                  >
+                    Finalizar Chamado
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
-        <div class="max-w-50">
-          <popoverTeste
-            dataTitulo="Data Final"
-            isStart="false"
-            @dataFim="recebeDataFim"
-          />
+
+        <div class="flex flex-col w-full items-center gap-2">
+          <p v-if="!dialog">Filtros de Chamados</p>
+
+          <div class="relative items-center w-70">
+            <Input
+              id="search"
+              type="text"
+              placeholder="Buscar por empresas..."
+              class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70"
+              @input="filtrarPorEmpresa()"
+              v-model="sBuscaEmpresa"
+            />
+            <span
+              class="absolute start-0 inset-y-0 flex items-center justify-center px-2 text-zinc-600"
+              ><i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+          </div>
+          <div v-if="!dialog" class="flex flex-grid-2 gap-4">
+            <div class="max-w-50">
+              <popoverTeste
+                dataTitulo="Data inicio"
+                isStart="true"
+                @dataInicio="recebeDatainicio"
+              />
+            </div>
+            <div class="max-w-50">
+              <popoverTeste
+                dataTitulo="Data Final"
+                isStart="false"
+                @dataFim="recebeDataFim"
+              />
+            </div>
+          </div>
+          <!--   <select
+            v-model="sBuscaStatus"
+            placeholder="Status solicitação"
+            class="bg-zinc-900 w-48 border-2 border-white placeholder-white"
+          >
+            <option>aberto</option>
+            <option>pendente</option>
+            <option>fechado</option>
+          </select> -->
+          <Select v-model="sBuscaStatus">
+            <SelectTrigger class="w-48 ml-2 h-8 bg-zinc-900 rounded-[12px]">
+              <span v-if="sBuscaStatus == ''">Status solicitação</span>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="bg-zinc-900 w-48 text-white">
+              <SelectGroup>
+                <SelectItem value="aberto"> Aberto </SelectItem>
+                <SelectItem value="pendente"> Pendentes </SelectItem>
+                <SelectItem value="fechado"> Fechado </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select v-model="sBuscaSistemas">
+            <SelectTrigger class="w-48 ml-2 h-8 bg-zinc-900 rounded-[12px]">
+              <span v-if="sBuscaSistemas == ''">Sistemas</span>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent class="bg-zinc-900 w-48 text-white">
+              <SelectGroup>
+                <SelectItem c value="PDV"> PDV </SelectItem>
+                <SelectItem c value="Emissor Nf-e"> Emissor Nf-e</SelectItem>
+                <SelectItem c value="Back-office"> Back-office</SelectItem>
+                <SelectItem c value="Etiquetas"> Etiquetas</SelectItem>
+                <SelectItem c value="Financeiro"> Financeiro</SelectItem>
+                <SelectItem c value="Pré-Venda Mobile">
+                  Pré-Venda Mobile</SelectItem
+                >
+                <SelectItem c value="ecommerce"> ecommerce</SelectItem>
+                <SelectItem c value="laser Report"> laser Report</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Button @click="filtrarPorStatus()"> Buscar chamado</Button>
+          <Button @click="limpaFiltrosBusca()"> limpar filtros</Button>
         </div>
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
-      <p v-if="!dialog" class="mt-16">Todos os chamados Recentes</p>
-      <tabela
-        v-if="!dialog && listaPronta"
-        @chamados="listaChamadosAbertos"
-        @editar="abrirModalEditar"
-        :listaFiltrada="novaLista"
-        :itensTabela="itensChamado"
-      />
+      <div class="flex flex-col items-center h-80">
+        <p v-if="!dialog" class="mt-4">Todos os chamados Recentes</p>
+        <tabela
+          v-if="!dialog && listaPronta"
+          @chamados="listaChamadosAbertos"
+          @editar="abrirModalEditar"
+          :listaFiltrada="novaLista"
+          :itensTabela="itensChamado"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -259,6 +467,15 @@ import {
   DialogClose,
   DialogTrigger
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 
 /* import axios from 'axios' */
 import HeaderVoltar from '../components/HeaderVoltar.vue'
@@ -278,6 +495,8 @@ import {
   getChamadosPorData,
   getChamadosDiaAtual
 } from '../services/RequestsChamados.ts'
+import { Button } from '../components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import { toast } from 'vue3-toastify'
 import { useStore } from 'vuex'
@@ -308,13 +527,24 @@ const _listaFiltrada = ref<unknown[]>([])
 const _listaChamadosDiaAtual = ref<[]>([])
 const recarregar = ref<Boolean>(false)
 const hoje = ref<String>('')
+const sBuscaEmpresa = ref<string>('')
+const sBuscaStatus = ref<string>('')
+const sBuscaSistemas = ref<string>([])
+const placeholderTexto = ref('Status solicitação')
+
 const listaResultado = ref<Array>([])
 const itensChamado = ref<Array>([])
 const novaLista = ref<Array>([])
-
 const mensagem = ref<Boolean>(false)
 const listaPronta = ref<Boolean>(false)
 const user = ref(route.params.user)
+const chamadosPDV = ref<Array>([])
+const chamadosRetaguarda = ref<Array>([])
+const chamadosEcommerce = ref<Array>([])
+const chamadosEmissor = ref<Array>([])
+const chamadosEtiquetas = ref<Array>([])
+const chamadosPreVenda = ref<Array>([])
+const chamadosfinanceiro = ref<Array>([])
 
 onMounted(() => {
   const route = useRoute()
@@ -347,6 +577,23 @@ onMounted(() => {
     }
   }
 ) */
+
+const limpaFiltrosBusca = () => {
+  console.log(sBuscaStatus.value)
+  placeholderTexto.value = 'Status mudou'
+  if (sBuscaStatus.value) {
+    console.log('cai dentro do if', sBuscaStatus)
+
+    console.log(placeholderTexto.value)
+    obterDadosTratadosChamado()
+    sBuscaStatus.value = ''
+  }
+  /*  if (sBuscaStatus.value) {
+    sBuscaStatus.value = undefined
+    obterDadosTratadosChamado()
+    console.log(sBuscaStatus.value, 'depois do if ')
+  } */
+}
 
 const atualizarStatusFechado = async (item: any) => {
   console.log(item.statusChamadoAtual, 'capturando item')
@@ -440,6 +687,107 @@ const getStatusText = (status: number): string => {
       return 'Desconhecido'
   }
 }
+
+const filtrarPorEmpresa = () => {
+  console.log(sBuscaEmpresa.value, 'chamei')
+  if (listaResultado.value.length > 0 && sBuscaEmpresa.value) {
+    novaLista.value = listaResultado.value.filter(
+      (chamado: any) => chamado.Empresa.toLowerCase() === sBuscaEmpresa.value
+    )
+
+    console.log(novaLista.value)
+  } else {
+    novaLista.value = listaResultado.value
+  }
+}
+
+const filtrarPorStatus = () => {
+  console.log(sBuscaStatus.value, sBuscaSistemas.value, 'chamei aqui novo')
+
+  const statusValido =
+    sBuscaStatus.value !== undefined &&
+    sBuscaStatus.value !== null &&
+    sBuscaStatus.value !== false
+  // Verifica se sBuscaSistemas.value é válido
+  const sistemasValido =
+    sBuscaSistemas.value !== undefined &&
+    sBuscaSistemas.value !== null &&
+    sBuscaSistemas.value !== false
+
+  // Verifica se o status é fornecido, mas nenhum sistema é fornecido
+  if (statusValido && !sistemasValido) {
+    console.log(sBuscaStatus.value, sBuscaSistemas.value, 'chamei aqui novo')
+    if (listaResultado.value.length > 0) {
+      novaLista.value = listaResultado.value.filter(
+        (chamado) =>
+          chamado.status.toLowerCase() === sBuscaStatus.value.toLowerCase()
+      )
+    } else {
+      novaLista.value = []
+    }
+  }
+  // Verifica se o sistema é fornecido, mas nenhum status é fornecido
+  else if (!statusValido && sistemasValido) {
+    console.log('buscando pelo sistemas')
+    // Lógica para filtrar apenas por sBuscaSistemas.value
+    // Aqui você pode adicionar sua lógica de filtragem por sistemas
+    // por exemplo, novaLista.value = listaResultado.value.filter(...)
+  }
+  // Verifica se ambos o status e sistema são fornecidos
+  else if (statusValido && sistemasValido) {
+    console.log('buscando pelos dois')
+    // Lógica para filtrar por ambos sBuscaStatus.value e sBuscaSistemas.value
+    // Aqui você pode combinar as condições para filtrar com base em ambos os valores
+    // por exemplo, novaLista.value = listaResultado.value.filter(...)
+  }
+  // Se nenhum select for fornecido, exibe a lista completa sem filtragem
+  else {
+    novaLista.value = listaResultado.value
+  }
+  /*  switch (false) {
+    case status && !sistemas:
+      // Lógica para filtrar apenas por sBuscaStatus.value
+      if (listaResultado.value.length > 0) {
+        novaLista.value = listaResultado.value.filter(
+          (chamado) =>
+            chamado.status.toLowerCase() === sBuscaStatus.value.toLowerCase()
+        )
+      } else {
+        novaLista.value = []
+      }
+      break
+
+    case !sBuscaStatus.value && sBuscaSistemas.value:
+      // Lógica para filtrar apenas por sBuscaSistemas.value
+      // Aqui você pode adicionar sua lógica de filtragem por sistemas
+      // por exemplo, novaLista.value = listaResultado.value.filter(...)
+      console.log('buscando pelo sistemas')
+      break
+
+    case sBuscaStatus.value && sBuscaSistemas.value:
+      // Lógica para filtrar por ambos sBuscaStatus.value e sBuscaSistemas.value
+      // Aqui você pode combinar as condições para filtrar com base em ambos os valores
+      // por exemplo, novaLista.value = listaResultado.value.filter(...)
+      console.log('buscando pelos dois ')
+      break
+
+    default:
+      // Caso nenhum dos selects seja fornecido, você pode tomar alguma ação padrão
+      // por exemplo, exibir a lista completa sem filtragem
+      novaLista.value = listaResultado.value
+      break
+  } */
+}
+
+/* if (listaResultado.value.length > 0 && sBuscaStatus.value) {
+    novaLista.value = listaResultado.value.filter(
+      (chamado: any) => chamado.status.toLowerCase() === sBuscaStatus.value
+    )
+
+    console.log(sBuscaStatus.value)
+  } else {
+    novaLista.value = listaResultado.value
+  } */
 
 const filtrarChamadosAbertos = () => {
   if (_listaChamadosDiaAtual.value.length > 0) {
@@ -544,8 +892,18 @@ const obterDadosTratadosChamado = async () => {
         itensChamado.value = listaResultado.value
         listaPronta.value = true
 
-        console.log(itensChamado.value)
+        console.log(itensChamado.value, 'ultima lista total chamados ')
+
+        if (itensChamado.value.length > 0) {
+          TotalChamadosPDV()
+          TotalChamadosRetaguarda()
+          TotalChamadosEcommerce()
+          TotalChamadosEmissor()
+          TotalChamadosEtiquetas()
+          TotalChamadosPreVenda()
+        }
       }
+
       /*   emit('allChamado', listaResultado.value)
       recarregar.value = false */
     } else {
@@ -768,14 +1126,61 @@ const listaPrioridadeChamado = () => {
         chamado.prioridade === 'Alta' && chamado.statusChamadoAtual != 3
     )
   }
-  console.log('só chamados em Alta', listaChamadoPrioridade.value)
+}
+
+const TotalChamadosPDV = () => {
+  if (itensChamado.value.length) {
+    chamadosPDV.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'PDV'
+    )
+  }
+}
+
+const TotalChamadosRetaguarda = () => {
+  if (itensChamado.value.length) {
+    chamadosRetaguarda.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'Back-office'
+    )
+  }
+}
+
+const TotalChamadosEcommerce = () => {
+  if (itensChamado.value.length) {
+    chamadosEcommerce.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'ecommerce'
+    )
+  }
+}
+
+const TotalChamadosEmissor = () => {
+  if (itensChamado.value.length) {
+    chamadosEmissor.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'Emissor Nf-e'
+    )
+  }
+}
+
+const TotalChamadosEtiquetas = () => {
+  if (itensChamado.value.length) {
+    chamadosEtiquetas.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'etiquetas'
+    )
+  }
+}
+
+const TotalChamadosPreVenda = () => {
+  if (itensChamado.value.length) {
+    chamadosPreVenda.value = listaResultado.value.filter(
+      (chamado) => chamado.sistema === 'Pré-Venda Mobile'
+    )
+  }
 }
 </script>
 
 <style scoped>
 .body {
   min-width: 100%;
-  max-height: 90%;
+  min-height: 100%;
   overflow: hidden;
 
   display: flex;
@@ -784,7 +1189,7 @@ const listaPrioridadeChamado = () => {
   width: 50%;
   color: white;
   max-height: 88vh;
-  margin-top: 6%;
+  margin-top: 2%;
 
   display: flex;
   flex-direction: column;
@@ -796,13 +1201,14 @@ const listaPrioridadeChamado = () => {
   margin-top: 8px;
 
   min-height: 46%;
+  max-height: 46%;
   width: 100%;
   overflow-y: auto !important;
 }
 .titulo-box {
   position: sticky;
   top: 0;
-  background-color: rgb(54, 0, 92);
+  background-color: #3f51b5;
   width: 100%;
   /* Opcional: cor de fundo para tornar o texto mais visível */
   z-index: 1; /* Garante que o texto esteja acima dos elementos abaixo */
@@ -850,10 +1256,9 @@ const listaPrioridadeChamado = () => {
   color: white;
 
   width: 50%;
-  margin-top: 6%;
+  margin-top: 2%;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .text-card {
@@ -886,7 +1291,6 @@ const listaPrioridadeChamado = () => {
 }
 
 .btn-chamado {
-  box-shadow: 0px 4px 6px rgb(54, 0, 92);
   width: 50%;
   min-height: 30%;
   right: 10%;

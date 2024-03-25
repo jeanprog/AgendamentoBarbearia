@@ -134,6 +134,7 @@
           </template>
         </v-virtual-scroll>
       </v-card>
+      <Button class="rounded-lg cursor-pointer"> + solicitação </Button>
     </div>
     <div class="botoesRedirect">
       <v-btn
@@ -155,6 +156,7 @@ import { router } from '../router'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { atualizarChamado } from '@/services/RequestsChamados'
+
 /*  import { useRoute } from 'vue-router'  */
 
 interface Cliente {

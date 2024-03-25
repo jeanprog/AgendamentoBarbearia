@@ -46,11 +46,8 @@
       </TableBody>
     </Table>
    -->
-  <Table
-    class="max-h-50 text-white text-[12px] overflow-y-scroll rounded-lg"
-    id="table"
-  >
-    <TableHeader class="sticky top-0 bg-customPurple">
+  <Table class="text-white text-[12px] overflow-y-scroll rounded-lg" id="table">
+    <TableHeader class="sticky top-0 bg-[#3f51b5]">
       <TableRow class="">
         <TableHead class="w-[100px]"> Empresa </TableHead>
         <TableHead>Funcionário</TableHead>
@@ -61,7 +58,11 @@
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow class="" v-for="chamado in listaResultado" :key="chamado.id">
+      <TableRow
+        class="bg-zinc-800"
+        v-for="chamado in listaResultado"
+        :key="chamado.id"
+      >
         <!--  <TableRow
           v-if="listaFiltrada.length > 0"
           class=""
@@ -200,8 +201,7 @@ const handleExcluir = (item: any) => {
 <style scoped>
 #table {
   overflow: auto !important;
-  max-height: 50%;
-  margin-top: 10px;
+
   border-radius: 24px;
 }
 #table::-webkit-scrollbar {
@@ -212,9 +212,9 @@ const handleExcluir = (item: any) => {
   background: #19181f;
 }
 #table::-webkit-scrollbar-thumb {
-  background-color: rgb(54, 0, 92); /* color of the scroll thumb */
+  background-color: #3f51b5; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
-  border: 1px solid rgb(54, 0, 92); /* creates padding around scroll thumb */
+  /* creates padding around scroll thumb */
 }
 
 .card-chamado {

@@ -1,11 +1,9 @@
 <template>
-  <v-app class="cabeçalho">
-    <v-app-bar app class="menu-btn">
-      <v-btn class="btn-voltar" @click="RedirecionarInicio"> voltar </v-btn>
-      <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
-      <v-titles style="margin-left: 8%"> {{ title }} </v-titles>
-    </v-app-bar>
-  </v-app>
+  <div class="menu-btn">
+    <v-btn class="btn-voltar" @click="RedirecionarInicio"> voltar </v-btn>
+    <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
+    <p style="margin-left: 8%">{{ title }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -31,18 +29,20 @@ const RedirecionarInicio = () => {
 
 <style scoped>
 .menu-btn {
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
   padding-left: 4%;
-  background-color: #2f0549 !important;
+  background-color: #3f51b5 !important;
   color: white !important;
-  max-height: 8%;
+  height: 8% !important;
 }
 .btn-voltar {
   width: 20%;
-  border-radius: 50%;
+  background-color: #3f51b5 !important;
   color: rgb(136, 255, 0);
 }
 .cabeçalho {
-  max-height: 8%;
+  max-height: 8% !important;
 }
 </style>

@@ -22,6 +22,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        customGreen: "#0b8f58",
         customGray: "#1E1E26",
         customPurple: "rgb(54, 0, 92)",
         border: "hsl(var(--border))",

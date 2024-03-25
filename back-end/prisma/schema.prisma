@@ -21,6 +21,8 @@ model tbLogin {
   idRede    tbRede @relation(fields: [redeId], references: [id])
   tbChamado tbChamado[]
   tbStatusChamado tbStatusChamado[]
+   historico tbhistoricosolicitacao[]
+   solicitacoes tbsolicitacaoDesenv[]
 
 }
 // esta tabela referencia a empresa em que o analista trabalha 
@@ -88,16 +90,53 @@ model tbChamado {
  }
  
  // proximas tabelas seria crair uma tabela pra registos de empresas clientes , pra associar ao um novo usuário. 
- 
+model tbCadastroVersao {
+  id       Int       @id @default(autoincrement())
+  aplicativo String
+  versao    String
+  datCri    DateTime
+  // Relacionamento com tbsolicitacaoDesenv
+  solicitacoes tbsolicitacaoDesenv[]
+  solucoes tbsolucaoVersao[]
+}
 
+model tbsolicitacaoDesenv {
+  id               Int             @id @default(autoincrement())
+  idVersao         Int
+  aplicativoVersao String
+  usuarioId    Int      // Chave estrangeira referenciando tbLogin
+  idUsuario    tbLogin  @relation(fields: [usuarioId], references: [Id])
+  desenvolvedor    String
+  descricao        String
+  // Relacionamento com tbCadastroVersao
+  versao           tbCadastroVersao @relation(fields: [idVersao], references: [id])
+  // Relacionamento com tbsolucaoVersao
+  solucoes         tbsolucaoVersao[]
+  historico tbhistoricosolicitacao[]
 
+}
 
+model tbsolucaoVersao {
+  id                  Int             @id @default(autoincrement())
+  idVersao            Int
+  idsolicitacaoDesenv Int
+  descricaoSolucao    String
+  datCri              DateTime
+  // Relacionamento com tbCadastroVersao
+  versao              tbCadastroVersao @relation(fields: [idVersao], references: [id])
+  // Relacionamento com tbsolicitacaoDesenv
+  solicitacaoDesenv   tbsolicitacaoDesenv @relation(fields: [idsolicitacaoDesenv], references: [id])
+}
 
-
-
-// ... outros modelos ... 
-
-
-// ... outros modelos ...
-
+model tbhistoricosolicitacao {
+  id         Int       @id @default(autoincrement())
+  usuarioId    Int      // Chave estrangeira referenciando tbLogin
+  idUsuario    tbLogin  @relation(fields: [usuarioId], references: [Id])
+  idSolicitacao  Int
+  observacao String
+  dataCri    DateTime
+  statusId   Int
+  // Relacionamento com tbsolicitacaoDesenv
+  solicitacao tbsolicitacaoDesenv @relation(fields: [idSolicitacao], references: [id])
+}
 

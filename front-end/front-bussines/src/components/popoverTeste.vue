@@ -17,25 +17,25 @@ const date = ref<Date>()
 const props = defineProps(['dataTitulo', 'isStart'])
 const emit = defineEmits()
 
-const enviaDatas = () => {
+const enviaDatas = async () => {
   if (props.isStart === 'true') {
-    emit('dataInicio', date.value)
+    await emit('dataInicio', date.value)
   } else {
     emit('dataFim', date.value)
-
-    emit('dataFim', date.value)
   }
+
+  //props do componente pai pra voltar ao estado inicial da variavel após a requisição é isso !
 }
 </script>
 
 <template>
-  <Popover>
+  <Popover class="max-w-10">
     <PopoverTrigger as-child>
       <Button
         :variant="'outline'"
         :class="
           cn(
-            'w-[220px] justify-start text-left font-normal rounded-lg',
+            'w-[130px] justify-start text-left  text-[12px] text-zinc-400 font-normal rounded-lg bg-zinc-900',
             !date && 'text-muted-foreground'
           )
         "
@@ -46,7 +46,7 @@ const enviaDatas = () => {
     </PopoverTrigger>
     <PopoverContent class="w-auto p-0">
       <Calendar
-        class="bg-indigo text-white"
+        class="bg-zinc-900 text-white"
         @click="enviaDatas"
         v-model="date"
       />

@@ -104,12 +104,12 @@ const toggleDrawer = () => {
 .menu-btn {
   justify-content: flex-start;
   padding-left: 4%;
-  background-color: #2f0549 !important;
+  background-color: #3f51b5 !important;
   color: white !important;
   height: 10%;
 }
 .menu {
-  background-color: #2f0549 !important;
+  background-color: #3f51b5 !important;
   color: white !important;
 }
 
@@ -118,7 +118,7 @@ const toggleDrawer = () => {
   transform: rotate(180deg);
 }
 .cabeçalho {
-  height: 10%;
+  max-height: 10%;
   font-family: 'Montserrat', sans-serif;
 }
 </style>

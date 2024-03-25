@@ -72,6 +72,8 @@
               :items="[
                 'PDV',
                 'Back-office',
+                'Emissor Nf-e',
+                'Etiquetas',
                 'Financeiro',
                 'Pré-Venda Mobile',
                 'laser Report',
