@@ -76,19 +76,64 @@
         <TableCell>{{ chamado.status }}</TableCell>
         <TableCell>{{ chamado.Analista }}</TableCell>
         <TableCell class="text-right"> {{ chamado.dAbertura }} </TableCell>
-        <div class="flex mt-1">
-          <v-btn
-            variant="outlined"
-            class="botoesAcoes"
-            @click="handleEditar(chamado)"
+        <div class="flex mt-1 gap-2">
+          <Button class="bg-indigo-700" @click="handleEditar(chamado)"
             ><i class="fa-solid fa-pen-to-square"></i
-          ></v-btn>
-          <v-btn
-            variant="outlined"
-            class="botoesAcoes"
-            @click="handleExcluir(item)"
-            ><i class="fa-solid fa-eye"></i
-          ></v-btn>
+          ></Button>
+          <Dialog>
+            <DialogTrigger as-child>
+              <Button
+                @click="capturaItem(chamado)"
+                variant="outline"
+                class="bg-indigo-700"
+              >
+                <i class="fa-solid fa-eye"></i>
+              </Button>
+            </DialogTrigger>
+            <DialogContent class="sm:max-w-[425px] bg-zinc-900 text-white">
+              <DialogHeader>
+                <DialogTitle>
+                  <span class="text-zinc-400 text-[16px] font-bold"
+                    >Empresa:
+                  </span>
+                  <br />{{ chamado.Empresa }}</DialogTitle
+                >
+                <DialogDescription>
+                  <span class="text-zinc-400 text-[16px] font-bold"
+                    >Titulo</span
+                  >
+                  <p>{{ chamado.titulo }}</p>
+                </DialogDescription>
+              </DialogHeader>
+              <div class="flex flex-col py-4">
+                <p>
+                  <span class="text-zinc-400 font-bold">Funcionário:</span>
+                  {{ chamado.Cliente }}
+                </p>
+                <p>
+                  <span class="text-zinc-400 font-bold">sistema:</span>
+                  {{ chamado.sistema }}
+                </p>
+                <p>
+                  <span class="text-zinc-400 font-bold">Status:</span>
+                  {{ chamado.status }}
+                </p>
+                <p>
+                  <span class="text-zinc-400 font-bold">prioridade:</span>
+                  {{ chamado.prioridade }}
+                </p>
+                <p>
+                  <span class="text-zinc-400 font-bold">Abertura:</span>
+                  {{ chamado.dAbertura }}
+                </p>
+                <p>
+                  <span class="text-zinc-400 font-bold">Fechamento:</span>
+                  {{ chamado.dFechamento }}
+                </p>
+              </div>
+              <DialogFooter> </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </TableRow>
     </TableBody>
@@ -120,6 +165,17 @@ const idRede = ref<number>()
 const chamadosData = ref<Array>([])
 const tableFilter = ref<Boolean>(false)
 const recarregar = ref<Boolean>(false)
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 /* const mensagem = ref(props.mensagem) */
 /*
@@ -173,6 +229,10 @@ onMounted(() => {
   /*   obterDadosTratadosChamado() */
   /*  console.log(props.itensTabela, 'teste aqu') */
 })
+
+const capturaItem = (chamado: any) => {
+  console.log(chamado, 'capturei ')
+}
 
 const listaTabela = () => {
   listaResultado.value = props.itensTabela

@@ -3,6 +3,23 @@
   <HeaderVoltar :title="titlepage" />
   <div class="body">
     <div class="body-left">
+      <Button
+        v-if="!dialog"
+        class="bg-indigo-800 rounded-[8px] w-9/12 h-12 shadow-md"
+        @click="abrirModal"
+        @fecharModal="fecharModal"
+      >
+        Adicionar Chamado
+      </Button>
+      <div class="ModalPage" v-if="dialog">
+        <ModalAddChamado
+          @fecharModal="fecharModal"
+          @chamadoAdicionado="handleChamadoAdicionado"
+          @submitChamado="obterDadosFormularios"
+          @consultarClientes="escolherCliente"
+          :editarChamado="itemEditar"
+        />
+      </div>
       <p class="py-2">Chamados {{ hoje }}</p>
       <div class="cards" v-if="!dialog">
         <div class="itens">
@@ -17,16 +34,65 @@
             variant="outlined"
           >
             <v-card-item>
-              <div>
-                <div class="text-card">
-                  <span class="label-card">Nome:</span> {{ chamado.Cliente }}
-                </div>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <div>
+                    <div class="text-card">
+                      <span class="label-card">Nome:</span>
+                      {{ chamado.Cliente }}
+                    </div>
 
-                <div class="text-card">
-                  <span class="label-card">Empresa:</span> {{ chamado.Empresa }}
-                </div>
-                <i class="fa-solid fa-eye"></i>
-              </div>
+                    <div class="text-card">
+                      <span class="label-card">Empresa:</span>
+                      {{ chamado.Empresa }}
+                    </div>
+                    <i class="fa-solid fa-eye"></i>
+                  </div>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-[425px] bg-zinc-900 text-white">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <span class="text-zinc-400 text-[16px] font-bold"
+                        >Empresa:
+                      </span>
+                      <br />{{ chamado.Empresa }}</DialogTitle
+                    >
+                    <DialogDescription>
+                      <span class="text-zinc-400 text-[16px] font-bold"
+                        >Titulo</span
+                      >
+                      <p>{{ chamado.titulo }}</p>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div class="flex flex-col py-4">
+                    <p>
+                      <span class="text-zinc-400 font-bold">Funcionário:</span>
+                      {{ chamado.Cliente }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">sistema:</span>
+                      {{ chamado.sistema }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Status:</span>
+                      {{ chamado.status }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">prioridade:</span>
+                      {{ chamado.prioridade }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Abertura:</span>
+                      {{ chamado.dAbertura }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Fechamento:</span>
+                      {{ chamado.dFechamento }}
+                    </p>
+                  </div>
+                  <DialogFooter> </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </v-card-item>
           </v-card>
         </div>
@@ -43,15 +109,65 @@
             variant="outlined"
           >
             <v-card-item>
-              <div>
-                <div class="text-card">
-                  <span class="label-card">Nome:</span> {{ chamado.Cliente }}
-                </div>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <div>
+                    <div class="text-card">
+                      <span class="label-card">Nome:</span>
+                      {{ chamado.Cliente }}
+                    </div>
 
-                <div class="text-card">
-                  <span class="label-card">Empresa:</span> {{ chamado.Empresa }}
-                </div>
-              </div>
+                    <div class="text-card">
+                      <span class="label-card">Empresa:</span>
+                      {{ chamado.Empresa }}
+                    </div>
+                    <i class="fa-solid fa-eye"></i>
+                  </div>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-[425px] bg-zinc-900 text-white">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <span class="text-zinc-400 text-[16px] font-bold"
+                        >Empresa:
+                      </span>
+                      <br />{{ chamado.Empresa }}</DialogTitle
+                    >
+                    <DialogDescription>
+                      <span class="text-zinc-400 text-[16px] font-bold"
+                        >Titulo</span
+                      >
+                      <p>{{ chamado.titulo }}</p>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div class="flex flex-col py-4">
+                    <p>
+                      <span class="text-zinc-400 font-bold">Funcionário:</span>
+                      {{ chamado.Cliente }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">sistema:</span>
+                      {{ chamado.sistema }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Status:</span>
+                      {{ chamado.status }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">prioridade:</span>
+                      {{ chamado.prioridade }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Abertura:</span>
+                      {{ chamado.dAbertura }}
+                    </p>
+                    <p>
+                      <span class="text-zinc-400 font-bold">Fechamento:</span>
+                      {{ chamado.dFechamento }}
+                    </p>
+                  </div>
+                  <DialogFooter> </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </v-card-item>
           </v-card>
         </div>
@@ -81,27 +197,196 @@
       </div>
       <div class="container-acoes">
         <div class="container-prioridade">
-          <div class="ml-28 flex flex-col align-center">
-            <p v-if="!dialog">Prioridade Alta Pendentes</p>
+          <div class="flex flex-col items-center w-full mr-2">
+            <p>Chamados Pendentes</p>
+            <Table class="rounded-lg pr-[12px]" id="table">
+              <TableHeader class="sticky top-0 bg-indigo-800 rounded-sm">
+                <TableRow>
+                  <TableHead>Empresa</TableHead>
+                  <TableHead>Titulo </TableHead>
+                  <TableHead class="text-right"> Data </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow
+                  class="hover:bg-indigo-800 cursor-pointer shadow-xl"
+                  v-for="chamado in listaPendentes"
+                  :key="chamado.id"
+                >
+                  <Dialog>
+                    <DialogTrigger as-child>
+                      <TableCell>{{ chamado.Empresa }}</TableCell>
+                      <TableCell>{{ chamado.titulo }}</TableCell>
+                      <TableCell class="text-right">
+                        {{ chamado.dAbertura }}
+                      </TableCell>
+                    </DialogTrigger>
+                    <DialogContent
+                      class="sm:max-w-[425px] bg-zinc-900 text-white"
+                    >
+                      <DialogHeader>
+                        <DialogTitle>
+                          <span class="text-zinc-400 text-[16px] font-bold"
+                            >Empresa:
+                          </span>
+                          <br />{{ chamado.Empresa }}</DialogTitle
+                        >
+                        <DialogDescription>
+                          <span class="text-zinc-400 text-[16px] font-bold"
+                            >Titulo</span
+                          >
+                          <p>{{ chamado.titulo }}</p>
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div class="flex flex-col py-4">
+                        <p>
+                          <span class="text-zinc-400 font-bold"
+                            >Funcionário:</span
+                          >
+                          {{ chamado.Cliente }}
+                        </p>
+                        <p>
+                          <span class="text-zinc-400 font-bold">sistema:</span>
+                          {{ chamado.sistema }}
+                        </p>
+                        <p>
+                          <span class="text-zinc-400 font-bold">Status:</span>
+                          {{ chamado.status }}
+                        </p>
+                        <p>
+                          <span class="text-zinc-400 font-bold"
+                            >prioridade:</span
+                          >
+                          {{ chamado.prioridade }}
+                        </p>
+                        <p>
+                          <span class="text-zinc-400 font-bold">Abertura:</span>
+                          {{ chamado.dAbertura }}
+                        </p>
+                        <p>
+                          <span class="text-zinc-400 font-bold"
+                            >Fechamento:</span
+                          >
+                          {{ chamado.dFechamento }}
+                        </p>
+                      </div>
+                      <DialogFooter class="w-full">
+                        <Button
+                          @click="atualizarStatusFechado(chamado)"
+                          class="rounded-[8px] bg-indigo-800 shadow-md"
+                          >Finalizar Chamado</Button
+                        >
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+
+          <div class="ml-4 mr-4 mb-4 flex flex-col items-center justify-center">
+            <Carousel orientation="vertical" class="relative w-full max-w-xs">
+              <CarouselContent class="h-56">
+                <CarouselItem
+                  v-for="(chamado, index) in listaChamadoPrioridade"
+                  :key="index"
+                >
+                  <div class="p-1">
+                    <Dialog>
+                      <DialogTrigger as-child>
+                        <Card class="h36 bg-zinc-800 cursor-pointer">
+                          <CardContent
+                            class="flex flex-col aspect-square items-center justify-center p-4 gap-2"
+                          >
+                            <p v-if="!dialog" class="text-[16px]">
+                              Pendentes com alta Prioridade
+                            </p>
+                            <div class="flex flex-col max-h-[48px]">
+                              <span class="text-[12px] font-semibold"
+                                >Empresa: {{ chamado.Empresa }}</span
+                              >
+
+                              <span class="text-[12px] font-semibold">
+                                Data de Abertura: {{ chamado.dAbertura }}</span
+                              >
+                            </div>
+                            <div>
+                              <i class="fa-solid fa-eye"></i>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </DialogTrigger>
+                      <DialogContent
+                        class="sm:max-w-[425px] bg-zinc-800 text-white"
+                      >
+                        <DialogHeader>
+                          <DialogTitle>Detalhes do Chamado</DialogTitle>
+                          <DialogDescription>
+                            {{ chamado.descricao }}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div class="grid py-4">
+                          <div
+                            class="grid grid-cols-2 items-center gap-2 text-[14px]"
+                          >
+                            <span class="font-bold">Titulo:</span>
+                            {{ chamado.titulo }}
+                            <span class="font-bold">Cliente:</span>
+                            {{ chamado.Cliente }}
+
+                            <span class="font-bold">Empresa:</span>
+                            {{ chamado.Empresa }}
+
+                            <span class="font-bold">Prioridade:</span>
+                            {{ chamado.prioridade }}
+
+                            <span class="font-bold">Arbetura:</span>
+                            {{ chamado.dAbertura }}
+                            <span class="font-bold">Fechamento:</span>
+                            {{ chamado.dFechamento }}
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            class="bg-indigo-800 rounded-lg hover-zinc-300 focus:outline-none"
+                            type="submit"
+                            @click="atualizarStatusFechado(chamado)"
+                          >
+                            <DialogClose
+                              class="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                            >
+                              Finalizar Chamado
+                            </DialogClose>
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+            <!--   <p v-if="!dialog">Prioridade Alta Pendentes</p>
             <Carousel
+              orientation="vertical"
               v-if="!dialog"
-              class="relative w-full max-w-sm"
+              class="relative w-full max-w-xs"
               :opts="{
                 align: 'start'
               }"
             >
-              <CarouselContent class="-ml-1">
+              <CarouselContent class="-ml-2">
                 <CarouselItem
                   v-for="(chamado, index) in listaChamadoPrioridade"
                   :key="index"
-                  class="pl-1 md:basis-1/2 lg:basis-1/3"
                 >
                   <div class="p-1" @click="abrirCardsPrioridade(chamado)">
                     <Dialog>
                       <DialogTrigger as-child>
                         <Card class="bg-zinc-800 cursor-pointer">
                           <CardContent
-                            class="flex aspect-square items-center p-6"
+                            class="flex aspect-square items-center justify-center p-6"
                           >
                             <div class="flex flex-col max-h-[48px]">
                               <span class="text-[12px] font-semibold">{{
@@ -168,27 +453,8 @@
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />
-            </Carousel>
+            </Carousel> -->
           </div>
-        </div>
-
-        <v-btn
-          v-if="!dialog"
-          color="#3f51b5"
-          class="btn-chamado"
-          @click="abrirModal"
-          @fecharModal="fecharModal"
-        >
-          + Chamado
-        </v-btn>
-        <div class="ModalPage" v-if="dialog">
-          <ModalAddChamado
-            @fecharModal="fecharModal"
-            @chamadoAdicionado="handleChamadoAdicionado"
-            @submitChamado="obterDadosFormularios"
-            @consultarClientes="escolherCliente"
-            :editarChamado="itemEditar"
-          />
         </div>
       </div>
     </div>
@@ -434,7 +700,6 @@
         <p v-if="!dialog" class="mt-4">Todos os chamados Recentes</p>
         <tabela
           v-if="!dialog && listaPronta"
-          @chamados="listaChamadosAbertos"
           @editar="abrirModalEditar"
           :listaFiltrada="novaLista"
           :itensTabela="itensChamado"
@@ -449,6 +714,14 @@ import popoverTeste from '../components/popoverTeste.vue'
 import tabela from '../components/tabela.vue'
 
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
 import {
   Carousel,
   CarouselContent,
@@ -472,7 +745,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
@@ -480,12 +752,12 @@ import {
 /* import axios from 'axios' */
 import HeaderVoltar from '../components/HeaderVoltar.vue'
 import { onMounted, ref } from 'vue'
-import { watch } from 'vue'
+/* import { watch } from 'vue' */
 /* import { toast } from 'vue3-toastify' */
 import 'vue3-toastify/dist/index.css'
 
 import ModalAddChamado from '../components/ModalAddChamado.vue'
-import TabelaChamados from '../components/TabelaChamados.vue'
+/* import TabelaChamados from '../components/TabelaChamados.vue' */
 import { useRoute } from 'vue-router'
 import { router } from '../router'
 import retornaNumberStatus from '../utils/formatStatus.ts'
@@ -503,6 +775,24 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import { format } from 'date-fns'
 
+interface Chamado {
+  Analista: string
+  Cliente: string
+  Empresa: string
+  clienteId: number
+  dAbertura: string
+  dFechamento: string
+  descricao: string
+  id: number
+  prioridade: string
+  redeId: number
+  sistema: string
+  status: string
+  statusChamadoAtual: number
+  titulo: string
+  usuarioId: number
+}
+
 const route = useRoute()
 const emit = defineEmits()
 const dialog = ref(false)
@@ -514,11 +804,12 @@ const idUser = ref<number>()
 const itemEditar = ref()
 const novoChamado = ref<number>()
 const store = useStore()
-const listaChamadoAll = ref<[]>([])
-const listaChamadoPrioridade = ref<[]>([])
-const listaChamadoAberto = ref<[]>([])
-const listaChamadoFechado = ref<[]>([])
-const listaChamadoPendente = ref<[]>([])
+
+const listaChamadoPrioridade = ref<Chamado[]>([])
+const listaChamadoAberto = ref<Chamado[]>([])
+const listaChamadoFechado = ref<Chamado[]>([])
+const listaChamadoPendente = ref<Chamado[]>([])
+const listaPendentes = ref<Chamado[]>([])
 let openModalPrioridade = ref<boolean>(false)
 const chamadoSelecionado = ref()
 const dateStart = ref<Date>()
@@ -529,22 +820,22 @@ const recarregar = ref<Boolean>(false)
 const hoje = ref<String>('')
 const sBuscaEmpresa = ref<string>('')
 const sBuscaStatus = ref<string>('')
-const sBuscaSistemas = ref<string>([])
+const sBuscaSistemas = ref<string>('')
 const placeholderTexto = ref('Status solicitação')
 
-const listaResultado = ref<Array>([])
-const itensChamado = ref<Array>([])
-const novaLista = ref<Array>([])
+const listaResultado = ref<Chamado[]>([])
+const itensChamado = ref<Chamado[]>([])
+const novaLista = ref<Chamado[]>([])
 const mensagem = ref<Boolean>(false)
 const listaPronta = ref<Boolean>(false)
 const user = ref(route.params.user)
-const chamadosPDV = ref<Array>([])
-const chamadosRetaguarda = ref<Array>([])
-const chamadosEcommerce = ref<Array>([])
-const chamadosEmissor = ref<Array>([])
-const chamadosEtiquetas = ref<Array>([])
-const chamadosPreVenda = ref<Array>([])
-const chamadosfinanceiro = ref<Array>([])
+const chamadosPDV = ref<Chamado[]>([])
+const chamadosRetaguarda = ref<Chamado[]>([])
+const chamadosEcommerce = ref<Chamado[]>([])
+const chamadosEmissor = ref<Chamado[]>([])
+const chamadosEtiquetas = ref<Chamado[]>([])
+const chamadosPreVenda = ref<Chamado[]>([])
+/* const chamadosfinanceiro = ref<Chamado[]>([]) */
 
 onMounted(() => {
   const route = useRoute()
@@ -601,12 +892,12 @@ const atualizarStatusFechado = async (item: any) => {
     id: item.id,
     statusChamadoAtual: 3
   }
-  const response = await atualizarChamado(data)
+  await atualizarChamado(data)
   notifyAtualizachamado()
   obterDadosTratadosChamado()
   retornaChamadosIgualDiaAtual()
 
-  return /* console.log(response) */
+  /* console.log(response) */
 }
 const retornaChamadosIgualDiaAtual = async () => {
   const storedData = localStorage.getItem('user')
@@ -901,6 +1192,7 @@ const obterDadosTratadosChamado = async () => {
           TotalChamadosEmissor()
           TotalChamadosEtiquetas()
           TotalChamadosPreVenda()
+          listaChamadosPendentes()
         }
       }
 
@@ -1128,6 +1420,14 @@ const listaPrioridadeChamado = () => {
   }
 }
 
+const listaChamadosPendentes = () => {
+  if (listaResultado.value.length > 0) {
+    listaPendentes.value = listaResultado.value.filter(
+      (chamado) => chamado.statusChamadoAtual == 2
+    )
+  }
+}
+
 const TotalChamadosPDV = () => {
   if (itensChamado.value.length) {
     chamadosPDV.value = listaResultado.value.filter(
@@ -1266,34 +1566,43 @@ const TotalChamadosPreVenda = () => {
   font-size: 12px;
 }
 .container-acoes {
-  width: 96%;
+  width: 100%;
 
-  max-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
 
-  margin: 8px;
-  padding-bottom: 12px;
+  align-items: center;
 }
 .container-prioridade {
-  max-height: 30vh;
+  height: 36vh;
 
   display: flex;
   min-width: 100%;
 
   display: flex;
-
-  align-items: center;
-
-  margin: 4%;
 }
 
 .btn-chamado {
   width: 50%;
   min-height: 30%;
   right: 10%;
+}
+#table {
+  overflow-x: hidden !important;
+  border-radius: 24px;
+}
+#table::-webkit-scrollbar {
+  width: 8px;
+}
+
+#table::-webkit-scrollbar-track {
+  background: #19181f;
+}
+#table::-webkit-scrollbar-thumb {
+  background-color: rgb(62, 34, 185); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  /* creates padding around scroll thumb */
 }
 
 /* .ModalAdicionarServiço {

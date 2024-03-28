@@ -1,6 +1,15 @@
 <template>
   <div class="menu-btn">
-    <v-btn class="btn-voltar" @click="RedirecionarInicio"> voltar </v-btn>
+    <Button class="" @click="RedirecionarInicio"> Inicio </Button>
+    <Button class="" @click="RedirectCadastroDecliente">
+      cadastro de cliente
+    </Button>
+    <Button class="" @click="RedirectConsultaDecliente">
+      consulta de cliente
+    </Button>
+    <Button class="" @click="RedirectCadastroDeServico"> chamados </Button>
+    <Button class="" @click="RedirectDesenv"> desenvolvimento </Button>
+
     <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
     <p style="margin-left: 8%">{{ title }}</p>
   </div>
@@ -11,19 +20,45 @@ import { ref, defineProps } from 'vue'
 import { router } from '../router'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import { Button } from '../components/ui/button'
 
 const store = useStore()
 
 const route = useRoute()
-const props = defineProps(['title'])
-console.log(props) // posso utilziar o ts ignore pra não reclamar deste aviso .
 
 const user = ref(route.params.user)
+
+const props = defineProps(['title'])
 
 const RedirecionarInicio = () => {
   router.push({ name: 'dashboard', params: { user: user.value } })
   console.log('evento acionado')
   store.commit('limpaValores')
+}
+
+const RedirectCadastroDecliente = () => {
+  router.push({ name: 'CadastroDeCliente', params: { user: user.value } })
+  console.log('evento acionado')
+}
+
+const RedirectConsultaDecliente = () => {
+  router.push({ name: 'ConsultaDeCliente', params: { user: user.value } })
+  console.log('evento acionado')
+}
+
+const RedirectCadastroDeServico = () => {
+  router.push({ name: 'CadastroDeServico', params: { user: user.value } })
+  console.log('evento acionado')
+}
+
+const RedirectDesenv = () => {
+  router.push({ name: 'desenv', params: { user: user.value } })
+  console.log('evento acionado')
+}
+
+const RedirectAgendamento = () => {
+  router.push({ name: 'agentamentoDia', params: { user: user.value } })
+  console.log('evento acionado')
 }
 </script>
 
