@@ -46,20 +46,23 @@
       </TableBody>
     </Table>
    -->
-  <Table class="text-white text-[12px] overflow-y-scroll rounded-lg" id="table">
+  <Table
+    class="text-white text-[12px] overflow-y-scroll rounded-lg shadow-zinc-900"
+    id="table"
+  >
     <TableHeader class="sticky top-0 bg-[#3f51b5]">
       <TableRow class="">
         <TableHead class="w-[100px]"> Empresa </TableHead>
         <TableHead>Funcionário</TableHead>
         <TableHead>Status</TableHead>
-        <TableHead>Analista</TableHead>
+        <TableHead>Sistema</TableHead>
         <TableHead class="text-right"> Data de Abertura</TableHead>
         <TableHead>Ações</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       <TableRow
-        class="bg-zinc-800"
+        class="bg-zinc-800 hover:bg-indigo-600"
         v-for="chamado in listaResultado"
         :key="chamado.id"
       >
@@ -74,10 +77,12 @@
         </TableCell>
         <TableCell>{{ chamado.Cliente }}</TableCell>
         <TableCell>{{ chamado.status }}</TableCell>
-        <TableCell>{{ chamado.Analista }}</TableCell>
+        <TableCell>{{ chamado.sistema }}</TableCell>
         <TableCell class="text-right"> {{ chamado.dAbertura }} </TableCell>
         <div class="flex mt-1 gap-2">
-          <Button class="bg-indigo-700" @click="handleEditar(chamado)"
+          <Button
+            class="bg-indigo-800 rounded-lg text-white hover:bg-indigo-600 shadow-zinc-800"
+            @click="handleEditar(chamado)"
             ><i class="fa-solid fa-pen-to-square"></i
           ></Button>
           <Dialog>
@@ -85,7 +90,7 @@
               <Button
                 @click="capturaItem(chamado)"
                 variant="outline"
-                class="bg-indigo-700"
+                class="bg-indigo-800 rounded-lg text-white hover:bg-indigo-600 shadow-zinc-800"
               >
                 <i class="fa-solid fa-eye"></i>
               </Button>
@@ -175,7 +180,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 
 /* const mensagem = ref(props.mensagem) */
 /*
@@ -189,7 +193,7 @@ import { Input } from '@/components/ui/input'
     { key: 'Acoes', title: 'Ações' }
   ] */
 
-interface Chamado {
+/* interface Chamado {
   clienteId: number
   statusChamadoAtual: number
 
@@ -199,7 +203,7 @@ interface Chamado {
   Empresa: string
 }
 
-const chamados = ref<Chamado[]>([])
+const chamados = ref<Chamado[]>([]) */
 const props = defineProps(['listaFiltrada', 'itensTabela'])
 watch(
   () => props.listaFiltrada,
@@ -217,8 +221,7 @@ watch(
 
 onMounted(() => {
   obterDadosAuthLogin() //refatorar essa chamado se repete em muitos componentes
-  console.log('executou')
-  console.log(props.itemTabela)
+
   console.log('Valor da listaFiltrada:', props.listaFiltrada)
 
   listaTabela()

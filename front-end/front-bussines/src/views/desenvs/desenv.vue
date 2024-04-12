@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
 import { Button } from '../../components/ui/button'
 import {
@@ -28,14 +28,26 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+
+import { getVersoes, postVersoes } from '../../services/versoesServices.ts'
 import { Input } from '@/components/ui/input'
 import axios from 'axios'
 import popoverTeste from '../../components/popoverTeste.vue'
 import { VisAxis, VisStackedBar, VisXYContainer } from '@unovis/vue'
 
+interface versao {
+  id: number
+  aplicativo: string
+  versao: string
+  datCri: Date
+}
+
 let titlepage = ref('Solicitações desenvolvimento')
 const dateStart = ref<Date>()
 const dateEnd = ref<Date>()
+const listVersoes = ref<versao[]>([])
+const valueVersao = ref<String>('')
+const valueApp = ref<String>('')
 
 const data = [
   { name: 'Jan', total: 3 },
@@ -47,6 +59,20 @@ const data = [
 ]
 
 const maxY = 60
+
+onMounted(() => {
+  todoVersoes()
+})
+
+const todoVersoes = async () => {
+  try {
+    const response = await getVersoes()
+
+    listVersoes.value = response.data
+  } catch (error) {
+    console.error(error) // Mostra erros, caso ocorram
+  }
+}
 
 const teste = () => {
   console.log('teste')
@@ -75,6 +101,21 @@ const filtrarPorDatas = async () => {
    const result = form.diasAbertos.includes(dayvalue)
   return console.log('teste aqui', dayvalue)
 } */
+
+const cadastrarVersao = async () => {
+  console.log(valueVersao.value, valueApp.value)
+
+  if (valueVersao.value && valueApp.value) {
+    const data = {
+      aplicativo: valueApp.value,
+      versao: valueVersao.value,
+      datCri: new Date()
+    }
+    const submitVersao = await postVersoes(data)
+  } else {
+    console.log('toast preencha todos os campos ! ')
+  }
+}
 </script>
 
 <template>
@@ -85,74 +126,76 @@ const filtrarPorDatas = async () => {
         class="w-full h-80 rounded-[24px] bg-zinc-800 flex flex-col items-center gap-2"
       >
         <p class="text-sm mt-4">Cadastro de versões</p>
-        <div class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen">
-          <Dialog>
-            <DialogTrigger
-              class="flex justify-end items-center gap-16 w-60 shadow-zinc-800"
-            >
-              <p>NFC-e</p>
-              <i class="fa-solid fa-eye"></i>
-            </DialogTrigger>
-            <DialogContent class="bg-zinc-900 text-white">
-              <DialogHeader>
-                <DialogTitle>Versões de NFC-e</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-
-              <DialogFooter> Adicionar Soluçoes </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen">
-          <Dialog>
-            <DialogTrigger
-              class="flex justify-end items-center gap-16 w-60 shadow-zinc-800"
-            >
-              <p>Back-office</p>
-              <i class="fa-solid fa-eye"></i>
-            </DialogTrigger>
-            <DialogContent class="bg-zinc-900 text-white">
-              <DialogHeader>
-                <DialogTitle>Versões de NFC-e</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-
-              <DialogFooter> Adicionar Soluçoes </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen">
-          <Dialog>
-            <DialogTrigger
-              class="flex justify-end items-center gap-16 w-60 shadow-zinc-800"
-            >
-              <p>ETIQUETAS</p>
-              <i class="fa-solid fa-eye"></i>
-            </DialogTrigger>
-            <DialogContent class="bg-zinc-900 text-white">
-              <DialogHeader>
-                <DialogTitle>Versões de NFC-e</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-
-              <DialogFooter> Adicionar Soluçoes </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <Button
-          variant="outline"
-          class="bg-customGreen hover:bg-zinc rounded-lg shadow-zinc-800 hover:bg-zinc-900"
-          >Adicionar</Button
+        <div
+          class="flex flex-col gap-2 h-52 overflow-auto hover:overflow-scroll pt-2"
+          id="scroll"
         >
+          <div
+            v-for="(versao, index) in listVersoes"
+            :key="index"
+            class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen"
+          >
+            <Dialog>
+              <DialogTrigger
+                class="flex items-center gap-16 w-60 shadow-zinc-800"
+              >
+                <p class="w-40 text-[12px]">{{ versao.aplicativo }}</p>
+                <i class="fa-solid fa-eye"></i>
+              </DialogTrigger>
+              <DialogContent class="bg-zinc-900 text-white rounded-lg">
+                <DialogHeader>
+                  <DialogTitle>{{ versao.aplicativo }}</DialogTitle>
+                  <DialogDescription class="flex flex-col">
+                    <div class="flex justify-content gap-6">
+                      <p class="font-bold">VERSÃO:</p>
+                      <P>{{ versao.versao }}</P>
+                    </div>
+                    <div class="flex gap-6">
+                      <p class="font-bold">DATA:</p>
+                      <P>{{ versao.datCri }}</P>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+        <Dialog class="">
+          <DialogTrigger>
+            <Button
+              variant="outline"
+              class="bg-customGreen hover:bg-zinc rounded-lg shadow-zinc-800 hover:bg-zinc-900"
+              >Adicionar</Button
+            >
+          </DialogTrigger>
+          <DialogContent
+            class="rounded-lg w-42 h-64 bg-zinc-600 text-white flex flex-col items-center justify-center"
+          >
+            <p class="text-[12px] text-transform: uppercase font-bold">
+              Cadastre sua Versão
+            </p>
+            <DialogDescription class="flex flex-col gap-4">
+              <Input
+                v-model="valueApp"
+                type="text"
+                placeholder="Aplicativo"
+                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white"
+              />
+              <Input
+                type="text"
+                v-model="valueVersao"
+                placeholder="Versao"
+                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white"
+              />
+              <Button
+                class="rounded-lg bg-indigo-800 hover:bg-indigo-600"
+                @click="cadastrarVersao()"
+              >
+                Cadastrar
+              </Button>
+            </DialogDescription>
+          </DialogContent>
+        </Dialog>
       </div>
       <div class="w-full h-64 rounded-[24px] bg-zinc-800"></div>
     </aside>
@@ -468,4 +511,17 @@ const filtrarPorDatas = async () => {
   </section>
 </template>
 
-<style scooped></style>
+<style scooped>
+#scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+#scroll::-webkit-scrollbar-track {
+  background: rgb(39 39 42);
+}
+#scroll::-webkit-scrollbar-thumb {
+  background-color: rgb(82 82 91); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  /* creates padding around scroll thumb */
+}
+</style>

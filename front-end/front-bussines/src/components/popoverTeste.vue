@@ -11,10 +11,10 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover'
+import { watch } from 'vue'
 
 const date = ref<Date>()
-
-const props = defineProps(['dataTitulo', 'isStart'])
+const props = defineProps(['dataTitulo', 'isStart', 'limparDatas'])
 const emit = defineEmits()
 
 const enviaDatas = async () => {
@@ -23,9 +23,23 @@ const enviaDatas = async () => {
   } else {
     emit('dataFim', date.value)
   }
-
   //props do componente pai pra voltar ao estado inicial da variavel após a requisição é isso !
 }
+
+const limparData = () => {
+  date.value = undefined
+}
+
+watch(
+  () => props.limparDatas,
+  (limpardata) => {
+    console.log('limparDatas alterada para:', limpardata)
+    if (limpardata === true) {
+      limparData()
+      emit('limpar-concluido')
+    }
+  }
+)
 </script>
 
 <template>

@@ -1,14 +1,18 @@
 <template>
   <div class="menu-btn">
-    <Button class="" @click="RedirecionarInicio"> Inicio </Button>
-    <Button class="" @click="RedirectCadastroDecliente">
+    <Button class="bg-[#3f51b5]" @click="RedirecionarInicio"> Inicio </Button>
+    <Button class="bg-[#3f51b5]" @click="RedirectCadastroDecliente">
       cadastro de cliente
     </Button>
-    <Button class="" @click="RedirectConsultaDecliente">
+    <Button class="bg-[#3f51b5]" @click="RedirectConsultaDecliente">
       consulta de cliente
     </Button>
-    <Button class="" @click="RedirectCadastroDeServico"> chamados </Button>
-    <Button class="" @click="RedirectDesenv"> desenvolvimento </Button>
+    <Button class="bg-[#3f51b5]" @click="RedirectCadastroDeServico">
+      chamados
+    </Button>
+    <Button class="bg-[#3f51b5]" @click="RedirectDesenv">
+      desenvolvimento
+    </Button>
 
     <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
     <p style="margin-left: 8%">{{ title }}</p>

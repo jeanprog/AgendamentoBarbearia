@@ -198,8 +198,8 @@
       <div class="container-acoes">
         <div class="container-prioridade">
           <div class="flex flex-col items-center w-full mr-2">
-            <p>Chamados Pendentes</p>
-            <Table class="rounded-lg pr-[12px]" id="table">
+            <p v-if="!dialog">Chamados Pendentes</p>
+            <Table v-if="!dialog" class="rounded-lg pr-[12px]" id="table">
               <TableHeader class="sticky top-0 bg-indigo-800 rounded-sm">
                 <TableRow>
                   <TableHead>Empresa</TableHead>
@@ -294,7 +294,7 @@
                   <div class="p-1">
                     <Dialog>
                       <DialogTrigger as-child>
-                        <Card class="h36 bg-zinc-800 cursor-pointer">
+                        <Card class="h36 bg-indigo-800 cursor-pointer">
                           <CardContent
                             class="flex flex-col aspect-square items-center justify-center p-4 gap-2"
                           >
@@ -619,12 +619,13 @@
         <div class="flex flex-col w-full items-center gap-2">
           <p v-if="!dialog">Filtros de Chamados</p>
 
-          <div class="relative items-center w-70">
+          <div v-if="!dialog" class="relative items-center w-70">
             <Input
+              v-if="!dialog"
               id="search"
               type="text"
               placeholder="Buscar por empresas..."
-              class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70"
+              class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white"
               @input="filtrarPorEmpresa()"
               v-model="sBuscaEmpresa"
             />
@@ -639,13 +640,18 @@
                 dataTitulo="Data inicio"
                 isStart="true"
                 @dataInicio="recebeDatainicio"
+                :limparDatas="limpardatas"
+                @limpar-concluido="retornaLimparDatas"
               />
             </div>
             <div class="max-w-50">
               <popoverTeste
+                v-if="!dialog"
                 dataTitulo="Data Final"
                 isStart="false"
+                :limparDatas="limpardatas"
                 @dataFim="recebeDataFim"
+                @limpar-concluido="retornaLimparDatas"
               />
             </div>
           </div>
@@ -658,7 +664,7 @@
             <option>pendente</option>
             <option>fechado</option>
           </select> -->
-          <Select v-model="sBuscaStatus">
+          <Select v-if="!dialog" v-model="sBuscaStatus">
             <SelectTrigger class="w-48 ml-2 h-8 bg-zinc-900 rounded-[12px]">
               <span v-if="sBuscaStatus == ''">Status solicitação</span>
               <SelectValue />
@@ -671,7 +677,7 @@
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Select v-model="sBuscaSistemas">
+          <Select v-if="!dialog" v-model="sBuscaSistemas">
             <SelectTrigger class="w-48 ml-2 h-8 bg-zinc-900 rounded-[12px]">
               <span v-if="sBuscaSistemas == ''">Sistemas</span>
               <SelectValue />
@@ -691,8 +697,20 @@
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button @click="filtrarPorStatus()"> Buscar chamado</Button>
-          <Button @click="limpaFiltrosBusca()"> limpar filtros</Button>
+          <Button
+            v-if="!dialog"
+            class="bg-indigo-800 rounded-lg text-white w-36 hover:bg-indigo-600 shadow-zinc-400"
+            @Click="filtrarPorStatus()"
+          >
+            Buscar chamado</Button
+          >
+          <Button
+            class="bg-indigo-800 rounded-lg text-white w-36 hover:bg-indigo-600 shadow-zinc-400"
+            v-if="!dialog"
+            @click="limpaFiltrosBusca()"
+          >
+            limpar filtros</Button
+          >
         </div>
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
@@ -796,6 +814,7 @@ interface Chamado {
 const route = useRoute()
 const emit = defineEmits()
 const dialog = ref(false)
+const limpardatas = ref(false)
 const titlepage = ref('Administração Rápida de Chamados')
 const abrirChamado = ref()
 const manipulaEstadoDaTabela = ref(false)
@@ -821,7 +840,6 @@ const hoje = ref<String>('')
 const sBuscaEmpresa = ref<string>('')
 const sBuscaStatus = ref<string>('')
 const sBuscaSistemas = ref<string>('')
-const placeholderTexto = ref('Status solicitação')
 
 const listaResultado = ref<Chamado[]>([])
 const itensChamado = ref<Chamado[]>([])
@@ -835,15 +853,11 @@ const chamadosEcommerce = ref<Chamado[]>([])
 const chamadosEmissor = ref<Chamado[]>([])
 const chamadosEtiquetas = ref<Chamado[]>([])
 const chamadosPreVenda = ref<Chamado[]>([])
+
 /* const chamadosfinanceiro = ref<Chamado[]>([]) */
 
 onMounted(() => {
   const route = useRoute()
-
-  console.log((hoje.value = format(new Date(), 'dd/MM/yyyy')))
-  if (listaResultado.value.length > 0) {
-    console.log('executei depois')
-  }
 
   retornaChamadosIgualDiaAtual()
   obterDadosTratadosChamado()
@@ -851,7 +865,6 @@ onMounted(() => {
   obterDadosAuthLogin()
 
   abrirChamado.value = route.query.abrirModal
-  console.log('vendo chamado', abrirChamado.value)
 
   if (parseInt(abrirChamado.value) === 1) {
     dialog.value = true
@@ -870,24 +883,23 @@ onMounted(() => {
 ) */
 
 const limpaFiltrosBusca = () => {
-  console.log(sBuscaStatus.value)
-  placeholderTexto.value = 'Status mudou'
-  if (sBuscaStatus.value) {
-    console.log('cai dentro do if', sBuscaStatus)
+  obterDadosTratadosChamado()
+  sBuscaStatus.value = ''
 
-    console.log(placeholderTexto.value)
-    obterDadosTratadosChamado()
-    sBuscaStatus.value = ''
-  }
+  sBuscaSistemas.value = ''
+  limpardatas.value = true
+
   /*  if (sBuscaStatus.value) {
     sBuscaStatus.value = undefined
     obterDadosTratadosChamado()
     console.log(sBuscaStatus.value, 'depois do if ')
   } */
 }
+const retornaLimparDatas = () => {
+  limpardatas.value = false
+}
 
 const atualizarStatusFechado = async (item: any) => {
-  console.log(item.statusChamadoAtual, 'capturando item')
   const data = {
     id: item.id,
     statusChamadoAtual: 3
@@ -985,8 +997,7 @@ const filtrarPorEmpresa = () => {
     novaLista.value = listaResultado.value.filter(
       (chamado: any) => chamado.Empresa.toLowerCase() === sBuscaEmpresa.value
     )
-
-    console.log(novaLista.value)
+    console.log('novalista', novaLista.value)
   } else {
     novaLista.value = listaResultado.value
   }
@@ -994,80 +1005,39 @@ const filtrarPorEmpresa = () => {
 
 const filtrarPorStatus = () => {
   console.log(sBuscaStatus.value, sBuscaSistemas.value, 'chamei aqui novo')
-
-  const statusValido =
-    sBuscaStatus.value !== undefined &&
-    sBuscaStatus.value !== null &&
-    sBuscaStatus.value !== false
-  // Verifica se sBuscaSistemas.value é válido
-  const sistemasValido =
-    sBuscaSistemas.value !== undefined &&
-    sBuscaSistemas.value !== null &&
-    sBuscaSistemas.value !== false
-
-  // Verifica se o status é fornecido, mas nenhum sistema é fornecido
-  if (statusValido && !sistemasValido) {
-    console.log(sBuscaStatus.value, sBuscaSistemas.value, 'chamei aqui novo')
+  if (sBuscaStatus.value && sBuscaSistemas.value === '') {
+    if (listaResultado.value.length > 0 && sBuscaStatus.value) {
+      novaLista.value = listaResultado.value.filter(
+        (chamado: any) =>
+          chamado.status.toLowerCase() === sBuscaStatus.value.toString()
+      )
+      console.log('novalista', novaLista.value)
+    } else {
+      novaLista.value = listaResultado.value
+    }
+  } else if (sBuscaSistemas.value && sBuscaStatus.value === '') {
+    console.log('buscando por sistemas', sBuscaSistemas.value)
+    if (listaResultado.value.length > 0 && sBuscaSistemas.value) {
+      novaLista.value = listaResultado.value.filter(
+        (chamado: any) => chamado.sistema === sBuscaSistemas.value.toString()
+      )
+      console.log('novalista', novaLista.value)
+    } else {
+      novaLista.value = listaResultado.value
+    }
+  } else if (sBuscaSistemas.value !== '' && sBuscaStatus.value !== '') {
     if (listaResultado.value.length > 0) {
       novaLista.value = listaResultado.value.filter(
-        (chamado) =>
-          chamado.status.toLowerCase() === sBuscaStatus.value.toLowerCase()
+        (chamado: any) =>
+          chamado.sistema === sBuscaSistemas.value.toString() &&
+          chamado.status === sBuscaStatus.value.toString()
       )
     } else {
-      novaLista.value = []
-    }
-  }
-  // Verifica se o sistema é fornecido, mas nenhum status é fornecido
-  else if (!statusValido && sistemasValido) {
-    console.log('buscando pelo sistemas')
-    // Lógica para filtrar apenas por sBuscaSistemas.value
-    // Aqui você pode adicionar sua lógica de filtragem por sistemas
-    // por exemplo, novaLista.value = listaResultado.value.filter(...)
-  }
-  // Verifica se ambos o status e sistema são fornecidos
-  else if (statusValido && sistemasValido) {
-    console.log('buscando pelos dois')
-    // Lógica para filtrar por ambos sBuscaStatus.value e sBuscaSistemas.value
-    // Aqui você pode combinar as condições para filtrar com base em ambos os valores
-    // por exemplo, novaLista.value = listaResultado.value.filter(...)
-  }
-  // Se nenhum select for fornecido, exibe a lista completa sem filtragem
-  else {
-    novaLista.value = listaResultado.value
-  }
-  /*  switch (false) {
-    case status && !sistemas:
-      // Lógica para filtrar apenas por sBuscaStatus.value
-      if (listaResultado.value.length > 0) {
-        novaLista.value = listaResultado.value.filter(
-          (chamado) =>
-            chamado.status.toLowerCase() === sBuscaStatus.value.toLowerCase()
-        )
-      } else {
-        novaLista.value = []
-      }
-      break
-
-    case !sBuscaStatus.value && sBuscaSistemas.value:
-      // Lógica para filtrar apenas por sBuscaSistemas.value
-      // Aqui você pode adicionar sua lógica de filtragem por sistemas
-      // por exemplo, novaLista.value = listaResultado.value.filter(...)
-      console.log('buscando pelo sistemas')
-      break
-
-    case sBuscaStatus.value && sBuscaSistemas.value:
-      // Lógica para filtrar por ambos sBuscaStatus.value e sBuscaSistemas.value
-      // Aqui você pode combinar as condições para filtrar com base em ambos os valores
-      // por exemplo, novaLista.value = listaResultado.value.filter(...)
-      console.log('buscando pelos dois ')
-      break
-
-    default:
-      // Caso nenhum dos selects seja fornecido, você pode tomar alguma ação padrão
-      // por exemplo, exibir a lista completa sem filtragem
       novaLista.value = listaResultado.value
-      break
-  } */
+    }
+  } else {
+    console.log('deu merda')
+  }
 }
 
 /* if (listaResultado.value.length > 0 && sBuscaStatus.value) {
@@ -1106,7 +1076,6 @@ const filtrarChamadosFechados = () => {
 }
 
 const recebeDatainicio = (dataInicio: Date) => {
-  console.log(dataInicio, 'acionei o evento data inicio')
   dateStart.value = dataInicio
   filtrarPorDatas()
 }
@@ -1128,7 +1097,7 @@ const filtrarPorDatas = async () => {
         dateEnd.value
       )
       _listaFiltrada.value = response.data
-      console.log(_listaFiltrada.value)
+
       chamadosFiltrados()
     }
   } else {
@@ -1172,18 +1141,11 @@ const obterDadosTratadosChamado = async () => {
           dAbertura: formatarData(chamado.dAbertura)
         }
       })
-      console.log(
-        listaResultado.value,
-        'teste da lista aqui no cadastro de serviço'
-      )
 
       listaPrioridadeChamado()
       if (listaResultado.value.length > 0) {
-        console.log('executei depois', listaResultado.value)
         itensChamado.value = listaResultado.value
         listaPronta.value = true
-
-        console.log(itensChamado.value, 'ultima lista total chamados ')
 
         if (itensChamado.value.length > 0) {
           TotalChamadosPDV()
@@ -1244,10 +1206,9 @@ const chamadosFiltrados = async () => {
           dAbertura: formatarData(chamado.dAbertura)
         }
       })
-      console.log('lista final ', listaResultado.value)
+
       if (listaResultado.value.length > 0) {
         novaLista.value = listaResultado.value
-        console.log(novaLista.value, 'lista filtrada')
       }
     } else {
       console.log('lista vazia ')
@@ -1260,18 +1221,14 @@ const chamadosFiltrados = async () => {
 }
 
 const abrirCardsPrioridade = (item: any) => {
-  console.log('cards', openModalPrioridade.value, item)
   openModalPrioridade.value = true
   chamadoSelecionado.value = item
 }
 
 const obterDadosFormularios = (item: any) => {
-  console.log('verificando item no evento de saida decisão', item)
   const statusNumber = retornaNumberStatus(item.statusChamadoString)
 
   if (item.id) {
-    console.log('estou atualizando um item')
-
     if (statusNumber === 3) {
       const data = {
         ...item,
@@ -1297,11 +1254,9 @@ const obterDadosFormularios = (item: any) => {
         ...dataFormat
       } = data
 
-      console.log('atualizando o item sem statuss', dataFormat)
       submitAtualizarChamado(dataFormat)
     }
   } else {
-    console.log('estou mandando um novo item', item)
     const data = {
       ...item,
       dAbertura: new Date(),
@@ -1310,7 +1265,6 @@ const obterDadosFormularios = (item: any) => {
     }
     const { statusChamadoString, nomeCliente, empresa, ...dataFormat } = data
 
-    console.log('saida final para submit de novo chamado', dataFormat)
     submitChamado(dataFormat)
   }
 }
@@ -1339,7 +1293,6 @@ const submitAtualizarChamado = async (data: any) => {
 
 const submitChamado = async (data: any) => {
   try {
-    console.log('pescando a ultima mudou', data)
     const response = await postChamado(data)
     store.commit('limpaChamado')
     store.commit('limpaCliente')
@@ -1357,8 +1310,6 @@ const submitChamado = async (data: any) => {
 }
 
 const escolherCliente = (item: any) => {
-  console.log(item, 'saida do data aqui na busca cliente')
-
   router.push({
     name: 'ConsultaDeCliente',
     params: { user: user.value }
@@ -1375,8 +1326,6 @@ const abrirModalEditar = (item: any) => {
 const abrirModal = () => {
   dialog.value = true
   itemEditar.value = undefined
-
-  console.log('evento acionado', dialog.value)
 }
 const fecharModal = () => {
   dialog.value = false
@@ -1387,7 +1336,6 @@ const obterDadosAuthLogin = () => {
     const dadosJson = JSON.parse(dadosLogin)
     idUser.value = parseInt(dadosJson.id)
     idRede.value = parseInt(dadosJson.rede)
-    console.log(idUser.value, idRede.value)
   }
 }
 
@@ -1395,7 +1343,7 @@ const handleChamadoAdicionado = () => {
   // Propagar o evento para o componente filho (TabelaChamados)
   /* const tabelaChamadosComponent = ref('tabelaChamados').value;
   tabelaChamadosComponent && tabelaChamadosComponent.handleChamadoAdicionado(); */
-  console.log('add')
+
   manipulaEstadoDaTabela.value = true
 }
 
@@ -1463,7 +1411,7 @@ const TotalChamadosEmissor = () => {
 const TotalChamadosEtiquetas = () => {
   if (itensChamado.value.length) {
     chamadosEtiquetas.value = listaResultado.value.filter(
-      (chamado) => chamado.sistema === 'etiquetas'
+      (chamado) => chamado.sistema === 'Etiquetas'
     )
   }
 }
