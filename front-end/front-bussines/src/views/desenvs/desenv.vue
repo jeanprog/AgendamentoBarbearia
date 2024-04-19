@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
 import { Button } from '../../components/ui/button'
 import {
@@ -18,6 +19,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
   DialogTrigger
 } from '@/components/ui/dialog'
 import {
@@ -28,12 +30,29 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
 
-import { getVersoes, postVersoes } from '../../services/versoesServices.ts'
+import {
+  getVersoes,
+  postVersoes,
+  delVersaoService,
+  requestSolucaoVersao
+} from '../../services/versoesServices.ts'
 import { Input } from '@/components/ui/input'
 import axios from 'axios'
 import popoverTeste from '../../components/popoverTeste.vue'
 import { VisAxis, VisStackedBar, VisXYContainer } from '@unovis/vue'
+
+import { toast } from 'vue3-toastify'
+import { z } from 'zod'
 
 interface versao {
   id: number
@@ -48,6 +67,13 @@ const dateEnd = ref<Date>()
 const listVersoes = ref<versao[]>([])
 const valueVersao = ref<String>('')
 const valueApp = ref<String>('')
+const selectVersao = ref<number>()
+const desenvolvedor = ref<string>('')
+const datCriDesenv = ref<Date>()
+const tituloDesenv = ref<string>('')
+const descricaoDesenv = ref<string>('')
+const selectAppVersao = ref<string>('')
+const camposObrigatorios = ref<Boolean>(false)
 
 const data = [
   { name: 'Jan', total: 3 },
@@ -89,6 +115,11 @@ const recebeDataFim = (dataFim: Date) => {
   filtrarPorDatas()
 }
 
+const RecebeDataDesenv = (dataDesenv: Date) => {
+  datCriDesenv.value = dataDesenv
+  console.log(datCriDesenv.value)
+}
+
 const filtrarPorDatas = async () => {
   if (dateStart.value && dateEnd.value) {
     console.log(' com datas  ')
@@ -112,9 +143,106 @@ const cadastrarVersao = async () => {
       datCri: new Date()
     }
     const submitVersao = await postVersoes(data)
+    todoVersoes()
+    toastNotify('adicionado com sucesso')
+    valueVersao.value = ''
+    valueApp.value = ''
   } else {
     console.log('toast preencha todos os campos ! ')
+    toastNotify('preencha todos os campos')
+    return
   }
+}
+
+const deleteVersao = async (id: number) => {
+  console.log('peguei o id', id)
+  // comentei estar parte pra poder adiciona a regra de deletar somente se não tiver associado a solicitações !
+
+  const submitDelete = await delVersaoService(id)
+  todoVersoes()
+  /*   toastNotify('Ainda não é permitido remover uma versão') */
+}
+
+const toastNotify = (text: string) => {
+  toast(text, {
+    autoClose: 1000
+  })
+}
+
+const capturaIdVersao = () => {
+  const idVersao = parseInt(selectVersao.value)
+  console.log(listVersoes.value)
+  if (idVersao) {
+    console.log('percorrendo o array id number', idVersao)
+    const nameApp = listVersoes.value.find((versao) => versao.id === idVersao)
+    if (nameApp) {
+      selectAppVersao.value = nameApp.aplicativo
+    }
+  }
+}
+
+const solicitacao = z.object({
+  idVersao: z.number(),
+  aplicativo: z.string().nonempty(),
+  usuarioId: z.number(),
+  desenvolvedor: z.string().nonempty(),
+  descricao: z.string().nonempty(),
+  titulo: z.string().nonempty(),
+  datCri: z.date({
+    required_error: 'Please select a date and time',
+    invalid_type_error: "That's not a date!"
+  }) // Torna o campo datCri obrigatório
+})
+
+const submitSolicitacaoDesenv = () => {
+  const storedData = localStorage.getItem('user')
+
+  if (storedData) {
+    const parsedData = JSON.parse(storedData)
+    const id = parsedData.id
+    console.log(descricaoDesenv.value, 'teste metodo')
+    const data = {
+      idVersao: parseInt(selectVersao.value),
+      aplicativo: selectAppVersao.value,
+      usuarioId: id, // pegar no local storage
+      desenvolvedor: desenvolvedor.value,
+      descricao: descricaoDesenv.value,
+      titulo: tituloDesenv.value,
+      datCri: datCriDesenv.value
+    }
+    console.log(data)
+
+    try {
+      solicitacao.parse(data)
+
+      console.log(
+        'Todos os campos estão preenchidos corretamente. Pode prosseguir com a submissão.'
+      )
+      camposObrigatorios.value = false
+      requestDesenv(data)
+
+      // Faça a submissão da solicitação de desenvolvimento aqui
+    } catch (error) {
+      console.log('Preencha todos os campos corretamente antes de prosseguir.')
+      camposObrigatorios.value = true
+    }
+  }
+
+  // não consegui instalar o zod e o  veevalidator não sei porque o shadcnvue não está permitindo deve estar instável , fazer feio mesmo
+}
+
+const requestDesenv = async (data: any) => {
+  const response = await requestSolucaoVersao(data)
+  clearCampos()
+  toastNotify('enviado com sucesso')
+}
+const clearCampos = () => {
+  selectAppVersao.value = undefined
+
+  desenvolvedor.value = ''
+  descricaoDesenv.value = ''
+  tituloDesenv.value = ''
+  datCriDesenv.value = undefined
 }
 </script>
 
@@ -133,19 +261,21 @@ const cadastrarVersao = async () => {
           <div
             v-for="(versao, index) in listVersoes"
             :key="index"
-            class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen"
+            class="flex bg-zinc-700 w-60 rounded-lg h-8 hover:bg-customGreen shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] focus:outline-none"
           >
             <Dialog>
               <DialogTrigger
-                class="flex items-center gap-16 w-60 shadow-zinc-800"
+                class="flex items-center gap-16 w-60 shadow-zinc-800 focus:outline-none"
               >
-                <p class="w-40 text-[12px]">{{ versao.aplicativo }}</p>
+                <p class="w-40 text-[12px]">
+                  {{ versao.aplicativo }} : {{ versao.versao }}
+                </p>
                 <i class="fa-solid fa-eye"></i>
               </DialogTrigger>
               <DialogContent class="bg-zinc-900 text-white rounded-lg">
                 <DialogHeader>
                   <DialogTitle>{{ versao.aplicativo }}</DialogTitle>
-                  <DialogDescription class="flex flex-col">
+                  <DialogDescription class="flex flex-col gap-6">
                     <div class="flex justify-content gap-6">
                       <p class="font-bold">VERSÃO:</p>
                       <P>{{ versao.versao }}</P>
@@ -154,17 +284,25 @@ const cadastrarVersao = async () => {
                       <p class="font-bold">DATA:</p>
                       <P>{{ versao.datCri }}</P>
                     </div>
+                    <div>
+                      <DialogClose class="focus:outline-none">
+                        <Button
+                          class="rounded-lg shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-indigo-800 hover:bg-indigo-500 focus:outline-none"
+                          @click="deleteVersao(versao.id)"
+                          >Remover</Button
+                        >
+                      </DialogClose>
+                    </div>
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>
             </Dialog>
           </div>
         </div>
-        <Dialog class="">
-          <DialogTrigger>
+        <Dialog>
+          <DialogTrigger class="focus:outline-none">
             <Button
-              variant="outline"
-              class="bg-customGreen hover:bg-zinc rounded-lg shadow-zinc-800 hover:bg-zinc-900"
+              class="bg-customGreen hover:bg-zinc rounded-lg shadow-zinc-800 hover:bg-zinc-900 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >Adicionar</Button
             >
           </DialogTrigger>
@@ -179,20 +317,22 @@ const cadastrarVersao = async () => {
                 v-model="valueApp"
                 type="text"
                 placeholder="Aplicativo"
-                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white"
+                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]"
               />
               <Input
                 type="text"
                 v-model="valueVersao"
                 placeholder="Versao"
-                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white"
+                class="pl-10 bg-zinc-800 rounded-[12px] text-zinc-600 w-70 text-white shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]"
               />
-              <Button
-                class="rounded-lg bg-indigo-800 hover:bg-indigo-600"
-                @click="cadastrarVersao()"
+              <DialogClose :disabled="!valueApp || !valueVersao">
+                <Button
+                  class="rounded-lg bg-indigo-800 hover:bg-indigo-600 shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px]"
+                  @click="cadastrarVersao()"
+                >
+                  Cadastrar
+                </Button></DialogClose
               >
-                Cadastrar
-              </Button>
             </DialogDescription>
           </DialogContent>
         </Dialog>
@@ -271,6 +411,79 @@ const cadastrarVersao = async () => {
             @dataFim="recebeDataFim"
           />
         </div>
+        <div>
+          <Dialog>
+            <DialogTrigger class="focus:outline-none">
+              <Button
+                class="rounded-lg bg-indigo-900 hover:bg-customGray shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                >Adicionar solicitação</Button
+              >
+            </DialogTrigger>
+            <DialogContent class="flex flex-col bg-zinc-700 text-white">
+              <DialogDescription>
+                <div class="flex gap-6 justify-center items-center">
+                  <div class="flex flex-col gap-2 items-center">
+                    <span>Selecione Versão</span>
+                    <Select v-model="selectVersao">
+                      <SelectTrigger
+                        class="w-48 ml-2 h-10 bg-zinc-900 rounded-[12px]"
+                      >
+                        <SelectValue placeholder="Versões" />
+                      </SelectTrigger>
+                      <SelectContent class="bg-zinc-900 w-48 text-white">
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="(versao, index) in listVersoes"
+                            :key="index"
+                            :value="versao.id.toString()"
+                            @click="capturaIdVersao()"
+                          >
+                            {{ versao.aplicativo }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <span>Crie um titulo</span>
+                    <Input
+                      v-model="tituloDesenv"
+                      class="w-48 h-10 bg-zinc-900 rounded-[12px]"
+                    ></Input>
+                  </div>
+                  <div class="flex flex-col gap-2 justify-center items-center">
+                    <span>Desenvolvedor</span>
+                    <Input
+                      v-model="desenvolvedor"
+                      class="w-48 h-10 bg-zinc-900 rounded-[12px]"
+                    ></Input>
+                    <span>selecione a data</span>
+                    <popoverTeste
+                      dataTitulo="data solução"
+                      dataDesenv="true"
+                      @eventDateDesenv="RecebeDataDesenv"
+                    />
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <span>Descrição</span>
+                  <Textarea
+                    v-model="descricaoDesenv"
+                    class="bg-zinc-900 rounded-[12px]"
+                  />
+                </div>
+                <div class="flex justify-between">
+                  <Button
+                    @click="submitSolicitacaoDesenv()"
+                    class="mt-4 bg-indigo-900 hover:bg-indigo-700 focus:outline-none rounded-lg"
+                    >Cadastrar solução</Button
+                  >
+                  <p v-if="camposObrigatorios === true" class="text-[red]">
+                    preeencha todos os campos
+                  </p>
+                </div>
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
+        </div>
         <div class="w-100 h-96 p-2 overflow-x-auto">
           <Table class="w-100">
             <TableHeader class="top-0">
@@ -294,7 +507,7 @@ const cadastrarVersao = async () => {
             </TableHeader>
             <tableBody class="flex flex-col gap-2">
               <TableRow
-                class="flex justify-between items-center gap-2 text-[12px] flex bg-zinc-700 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2"
+                class="flex justify-between items-center gap-2 text-[12px] flex bg-zinc-700 hover:bg-indigo-900 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >
                 <TableCell class=""> Guimarães </TableCell>
 
@@ -306,13 +519,14 @@ const cadastrarVersao = async () => {
                 </TableCell>
                 <TableCell class=""> 20/02/1994 </TableCell>
                 <TableCell>
-                  <Button class="h-6 rounded-[8px] text-[10px] shadow-zinc-900"
+                  <Button
+                    class="h-6 rounded-[8px] text-[10px] bg-indigo-900 hover:bg-zinc-900 shadow-zinc-900 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
                     >+</Button
                   >
                 </TableCell>
                 <TableCell>
                   <Button
-                    class="h-6 rounded-[8px] text-[10px] shadow-zinc-900 hover:bg-zinc-900"
+                    class="h-6 rounded-[8px] text-[10px] bg-indigo-900 shadow-zinc-900 hover:bg-zinc-900 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
                     >x</Button
                   >
                 </TableCell>
@@ -321,7 +535,7 @@ const cadastrarVersao = async () => {
                 </TableCell>
               </TableRow>
               <TableRow
-                class="flex justify-between items-center gap-6 text-[12px] flex bg-zinc-700 rounded-[12px] h-16 shadow-zinc-900 pl-2 pr-2"
+                class="flex justify-between items-center gap-6 text-[12px] flex bg-zinc-700 rounded-[12px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >
                 <TableCell class=""> doutor </TableCell>
                 <TableCell class=""> Back-office </TableCell>

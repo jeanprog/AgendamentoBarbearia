@@ -12,16 +12,22 @@ import { ServicosModule } from './servicos/servicos.module';
 import { ConfigLojaModule } from './config-loja/config-loja.module';
 import { FiltersModule } from './filters/filters.module';
 import { VersoesModule } from './versoes/versoes.module';
-
-
-
-
-
-
+import { SolicitacaoDesenvModule } from './solicitacao-desenv/solicitacao-desenv.module';
 
 @Module({
-  imports: [PrismaModule , UserModule, UserLoginModule, AuthUserModule, ClientesModule, ServicosModule, ConfigLojaModule, FiltersModule, VersoesModule  ], // Importe o PrismaModule
+  imports: [
+    PrismaModule,
+    UserModule,
+    UserLoginModule,
+    AuthUserModule,
+    ClientesModule,
+    ServicosModule,
+    ConfigLojaModule,
+    FiltersModule,
+    VersoesModule,
+    SolicitacaoDesenvModule,
+  ], // Importe o PrismaModule
   controllers: [AppController],
-  providers: [AppService, ],
+  providers: [AppService],
 })
 export class AppModule {}

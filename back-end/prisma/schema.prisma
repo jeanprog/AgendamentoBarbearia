@@ -103,16 +103,18 @@ model tbCadastroVersao {
 model tbsolicitacaoDesenv {
   id               Int             @id @default(autoincrement())
   idVersao         Int
-  aplicativoVersao String
+  aplicativo String
   usuarioId    Int      // Chave estrangeira referenciando tbLogin
   idUsuario    tbLogin  @relation(fields: [usuarioId], references: [Id])
   desenvolvedor    String
   descricao        String
-  // Relacionamento com tbCadastroVersao
+  datCri DateTime // Relacionamento com tbCadastroVersao
+  titulo String 
   versao           tbCadastroVersao @relation(fields: [idVersao], references: [id])
   // Relacionamento com tbsolucaoVersao
   solucoes         tbsolucaoVersao[]
   historico tbhistoricosolicitacao[]
+ 
 
 }
 
@@ -122,6 +124,9 @@ model tbsolucaoVersao {
   idsolicitacaoDesenv Int
   descricaoSolucao    String
   datCri              DateTime
+
+  //colocar titulo 
+
   // Relacionamento com tbCadastroVersao
   versao              tbCadastroVersao @relation(fields: [idVersao], references: [id])
   // Relacionamento com tbsolicitacaoDesenv

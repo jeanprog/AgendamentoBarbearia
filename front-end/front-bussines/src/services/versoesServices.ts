@@ -9,7 +9,17 @@ interface versao {
   datCri: Date
 }
 
+interface SolucaoVersao {
+  id: number // Gerado pelo Prisma
+  idVersao: number
+  aplicativo: string
+  usuarioId: number
+  desenvolvedor: string
+  descricao: string
+}
+
 const url = ' http://192.168.1.108:3000/versoes'
+const urlVersao = 'http://192.168.1.108:3000/solicitacao-desenv'
 
 const postVersoes = async (versao: versao) => {
   try {
@@ -33,4 +43,24 @@ const getVersoes = async () => {
   return
 }
 
-export { getVersoes, postVersoes }
+const delVersaoService = async (id) => {
+  try {
+    const response = await axios.delete(`${url}/${id}`)
+  } catch (error) {
+    console.log('impossivel deletar', error)
+  }
+}
+
+const requestSolucaoVersao = async (solucaoVersao: SolucaoVersao) => {
+  try {
+    console.log('acionou o service', solucaoVersao)
+    const response = await axios.post(urlVersao, solucaoVersao)
+
+    return console.log(response)
+  } catch (error) {
+    console.log('deu ruim no cadastro novo ')
+    return
+  }
+}
+
+export { getVersoes, postVersoes, delVersaoService, requestSolucaoVersao }

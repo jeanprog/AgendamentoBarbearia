@@ -2,7 +2,7 @@
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-vue-next'
 
-import { ref } from 'vue'
+import { ref, defineEmits, defineProps } from 'vue'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -14,10 +14,19 @@ import {
 import { watch } from 'vue'
 
 const date = ref<Date>()
-const props = defineProps(['dataTitulo', 'isStart', 'limparDatas'])
+const props = defineProps([
+  'dataTitulo',
+  'isStart',
+  'limparDatas',
+  'dataDesenv'
+])
 const emit = defineEmits()
 
 const enviaDatas = async () => {
+  if (props.dataDesenv === 'true') {
+    emit('eventDateDesenv', date.value)
+  }
+
   if (props.isStart === 'true') {
     await emit('dataInicio', date.value)
   } else {

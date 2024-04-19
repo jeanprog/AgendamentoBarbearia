@@ -13,22 +13,52 @@ export class VersoesService {
     });
 
     console.log(newVersao);
-    return 'Versão adicionada com sucesso';
+    return newVersao;
   }
 
   findAll() {
-    return this.prisma.tbCadastroVersao.findMany();
+    return this.prisma.tbCadastroVersao.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
   }
 
   findOne(id: number) {
     return `This action returns a #${id} versoe`;
   }
 
-  update(id: number, updateVersoeDto: UpdateVersoeDto) {
-    return `This action updates a #${id} versoe`;
+  async update(id: number, updateVersoeDto: UpdateVersoeDto) {
+    const existVersao = await this.prisma.tbCadastroVersao.findUnique({
+      where: { id },
+    });
+
+    if (!existVersao) {
+      return `Versão não encontrada  #${id} não encontrado`;
+    }
+
+    // Atualiza os campos fornecidos no DTO
+    const updatedVersao = await this.prisma.tbCadastroVersao.update({
+      where: { id },
+      data: updateVersoeDto,
+    });
+
+    return updateVersoeDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} versoe`;
+  async remove(id: number) {
+    const existVersao = await this.prisma.tbCadastroVersao.findUnique({
+      where: { id },
+    });
+
+    if (!existVersao) {
+      return `Versão não encontrada  #${id} não encontrado`;
+    }
+
+    const deleteVersao = await this.prisma.tbCadastroVersao.delete({
+      where: { id },
+    });
+
+    return deleteVersao;
   }
 }
