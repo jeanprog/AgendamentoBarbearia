@@ -63,4 +63,21 @@ const requestSolucaoVersao = async (solucaoVersao: SolucaoVersao) => {
   }
 }
 
-export { getVersoes, postVersoes, delVersaoService, requestSolucaoVersao }
+const getSolucaoVersao = async () => {
+  try {
+    const response = await axios.get(urlVersao)
+
+    return response
+  } catch (error) {
+    console.log('Error em retornar as solicitações ')
+    return
+  }
+}
+
+export {
+  getVersoes,
+  postVersoes,
+  delVersaoService,
+  requestSolucaoVersao,
+  getSolucaoVersao
+}

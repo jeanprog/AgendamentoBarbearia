@@ -44,7 +44,8 @@ import {
   getVersoes,
   postVersoes,
   delVersaoService,
-  requestSolucaoVersao
+  requestSolucaoVersao,
+  getSolucaoVersao
 } from '../../services/versoesServices.ts'
 import { Input } from '@/components/ui/input'
 import axios from 'axios'
@@ -74,6 +75,7 @@ const tituloDesenv = ref<string>('')
 const descricaoDesenv = ref<string>('')
 const selectAppVersao = ref<string>('')
 const camposObrigatorios = ref<Boolean>(false)
+const arraySolicitacoes = ref<Array[]>([])
 
 const data = [
   { name: 'Jan', total: 3 },
@@ -88,6 +90,7 @@ const maxY = 60
 
 onMounted(() => {
   todoVersoes()
+  todasSolicitacoes()
 })
 
 const todoVersoes = async () => {
@@ -236,6 +239,17 @@ const requestDesenv = async (data: any) => {
   clearCampos()
   toastNotify('enviado com sucesso')
 }
+
+const todasSolicitacoes = async () => {
+  try {
+    const response = await getSolucaoVersao()
+
+    arraySolicitacoes.value = response.data
+    console.log(arraySolicitacoes.value, 'lista')
+  } catch (error) {
+    console.error(error) // Mostra erros, caso ocorram
+  }
+}
 const clearCampos = () => {
   selectAppVersao.value = undefined
 
@@ -380,10 +394,10 @@ const clearCampos = () => {
         </div>
       </div>
       <div
-        class="flex flex-col w-100 h-3/5 bg-zinc-800 rounded-[24px] gap-2 py-4 items-center"
+        class="flex flex-col w-100 h-4/6 bg-zinc-800 rounded-[24px] gap-2 py-4 items-center"
       >
         <div class="text-[14px] text-zinc-300 w-full flex justify-center">
-          Historico Soluções de versão
+          Historico Solicitações Desenvolvimento
         </div>
         <div class="flex max-w-100 justify-center gap-2 p-4">
           <div class="relative items-center w-70">
@@ -428,7 +442,10 @@ const clearCampos = () => {
                       <SelectTrigger
                         class="w-48 ml-2 h-10 bg-zinc-900 rounded-[12px]"
                       >
-                        <SelectValue placeholder="Versões" />
+                        <SelectValue
+                          v-if="selectAppVersao !== undefined"
+                          placeholder="Versões"
+                        />
                       </SelectTrigger>
                       <SelectContent class="bg-zinc-900 w-48 text-white">
                         <SelectGroup>
@@ -484,9 +501,9 @@ const clearCampos = () => {
             </DialogContent>
           </Dialog>
         </div>
-        <div class="w-100 h-96 p-2 overflow-x-auto">
+        <div class="w-100 h-48 p-2">
           <Table class="w-100">
-            <TableHeader class="top-0">
+            <TableHeader class="sticky top-0">
               <TableRow class="flex justify-between text-[12px] text-zinc-400">
                 <div class="flex gap-2">
                   <TableHead class="">Desenvolvedor</TableHead>
@@ -505,24 +522,58 @@ const clearCampos = () => {
                 </div>
               </TableRow>
             </TableHeader>
-            <tableBody class="flex flex-col gap-2">
+            <tableBody
+              class="flex flex-col gap-2 h-52 overflow-x-auto"
+              id="scroll"
+            >
               <TableRow
+                v-for="(solicitacao, index) in arraySolicitacoes"
                 class="flex justify-between items-center gap-2 text-[12px] flex bg-zinc-700 hover:bg-indigo-900 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >
-                <TableCell class=""> Guimarães </TableCell>
-
-                <TableCell class=""> Back-office </TableCell>
-                <TableCell> 3.4.2.1 </TableCell>
                 <TableCell class="">
-                  emissor valor fixo <br />
-                  de icms em 2 reais
+                  {{ solicitacao.desenvolvedor }}
+                </TableCell>
+                <TableCell class=""> {{ solicitacao.aplicativo }} </TableCell>
+                <TableCell
+                  >{{
+                    listVersoes.find(
+                      (versao) => versao.id === solicitacao.idVersao
+                    )?.versao || 'Não encontrado'
+                  }}
+                </TableCell>
+                <TableCell class="">
+                  {{ solicitacao.titulo }}
                 </TableCell>
                 <TableCell class=""> 20/02/1994 </TableCell>
                 <TableCell>
-                  <Button
-                    class="h-6 rounded-[8px] text-[10px] bg-indigo-900 hover:bg-zinc-900 shadow-zinc-900 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-                    >+</Button
-                  >
+                  <Dialog>
+                    <DialogTrigger class="focus:outline-none">
+                      <Button
+                        class="h-6 rounded-[8px] focus:outline-none text-[10px] bg-indigo-900 hover:bg-zinc-900 shadow-zinc-900 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                        >+</Button
+                      >
+                    </DialogTrigger>
+                    <DialogContent class="bg-zinc-900 text-white rounded-lg">
+                      <p>
+                        Descreve a solução que foi implementada<br />
+                        {{
+                          listVersoes.find(
+                            (versao) => versao.id === solicitacao.idVersao
+                          )?.aplicativo || 'Não encontrado'
+                        }}
+                        {{
+                          listVersoes.find(
+                            (versao) => versao.id === solicitacao.idVersao
+                          )?.versao || 'Não encontrado'
+                        }}
+                      </p>
+                      <Textarea class="rounded-lg bg-zinc-600"></Textarea>
+                      <Button
+                        class="focus-outline-none bg-customGreen rounded-lg hover:bg-[#2DFCBE]"
+                        >Cadastrar solução</Button
+                      >
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -530,34 +581,6 @@ const clearCampos = () => {
                     >x</Button
                   >
                 </TableCell>
-                <TableCell class="text-[24px]">
-                  <i class="fa-solid fa-eye"></i>
-                </TableCell>
-              </TableRow>
-              <TableRow
-                class="flex justify-between items-center gap-6 text-[12px] flex bg-zinc-700 rounded-[12px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-              >
-                <TableCell class=""> doutor </TableCell>
-                <TableCell class=""> Back-office </TableCell>
-                <TableCell> 2.4.3.1 </TableCell>
-
-                <TableCell class="flex justify-center">
-                  emissor valor fixo<br />
-                  de icms em 2 reais
-                </TableCell>
-                <TableCell class=""> 20/02/1994 </TableCell>
-                <TableCell>
-                  <Button class="h-6 rounded-[8px] text-[10px] shadow-zinc-900"
-                    >+</Button
-                  >
-                </TableCell>
-                <TableCell>
-                  <Button
-                    class="h-6 rounded-[8px] text-[10px] shadow-zinc-900 hover:bg-zinc-900"
-                    >x</Button
-                  >
-                </TableCell>
-
                 <TableCell class="text-[24px]">
                   <i class="fa-solid fa-eye"></i>
                 </TableCell>
@@ -645,6 +668,7 @@ const clearCampos = () => {
           </div>
           <div
             class="flex flex-col gap-2 items-center item-center w-100 h-100 p-2 overflow-auto"
+            id="scroll"
           >
             <Card class="bg-zinc-700 w-full min-h-24 p-2 overflow-hidden">
               <p class="text-[12px]">

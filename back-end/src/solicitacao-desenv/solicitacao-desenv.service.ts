@@ -14,7 +14,11 @@ export class SolicitacaoDesenvService {
   }
 
   findAll() {
-    return `This action returns all solicitacaoDesenv`;
+    return  this.prisma.tbsolicitacaoDesenv.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });;
   }
 
   findOne(id: number) {
