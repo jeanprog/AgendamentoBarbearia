@@ -9,16 +9,7 @@ interface versao {
   datCri: Date
 }
 
-interface SolucaoVersao {
-  id: number // Gerado pelo Prisma
-  idVersao: number
-  aplicativo: string
-  usuarioId: number
-  desenvolvedor: string
-  descricao: string
-}
-
-const url = ' http://192.168.1.108:3000/versoes'
+const url = 'http://192.168.1.108:3000/versoes'
 const urlVersao = 'http://192.168.1.108:3000/solicitacao-desenv'
 
 const postVersoes = async (versao: versao) => {

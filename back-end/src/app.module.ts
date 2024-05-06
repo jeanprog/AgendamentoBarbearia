@@ -13,6 +13,7 @@ import { ConfigLojaModule } from './config-loja/config-loja.module';
 import { FiltersModule } from './filters/filters.module';
 import { VersoesModule } from './versoes/versoes.module';
 import { SolicitacaoDesenvModule } from './solicitacao-desenv/solicitacao-desenv.module';
+import { SolucaoVersaoModule } from './solucao-versao/solucao-versao.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SolicitacaoDesenvModule } from './solicitacao-desenv/solicitacao-desenv
     FiltersModule,
     VersoesModule,
     SolicitacaoDesenvModule,
+    SolucaoVersaoModule,
   ], // Importe o PrismaModule
   controllers: [AppController],
   providers: [AppService],

@@ -76,6 +76,7 @@ const descricaoDesenv = ref<string>('')
 const selectAppVersao = ref<string>('')
 const camposObrigatorios = ref<Boolean>(false)
 const arraySolicitacoes = ref<Array[]>([])
+const descricaoSolucao = ref<string>('')
 
 const data = [
   { name: 'Jan', total: 3 },
@@ -257,6 +258,19 @@ const clearCampos = () => {
   descricaoDesenv.value = ''
   tituloDesenv.value = ''
   datCriDesenv.value = undefined
+}
+
+const cadastrarSolucao = (idSolicitacao, idVersao) => {
+  console.log(idSolicitacao, idVersao)
+  if (idSolicitacao && idVersao) {
+    /*  const data  = {
+      idVersao,
+      idSolicitacao,
+      descricaoSolucao: descricaoSolucao.value
+      datCri: new Date()
+
+    } */
+  }
 }
 </script>
 
@@ -569,6 +583,9 @@ const clearCampos = () => {
                       </p>
                       <Textarea class="rounded-lg bg-zinc-600"></Textarea>
                       <Button
+                        @click="
+                          cadastrarSolucao(solicitacao.id, solicitacao.idVersao)
+                        "
                         class="focus-outline-none bg-customGreen rounded-lg hover:bg-[#2DFCBE]"
                         >Cadastrar solução</Button
                       >

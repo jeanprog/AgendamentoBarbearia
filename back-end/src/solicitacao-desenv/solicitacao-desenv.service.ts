@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { CreateSolicitacaoDesenvDto } from './dto/create-solicitacao-desenv.dto';
 import { UpdateSolicitacaoDesenvDto } from './dto/update-solicitacao-desenv.dto';
@@ -14,11 +15,11 @@ export class SolicitacaoDesenvService {
   }
 
   findAll() {
-    return  this.prisma.tbsolicitacaoDesenv.findMany({
+    return this.prisma.tbsolicitacaoDesenv.findMany({
       orderBy: {
         id: 'desc',
       },
-    });;
+    });
   }
 
   findOne(id: number) {
