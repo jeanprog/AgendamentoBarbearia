@@ -2,7 +2,9 @@
   <Header />
   <div class="main">
     <!-- Conteúdo da Dashboard -->
-    <h3 class="title">Gerenciamento de Chamados</h3>
+    <h3 class="title">Gerenciamento de Chamados
+     
+    </h3>
 
     <div class="bodydash">
       <div class="cardsleft">
@@ -52,6 +54,7 @@ const user = ref(route.params.user)
 onMounted(() => {
   const date = new Date()
   console.log(date)
+
 })
 
 const RedirectCadastroDeServico = () => {

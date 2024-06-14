@@ -12,8 +12,10 @@ import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
 import PrimeVue from 'primevue/config'
 import store from '../store'
 
+
 //icons
 import '@fortawesome/fontawesome-free/css/all.css'
+/* require('dotenv').config();  */
 
 const vuetify = createVuetify({
   components,

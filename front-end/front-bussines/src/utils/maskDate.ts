@@ -2,7 +2,7 @@ import { format, parse } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 
 const fomatarData = (data: any) => {
-  const newDate = format(data, 'dd/MM/yyyy HH:mm', { locale: ptBR })
+  const newDate = format(data, 'dd/MM/yyyy ', { locale: ptBR })
 
   return newDate
 }

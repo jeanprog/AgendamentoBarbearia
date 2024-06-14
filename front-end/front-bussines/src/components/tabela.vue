@@ -47,7 +47,7 @@
     </Table>
    -->
   <Table
-    class="text-white text-[12px] overflow-y-scroll rounded-lg shadow-zinc-900"
+    class="h-[200px]text-white text-[12px] overflow-y-scroll rounded-lg shadow-zinc-900"
     id="table"
   >
     <TableHeader class="sticky top-0 bg-[#3f51b5]">

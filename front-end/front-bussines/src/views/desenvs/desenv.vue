@@ -8,7 +8,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
+ /*  SelectLabel, */
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
@@ -16,7 +16,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
+/*   DialogFooter, */
   DialogHeader,
   DialogTitle,
   DialogClose,
@@ -24,11 +24,11 @@ import {
 } from '@/components/ui/dialog'
 import {
   Card,
-  CardContent,
+ /*  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
+  CardTitle */
 } from '@/components/ui/card'
 import {
   Table,
@@ -48,12 +48,13 @@ import {
   getSolucaoVersao
 } from '../../services/versoesServices.ts'
 import { Input } from '@/components/ui/input'
-import axios from 'axios'
+
 import popoverTeste from '../../components/popoverTeste.vue'
 import { VisAxis, VisStackedBar, VisXYContainer } from '@unovis/vue'
 
 import { toast } from 'vue3-toastify'
 import { z } from 'zod'
+import fomatarData from '../../utils/maskDate.ts'
 
 interface versao {
   id: number
@@ -62,22 +63,34 @@ interface versao {
   datCri: Date
 }
 
+
+interface PropsSolucoesVersoes { 
+  id: number;
+  aplicativo: string;
+  datCri: string; // ISO date string
+  descricao: string;
+  desenvolvedor: string;
+  idVersao: number;
+  titulo: string;
+  usuarioId: number;
+}
+
 let titlepage = ref('Solicitações desenvolvimento')
 const dateStart = ref<Date>()
 const dateEnd = ref<Date>()
 const listVersoes = ref<versao[]>([])
 const valueVersao = ref<String>('')
 const valueApp = ref<String>('')
-const selectVersao = ref<number>()
+const selectVersao = ref<string>('') 
 const desenvolvedor = ref<string>('')
 const datCriDesenv = ref<Date>()
 const tituloDesenv = ref<string>('')
 const descricaoDesenv = ref<string>('')
-const selectAppVersao = ref<string>('')
+const selectAppVersao = ref<string>('') 
 const camposObrigatorios = ref<Boolean>(false)
-const arraySolicitacoes = ref<Array[]>([])
-const descricaoSolucao = ref<string>('')
-
+const arraySolicitacoes = ref<PropsSolucoesVersoes[]>([])
+/* const descricaoSolucao = ref<string>('')
+ */
 const data = [
   { name: 'Jan', total: 3 },
   { name: 'Feb', total: 50 },
@@ -87,7 +100,7 @@ const data = [
   { name: 'Jun', total: 2 }
 ]
 
-const maxY = 60
+/* const maxY = 60 */
 
 onMounted(() => {
   todoVersoes()
@@ -97,16 +110,14 @@ onMounted(() => {
 const todoVersoes = async () => {
   try {
     const response = await getVersoes()
-
-    listVersoes.value = response.data
+    if (response) { 
+      listVersoes.value = response.data
+    }
   } catch (error) {
     console.error(error) // Mostra erros, caso ocorram
   }
 }
 
-const teste = () => {
-  console.log('teste')
-}
 
 const recebeDatainicio = (dataInicio: Date) => {
   console.log(dataInicio, 'acionei o evento data inicio')
@@ -142,11 +153,11 @@ const cadastrarVersao = async () => {
 
   if (valueVersao.value && valueApp.value) {
     const data = {
-      aplicativo: valueApp.value,
-      versao: valueVersao.value,
-      datCri: new Date()
+      aplicativo: valueApp.value as string,
+      versao: valueVersao.value as string,
+      datCri: new Date(),
     }
-    const submitVersao = await postVersoes(data)
+    await postVersoes(data)
     todoVersoes()
     toastNotify('adicionado com sucesso')
     valueVersao.value = ''
@@ -162,7 +173,7 @@ const deleteVersao = async (id: number) => {
   console.log('peguei o id', id)
   // comentei estar parte pra poder adiciona a regra de deletar somente se não tiver associado a solicitações !
 
-  const submitDelete = await delVersaoService(id)
+  await delVersaoService(id)
   todoVersoes()
   /*   toastNotify('Ainda não é permitido remover uma versão') */
 }
@@ -174,7 +185,7 @@ const toastNotify = (text: string) => {
 }
 
 const capturaIdVersao = () => {
-  const idVersao = parseInt(selectVersao.value)
+  const idVersao = selectVersao.value ? parseInt(selectVersao.value): undefined
   console.log(listVersoes.value)
   if (idVersao) {
     console.log('percorrendo o array id number', idVersao)
@@ -198,7 +209,7 @@ const solicitacao = z.object({
   }) // Torna o campo datCri obrigatório
 })
 
-const submitSolicitacaoDesenv = () => {
+const submitSolicitacaoDesenv = async () => {
   const storedData = localStorage.getItem('user')
 
   if (storedData) {
@@ -223,44 +234,47 @@ const submitSolicitacaoDesenv = () => {
         'Todos os campos estão preenchidos corretamente. Pode prosseguir com a submissão.'
       )
       camposObrigatorios.value = false
-      requestDesenv(data)
+      await requestSolucaoVersao(data)
+      clearCampos()
+      toastNotify('enviado com sucesso')
 
       // Faça a submissão da solicitação de desenvolvimento aqui
     } catch (error) {
       console.log('Preencha todos os campos corretamente antes de prosseguir.')
-      camposObrigatorios.value = true
+      camposObrigatorios.value = true // manipula a mensagem de campo obrigatório 
     }
   }
 
   // não consegui instalar o zod e o  veevalidator não sei porque o shadcnvue não está permitindo deve estar instável , fazer feio mesmo
 }
-
+/* 
 const requestDesenv = async (data: any) => {
   const response = await requestSolucaoVersao(data)
   clearCampos()
   toastNotify('enviado com sucesso')
-}
+} */
 
 const todasSolicitacoes = async () => {
   try {
     const response = await getSolucaoVersao()
-
+   if(response) { 
     arraySolicitacoes.value = response.data
     console.log(arraySolicitacoes.value, 'lista')
+   }
+   return 
   } catch (error) {
     console.error(error) // Mostra erros, caso ocorram
   }
 }
 const clearCampos = () => {
-  selectAppVersao.value = undefined
-
+  selectAppVersao.value = ''
   desenvolvedor.value = ''
   descricaoDesenv.value = ''
   tituloDesenv.value = ''
   datCriDesenv.value = undefined
 }
 
-const cadastrarSolucao = (idSolicitacao, idVersao) => {
+const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
   console.log(idSolicitacao, idVersao)
   if (idSolicitacao && idVersao) {
     /*  const data  = {
@@ -542,6 +556,8 @@ const cadastrarSolucao = (idSolicitacao, idVersao) => {
             >
               <TableRow
                 v-for="(solicitacao, index) in arraySolicitacoes"
+                :key="index"
+                
                 class="flex justify-between items-center gap-2 text-[12px] flex bg-zinc-700 hover:bg-indigo-900 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >
                 <TableCell class="">
@@ -558,7 +574,7 @@ const cadastrarSolucao = (idSolicitacao, idVersao) => {
                 <TableCell class="">
                   {{ solicitacao.titulo }}
                 </TableCell>
-                <TableCell class=""> 20/02/1994 </TableCell>
+                <TableCell class=""> {{ fomatarData( solicitacao.datCri) }} </TableCell>
                 <TableCell>
                   <Dialog>
                     <DialogTrigger class="focus:outline-none">
@@ -738,8 +754,8 @@ const cadastrarSolucao = (idSolicitacao, idVersao) => {
             :data="data"
           >
             <VisStackedBar
-              :x="(d, i) => i"
-              :y="(d) => d.total"
+              :x="(d: any, i: any) => i"
+              :y="(d: any) => d.total"
               color="#41b883"
               :rounded-corners="4"
               :bar-padding="0.15"
@@ -747,7 +763,7 @@ const cadastrarSolucao = (idSolicitacao, idVersao) => {
             <VisAxis
               type="x"
               :num-ticks="data.length"
-              :tick-format="(index) => data[index]?.name"
+              :tick-format="(index: number) => data[index]?.name"
               :grid-line="false"
               :tick-line="false"
               color="#888888"

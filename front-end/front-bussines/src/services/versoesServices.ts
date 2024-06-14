@@ -1,7 +1,6 @@
 // request da tela desenv
 
 import axios from 'axios'
-import format from 'date-fns'
 
 interface versao {
   aplicativo: string
@@ -9,8 +8,10 @@ interface versao {
   datCri: Date
 }
 
-const url = 'http://192.168.1.108:3000/versoes'
-const urlVersao = 'http://192.168.1.108:3000/solicitacao-desenv'
+
+
+const url = `http://${import.meta.env.VITE_IP_URL}:3000/versoes`
+const urlVersao = `http://${import.meta.env.VITE_IP_URL}:3000/solicitacao-desenv`
 
 const postVersoes = async (versao: versao) => {
   try {
@@ -34,15 +35,15 @@ const getVersoes = async () => {
   return
 }
 
-const delVersaoService = async (id) => {
+const delVersaoService = async (id: number) => {
   try {
-    const response = await axios.delete(`${url}/${id}`)
+     await axios.delete(`${url}/${id}`)
   } catch (error) {
     console.log('impossivel deletar', error)
   }
 }
 
-const requestSolucaoVersao = async (solucaoVersao: SolucaoVersao) => {
+const requestSolucaoVersao = async (solucaoVersao: any) => {
   try {
     console.log('acionou o service', solucaoVersao)
     const response = await axios.post(urlVersao, solucaoVersao)

@@ -151,11 +151,11 @@
 <script setup lang="ts">
 import HeaderVoltar from '../components/HeaderVoltar.vue'
 import { onMounted, ref } from 'vue'
-import axios from 'axios'
 import { router } from '../router'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { atualizarChamado } from '@/services/RequestsChamados'
+
+import todoClientes from '@/services/clientesServices'
 
 /*  import { useRoute } from 'vue-router'  */
 
@@ -192,13 +192,9 @@ const iniciaChamado = async (cliente: Cliente) => {
 }
 
 const listaDeClientes = async () => {
-  try {
-    const response = await axios.get('http://192.168.1.108:3000/clientes')
-
-    console.log(response.data)
-    clientes.value = response.data // Assumindo que a resposta contém um array de clientes
-  } catch (error) {
-    console.error('Erro ao obter a lista de clientes:', error)
+ const response = await todoClientes()
+  if(response) { 
+    clientes.value = response
   }
 }
 

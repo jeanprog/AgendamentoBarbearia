@@ -115,7 +115,7 @@ const submitForm = async () => {
         }
 
         const response = await axios.patch(
-          `http://192.168.1.108:3000/clientes/${id.value}`,
+          `http://${import.meta.env.VITE_IP_URL}:3000/clientes/${id.value}`,
           data
         )
         notifyEdit()
@@ -136,7 +136,7 @@ const submitForm = async () => {
         }
         console.log(data)
         const response = await axios.post(
-          'http://192.168.1.108:3000/clientes',
+          `http://${import.meta.env.VITE_IP_URL}:3000/clientes`,
           data
         )
 

@@ -197,7 +197,7 @@
       </div>
       <div class="container-acoes">
         <div class="container-prioridade">
-          <div class="flex flex-col items-center w-full mr-2">
+          <div class="flex flex-col items-center w-full mr-2 ">
             <p v-if="!dialog">Chamados Pendentes</p>
             <Table v-if="!dialog" class="rounded-lg pr-[12px]" id="table">
               <TableHeader class="sticky top-0 bg-indigo-800 rounded-sm">
@@ -714,9 +714,10 @@
         </div>
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
-      <div class="flex flex-col items-center h-80">
+      <div class="flex flex-col items-center border-2 mt-16 h-[28rem]">
         <p v-if="!dialog" class="mt-4">Todos os chamados Recentes</p>
         <tabela
+        class=""
           v-if="!dialog && listaPronta"
           @editar="abrirModalEditar"
           :listaFiltrada="novaLista"
@@ -858,6 +859,7 @@ const chamadosPreVenda = ref<Chamado[]>([])
 
 onMounted(() => {
   const route = useRoute()
+  console.log(import.meta.env.VITE_IP_URL)
 
   retornaChamadosIgualDiaAtual()
   obterDadosTratadosChamado()
@@ -920,13 +922,13 @@ const retornaChamadosIgualDiaAtual = async () => {
     const response = await getChamadosDiaAtual(id)
     try {
       const responseClientes = await axios.get(
-        `http://192.168.1.108:3000/clientes`
+        `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
       )
       /* const responseChamados = await axios.get(
       `http://localhost:3000/servicos/user/${idUser.value}`
     )  */ // refatorar aqui promisse allslteld
       const responseUser = await axios.get(
-        `http://192.168.1.108:3000/user-login`
+        `http://${import.meta.env.VITE_IP_URL}:3000/user-login`
       )
 
       const listaClientes = responseClientes.data
@@ -1108,12 +1110,12 @@ const filtrarPorDatas = async () => {
 const obterDadosTratadosChamado = async () => {
   try {
     const responseClientes = await axios.get(
-      `http://192.168.1.108:3000/clientes`
+      `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
     )
     const responseChamados = await axios.get(
-      `http://192.168.1.108:3000/servicos/user/${idUser.value}`
+      `http://${import.meta.env.VITE_IP_URL}:3000/servicos/user/${idUser.value}`
     ) // refatorar aqui promisse allslteld
-    const responseUser = await axios.get(`http://192.168.1.108:3000/user-login`)
+    const responseUser = await axios.get(`http://${import.meta.env.VITE_IP_URL}:3000/user-login`)
 
     const listaClientes = responseClientes.data
     const listaChamados = responseChamados.data
@@ -1173,12 +1175,12 @@ const obterDadosTratadosChamado = async () => {
 const chamadosFiltrados = async () => {
   try {
     const responseClientes = await axios.get(
-      `http://192.168.1.108:3000/clientes`
+      `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
     )
     /* const responseChamados = await axios.get(
       `http://localhost:3000/servicos/user/${idUser.value}`
     )  */ // refatorar aqui promisse allslteld
-    const responseUser = await axios.get(`http://192.168.1.108:3000/user-login`)
+    const responseUser = await axios.get(`http://${import.meta.env.VITE_IP_URL}:3000/user-login`)
 
     const listaClientes = responseClientes.data
     const listaChamados = _listaFiltrada.value

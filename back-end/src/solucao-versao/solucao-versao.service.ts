@@ -2,7 +2,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateSolucaoVersaoDto } from './dto/create-solucao-versao.dto';
 import { UpdateSolucaoVersaoDto } from './dto/update-solucao-versao.dto';
-import { PrismaClient, tbsolucaoVersao } from '@prisma/client';
+
 
 @Injectable()
 export class SolucaoVersaoService {
