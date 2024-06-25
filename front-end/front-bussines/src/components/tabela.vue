@@ -47,22 +47,23 @@
     </Table>
    -->
   <Table
-    class="h-[200px]text-white text-[12px] overflow-y-scroll rounded-lg shadow-zinc-900"
+    class="flex flex-col text-white text-[12px] rounded-lg shadow-zinc-600"
     id="table"
   >
-    <TableHeader class="sticky top-0 bg-[#3f51b5]">
-      <TableRow class="">
-        <TableHead class="w-[100px]"> Empresa </TableHead>
-        <TableHead>Funcionário</TableHead>
-        <TableHead>Status</TableHead>
-        <TableHead>Sistema</TableHead>
-        <TableHead class="text-right"> Data de Abertura</TableHead>
-        <TableHead>Ações</TableHead>
+    <!--  <TableHeader class="flex items-center absolute  border -top-0 bg-zinc-800">
+      <TableRow class="fixed flex items-center gap-4 max-h-8 bg-zinc-800">
+        <TableHead class="w-24"> Empresa </TableHead>
+        <TableHead class="w-24">Funcionário</TableHead>
+        <TableHead class="w-24">Sistema</TableHead>
+        <TableHead class="w-24"> Data de Abertura</TableHead>
+        <TableHead class="w-24">Status</TableHead>
+        <TableHead class="w-24">Ações</TableHead>
       </TableRow>
-    </TableHeader>
-    <TableBody>
+    </TableHeader> -->
+    <TableBody class="flex flex-col border-white">
       <TableRow
-        class="bg-zinc-800 hover:bg-indigo-600"
+        id="tablerow"
+        class="flex max-h-16 bg-zinc-700 rounded-lg mt-2 gap-4 items-center"
         v-for="chamado in listaResultado"
         :key="chamado.id"
       >
@@ -72,13 +73,18 @@
           v-for="chamado in props.listaFiltrada"
           :key="chamado.id"
         ></TableRow> -->
-        <TableCell class="font-medium">
+        <TableCell class="w-24 mt-2">
           {{ chamado.Empresa }}
         </TableCell>
-        <TableCell>{{ chamado.Cliente }}</TableCell>
-        <TableCell>{{ chamado.status }}</TableCell>
-        <TableCell>{{ chamado.sistema }}</TableCell>
+        <TableCell class="w-24">{{ chamado.Cliente }}</TableCell>
+
+        <TableCell class="w-24">{{ chamado.sistema }}</TableCell>
         <TableCell class="text-right"> {{ chamado.dAbertura }} </TableCell>
+        <TableCell
+          :class="getStatusClasses(chamado.status)"
+          class="w-24 border-2 rounded-lg font-bold h-8 flex justify-center items-center"
+          >{{ chamado.status }}</TableCell
+        >
         <div class="flex mt-1 gap-2">
           <Button
             class="bg-indigo-800 rounded-lg text-white hover:bg-indigo-600 shadow-zinc-800"
@@ -141,6 +147,7 @@
           </Dialog>
         </div>
       </TableRow>
+      <div class="h-4"></div>
     </TableBody>
   </Table>
 </template>
@@ -180,7 +187,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-
+import getStatusClasses from '@/utils/coresDiv'
 /* const mensagem = ref(props.mensagem) */
 /*
   headers.value = [
@@ -263,12 +270,12 @@ const handleExcluir = (item: any) => {
 
 <style scoped>
 #table {
-  overflow: auto !important;
-
-  border-radius: 24px;
+  max-width: 90%;
+  overflow: hidden;
 }
+
 #table::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 #table::-webkit-scrollbar-track {

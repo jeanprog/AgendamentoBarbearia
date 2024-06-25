@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject } from 'vue'
 
 import HeaderVoltar from '../../components/HeaderVoltar.vue'
 import { Button } from '../../components/ui/button'
@@ -8,7 +8,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
- /*  SelectLabel, */
+  /*  SelectLabel, */
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
@@ -16,15 +16,15 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-/*   DialogFooter, */
+  /*   DialogFooter, */
   DialogHeader,
   DialogTitle,
   DialogClose,
   DialogTrigger
 } from '@/components/ui/dialog'
 import {
-  Card,
- /*  CardContent,
+  Card
+  /*  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -55,6 +55,7 @@ import { VisAxis, VisStackedBar, VisXYContainer } from '@unovis/vue'
 import { toast } from 'vue3-toastify'
 import { z } from 'zod'
 import fomatarData from '../../utils/maskDate.ts'
+import VersaoGateway from '@/infra/Gateways/VersaoGateway.ts'
 
 interface versao {
   id: number
@@ -63,30 +64,30 @@ interface versao {
   datCri: Date
 }
 
-
-interface PropsSolucoesVersoes { 
-  id: number;
-  aplicativo: string;
-  datCri: string; // ISO date string
-  descricao: string;
-  desenvolvedor: string;
-  idVersao: number;
-  titulo: string;
-  usuarioId: number;
+interface PropsSolucoesVersoes {
+  id: number
+  aplicativo: string
+  datCri: string // ISO date string
+  descricao: string
+  desenvolvedor: string
+  idVersao: number
+  titulo: string
+  usuarioId: number
 }
 
 let titlepage = ref('Solicitações desenvolvimento')
 const dateStart = ref<Date>()
 const dateEnd = ref<Date>()
+
 const listVersoes = ref<versao[]>([])
 const valueVersao = ref<String>('')
 const valueApp = ref<String>('')
-const selectVersao = ref<string>('') 
+const selectVersao = ref<string>('')
 const desenvolvedor = ref<string>('')
 const datCriDesenv = ref<Date>()
 const tituloDesenv = ref<string>('')
 const descricaoDesenv = ref<string>('')
-const selectAppVersao = ref<string>('') 
+const selectAppVersao = ref<string>('')
 const camposObrigatorios = ref<Boolean>(false)
 const arraySolicitacoes = ref<PropsSolucoesVersoes[]>([])
 /* const descricaoSolucao = ref<string>('')
@@ -109,15 +110,24 @@ onMounted(() => {
 
 const todoVersoes = async () => {
   try {
-    const response = await getVersoes()
-    if (response) { 
-      listVersoes.value = response.data
+    const todosGateway = inject('versaoGateway') as VersaoGateway
+    if (!todosGateway) {
+      throw new Error('TodosGateway não foi injetado corretamente')
     }
+    const todosData = await todosGateway.getTodoVersao()
+    console.log(todosData, 'teste clean ')
+    if (todosData) {
+      listVersoes.value = todosData
+    }
+    /* listVersoes.value.todos = todosData; */
+    /*  const response = getTodo
+       if (response) { 
+      listVersoes.value = response.data
+    } */
   } catch (error) {
     console.error(error) // Mostra erros, caso ocorram
   }
 }
-
 
 const recebeDatainicio = (dataInicio: Date) => {
   console.log(dataInicio, 'acionei o evento data inicio')
@@ -155,7 +165,7 @@ const cadastrarVersao = async () => {
     const data = {
       aplicativo: valueApp.value as string,
       versao: valueVersao.value as string,
-      datCri: new Date(),
+      datCri: new Date()
     }
     await postVersoes(data)
     todoVersoes()
@@ -185,7 +195,7 @@ const toastNotify = (text: string) => {
 }
 
 const capturaIdVersao = () => {
-  const idVersao = selectVersao.value ? parseInt(selectVersao.value): undefined
+  const idVersao = selectVersao.value ? parseInt(selectVersao.value) : undefined
   console.log(listVersoes.value)
   if (idVersao) {
     console.log('percorrendo o array id number', idVersao)
@@ -241,7 +251,7 @@ const submitSolicitacaoDesenv = async () => {
       // Faça a submissão da solicitação de desenvolvimento aqui
     } catch (error) {
       console.log('Preencha todos os campos corretamente antes de prosseguir.')
-      camposObrigatorios.value = true // manipula a mensagem de campo obrigatório 
+      camposObrigatorios.value = true // manipula a mensagem de campo obrigatório
     }
   }
 
@@ -257,11 +267,11 @@ const requestDesenv = async (data: any) => {
 const todasSolicitacoes = async () => {
   try {
     const response = await getSolucaoVersao()
-   if(response) { 
-    arraySolicitacoes.value = response.data
-    console.log(arraySolicitacoes.value, 'lista')
-   }
-   return 
+    if (response) {
+      arraySolicitacoes.value = response.data
+      console.log(arraySolicitacoes.value, 'lista')
+    }
+    return
   } catch (error) {
     console.error(error) // Mostra erros, caso ocorram
   }
@@ -557,8 +567,7 @@ const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
               <TableRow
                 v-for="(solicitacao, index) in arraySolicitacoes"
                 :key="index"
-                
-                class="flex justify-between items-center gap-2 text-[12px] flex bg-zinc-700 hover:bg-indigo-900 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+                class="flex justify-between items-center gap-2 text-[12px] bg-zinc-700 hover:bg-indigo-900 rounded-[8px] h-16 shadow-zinc-900 pl-2 pr-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
               >
                 <TableCell class="">
                   {{ solicitacao.desenvolvedor }}
@@ -574,7 +583,9 @@ const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
                 <TableCell class="">
                   {{ solicitacao.titulo }}
                 </TableCell>
-                <TableCell class=""> {{ fomatarData( solicitacao.datCri) }} </TableCell>
+                <TableCell class="">
+                  {{ fomatarData(solicitacao.datCri) }}
+                </TableCell>
                 <TableCell>
                   <Dialog>
                     <DialogTrigger class="focus:outline-none">

@@ -15,11 +15,10 @@ interface chamado {
   statusChamadoAtual: number | null
 }
 
-
 const postChamado = async (chamado: chamado) => {
   try {
     const response = await axios.post(
-      `http://${import.meta.env.VITE_BASE_URL}:3000/servicos`,
+      `http://${import.meta.env.VITE_IP_URL}:3000/servicos`,
       chamado
     )
 
@@ -33,7 +32,7 @@ const atualizarChamado = async (chamado: any) => {
   const { id, ...parteChamado } = chamado
 
   const response = await axios.patch(
-    `http://${import.meta.env.VITE_BASE_URL}:3000/servicos/${chamado.id}`,
+    `http://${import.meta.env.VITE_IP_URL}:3000/servicos/${chamado.id}`,
     parteChamado
   )
 
@@ -46,7 +45,7 @@ const getChamadosPorData = async (
   dataFim: Date
 ) => {
   console.log('teste chamei a função ', id, dataInicio, dataFim)
-  const baseUrl = `http://${import.meta.env.VITE_BASE_URL}:3000/servicos/user/chamadosdia/${id}`
+  const baseUrl = `http://${import.meta.env.VITE_IP_URL}:3000/servicos/user/chamadosdia/${id}`
 
   const response = await axios.get(baseUrl, {
     params: {
@@ -59,9 +58,9 @@ const getChamadosPorData = async (
 }
 
 const getChamadosDiaAtual = async (id: number) => {
-   const url = `http://${import.meta.env.VITE_BASE_URL}:3000/servicos/user/date/${id}`
+  const url = `http://${import.meta.env.VITE_IP_URL}:3000/servicos/user/date/${id}`
   const response = axios.get(url)
- 
+
   return response
 }
 

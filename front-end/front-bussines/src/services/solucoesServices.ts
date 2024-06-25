@@ -7,19 +7,16 @@ interface SolucaoVersao {
   datCri: Date
 }
 
-
-const url = `http://${import.meta.env.VITE_BASE_URL}:3000/solucao-versao`
+const url = `http://${import.meta.env.VITE_IP_URL}:3000/solucao-versao`
 
 const submitSolucaoVersao = async (createSolucaoVersaoDto: SolucaoVersao) => {
   try {
-    await axios.post(url , createSolucaoVersaoDto)
+    await axios.post(url, createSolucaoVersaoDto)
     return 'adicionado com sucesso'
   } catch (error) {
     console.log('não adicionou')
     return
   }
-
- 
 }
 
 export { submitSolucaoVersao }

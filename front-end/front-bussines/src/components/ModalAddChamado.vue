@@ -4,18 +4,139 @@
       <span class="title-modal">Novo Chamado</span>
     </v-card-title>
     <v-card-text>
-      <v-container class="ContainerForm">
-        <v-row>
-          <v-col cols="12" sm="6">
-            <v-text-field
-              v-model="titulo"
-              label="Titulo"
+      <div class="flex gap-8 w-[700px] h-[330px]">
+        <div id="right" class="flex flex-col gap-8 w-50">
+          <Input
+            class="w-60 h-12 bg-zinc-600 rounded-lg pl-14"
+            v-if="!dialog"
+            v-model="nomeCliente"
+            placeholder="Nome Cliente"
+            persistent-hint
+            required
+            v-bind:disabled="!existeCliente"
+          ></Input>
+          <Input
+            class="bg-zinc-600 h-12 w-60 rounded-lg"
+            v-if="!dialog"
+            v-model="empresa"
+            placeholder="Empresa"
+            required
+            v-bind:disabled="!existeCliente"
+          ></Input>
+          <Button
+            v-if="!dialog"
+            @click="RedirectConsultaDecliente"
+            class="bg-red-400 w-60 h-12"
+          >
+            Buscar Cliente
+          </Button>
+          <div v-if="dialog" class="ContainerBuscaCliente">
+            <buscaCliente />
+          </div>
+          <Input
+            class="w-60 h-12 bg-zinc-600 rounded-lg"
+            type="text"
+            v-model="titulo"
+            placeholder="titulo"
+          >
+          </Input>
+        </div>
+        <div id="left" class="flex flex-col gap-6">
+          <Select class="bg-zinc-600" v-model="statusChamadoString">
+            <SelectTrigger
               required
               v-bind:disabled="!existeCliente"
-            ></v-text-field>
+              className="w-[280px] h-12 bg-zinc-600"
+            >
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent class="bg-zinc-800">
+              <SelectGroup>
+                <SelectItem value="aberto">Aberto</SelectItem>
+                <SelectItem value="pendente">Pendente</SelectItem>
+                <SelectItem value="fechado">Fechado</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Select v-model="sistema" class="bg-zinc-600">
+            <SelectTrigger
+              required
+              v-bind:disabled="!existeCliente"
+              className="w-[280px] h-12 bg-zinc-600"
+            >
+              <SelectValue placeholder="Sistema" />
+            </SelectTrigger>
+            <SelectContent class="bg-zinc-800">
+              <SelectGroup>
+                <SelectItem value="PDV">PDV</SelectItem>
+                <SelectItem value="Back-office">Back-office</SelectItem>
+                <SelectItem value="Emissor Nf-e">Emissor Nf-e</SelectItem>
+                <SelectItem value="Etiquetas">Etiquetas</SelectItem>
+                <SelectItem value="Pré-Venda Mobile"
+                  >Pré-Venda Mobile</SelectItem
+                >
+                <SelectItem value="ecommerce">ecommerce</SelectItem>
+                <SelectItem value="Etiquetas">Etiquetas</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Select class="bg-zinc-600" v-model="prioridade">
+            <SelectTrigger
+              required
+              v-bind:disabled="!existeCliente"
+              className="w-[280px] h-12 bg-zinc-600"
+            >
+              <SelectValue placeholder="Prioridade" />
+            </SelectTrigger>
+            <SelectContent class="bg-zinc-800">
+              <SelectGroup>
+                <SelectItem class="hover:bg-zinc-600" value="Alta"
+                  >Alta</SelectItem
+                >
+                <SelectItem class="hover:bg-zinc-600" value="Media"
+                  >Media</SelectItem
+                >
+                <SelectItem class="hover:bg-zinc-600" value="fechado"
+                  >Baixa</SelectItem
+                >
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <!--    <Input class="w-40 h-8 bg-zinc-400"></Input>
+          <Input class="w-40 h-8 bg-zinc-400"></Input>
+          <Input class="w-40 h-8 bg-zinc-400"></Input>
+          <Input class="w-40 h-8 bg-zinc-400"></Input> -->
+        </div>
+      </div>
+      <Textarea
+        class="bg-zinc-600 rounded-lg h-44"
+        placeholder="Descrição do chamado"
+        v-model="descricao"
+      ></Textarea>
+      <div class="flex gap-4 mt-4">
+        <!--   @click="submitFormulario" -->
+        <Button class="bg-green-700 w-40" @click="submitFormulario"
+          >Salvar</Button
+        >
+        <Button class="bg-red-700 w-40" @click="fecharModal">Fechar</Button>
+      </div>
+      <!--    <v-container class="ContainerForm">
+        <v-row>
+          <v-col cols="12" sm="6">
+            <Input
+              class="bg-zinc-600 h-16 w-80 rounded-lg"
+              v-model="titulo"
+              placeholder="Titulo"
+              required
+              v-bind:disabled="!existeCliente"
+            ></Input>
           </v-col>
           <v-col cols="12" sm="6">
             <v-select
+              class="InputModal"
               v-model="statusChamadoString"
               :items="['aberto', 'pendente', 'fechado']"
               label="Status"
@@ -23,40 +144,36 @@
               v-bind:disabled="!existeCliente"
             ></v-select>
           </v-col>
-          <v-col v-if="!dialog" cols="12" sm="6" md="4">
-            <v-text-field
+          <v-col class="border-2" v-if="!dialog" cols="12" sm="6" md="4">
+            <Input
+              class="bg-zinc-600 h-16 w-80 rounded-lg"
               v-if="!dialog"
               v-model="nomeCliente"
-              label="Nome Cliente"
+              placeholder="Nome Cliente"
               persistent-hint
               required
               v-bind:disabled="!existeCliente"
-            ></v-text-field>
+            ></Input>
           </v-col>
           <v-col cols="12" sm="6" md="4">
-            <v-btn
-              v-if="!dialog"
-              class="modalBuscaCliente"
-              @click="RedirectConsultaDecliente"
-            >
-              Buscar Cliente
-            </v-btn>
             <div v-if="dialog" class="ContainerBuscaCliente">
               <buscaCliente />
             </div>
           </v-col>
           <v-col cols="12" sm="6" md="4">
-            <v-text-field
+            <Input
+              class="bg-zinc-600 h-16 w-80 rounded-lg"
               v-if="!dialog"
               v-model="empresa"
-              label="Empresa"
+              placeholder="Empresa"
               required
               v-bind:disabled="!existeCliente"
-            ></v-text-field>
+            ></Input>
           </v-col>
 
           <v-col cols="12">
             <v-textarea
+              class="InputModal"
               clearable
               clear-icon="mdi-close-circle"
               v-model="descricao"
@@ -68,6 +185,7 @@
 
           <v-col cols="12" sm="6">
             <v-select
+              class="InputModal"
               v-model="sistema"
               :items="[
                 'PDV',
@@ -86,6 +204,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <v-select
+              class="InputModal"
               v-model="prioridade"
               :items="['Alta', 'Media', 'Baixa']"
               label="Prioridade"
@@ -107,7 +226,7 @@
           </v-btn>
           <small>*Todos os campos obrigatórios</small>
         </v-row>
-      </v-container>
+      </v-container> -->
     </v-card-text>
   </v-card>
 </template>
@@ -117,6 +236,17 @@ import 'vue3-toastify/dist/index.css'
 import { ref, defineEmits } from 'vue'
 /* import axios from 'axios'
 import RequestsChamados from '../../src/services/RequestsChamados.ts' */
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 
 /* import { router } from '../router' */
 import { useRoute } from 'vue-router'
@@ -283,7 +413,7 @@ const recuperaDadosDoForm = () => {
   } */
 
 const testeReatividade = () => {
-  console.log(titulo.value)
+  return console.log(titulo.value, 'acionei o metodo')
 }
 
 const fecharModal = async () => {
@@ -350,6 +480,7 @@ const submitFormulario = async () => {
     usuarioId: idUser.value,
     clienteId: idCliente.value
   }
+
   emit('submitChamado', data)
   /*  if (novoChamado.value === true) {
     const dataForm = {
@@ -420,10 +551,11 @@ const submitFormulario = async () => {
 
 <style scoped>
 .ModalAdicionarServiço {
-  background-color: #19181f !important;
+  background-color: #232229 !important;
   color: white;
   max-height: 90vh;
   font-size: 10px !important;
+  border-radius: 24px;
 }
 .title-modal {
   font-family: 'Montserrat', sans-serif;
@@ -441,5 +573,9 @@ const submitFormulario = async () => {
   width: 460px !important;
   background-color: black;
   border-radius: 12px;
+}
+.InputModal {
+  border-radius: 24px !important;
+  background-color: #403f4b;
 }
 </style>

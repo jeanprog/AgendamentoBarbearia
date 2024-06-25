@@ -12,9 +12,11 @@ import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
 import PrimeVue from 'primevue/config'
 import store from '../store'
 
-
 //icons
 import '@fortawesome/fontawesome-free/css/all.css'
+
+import AxiosAdapter from './infra/http/AxiosAdapter'
+import TodosGatewayHttp from './infra/Gateways/VersaoGatewayHttp'
 /* require('dotenv').config();  */
 
 const vuetify = createVuetify({
@@ -22,7 +24,12 @@ const vuetify = createVuetify({
   directives
 })
 
+const httpClient = new AxiosAdapter()
+const baseUrl = `http://${import.meta.env.VITE_IP_URL}:3000`
+const TodosGateway = new TodosGatewayHttp(httpClient, baseUrl)
+
 createApp(App)
+  .provide('versaoGateway', TodosGateway)
   .use(store)
   .use(router)
   .use(vuetify)
@@ -32,4 +39,5 @@ createApp(App)
     autoClose: 3000
   } as ToastContainerOptions)
   .mount('#app')
+
 App.config.globalProperties.$fa = require('@fortawesome/fontawesome-free')
