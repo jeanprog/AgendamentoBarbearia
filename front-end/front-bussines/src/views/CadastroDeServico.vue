@@ -3,12 +3,29 @@
   <HeaderVoltar :title="titlepage" />
   <div class="body">
     <div class="body-left">
-      <div class="flex gap-12 justify-center">
+      <div class="flex gap-12">
         <div
           v-if="!dialog"
-          class="flex flex-col justify-center items-center gap-2 w-50 bg-zinc-800 rounded-[14px] p-2"
+          class="flex ml-4 flex-col justify-center items-center gap-2 w-50 bg-zinc-800 rounded-[14px] p-2"
         >
           Informações Gerais de chamados
+          <div class="flex gap-2">
+            <popoverTeste
+              dataTitulo="Data inicio"
+              isStart="true"
+              @dataInicio="recebeDatainicio"
+              :limparDatas="limpardatas"
+              @limpar-concluido="retornaLimparDatas"
+            />
+            <popoverTeste
+              v-if="!dialog"
+              dataTitulo="Data Final"
+              isStart="false"
+              :limparDatas="limpardatas"
+              @dataFim="recebeDataFim"
+              @limpar-concluido="retornaLimparDatas"
+            />
+          </div>
           <div class="flex gap-2">
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
@@ -160,11 +177,43 @@
             </Dialog>
           </div>
         </div>
-
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
+          <div
+            v-if="!dialog"
+            class="flex flex-col items-center w-40 h-28 rounded-lg shadow-md shadow-red-700 p-2 bg-zinc-800"
+          >
+            <span class="text-[12px]">PRIORIDADE ALTA</span>
+            <span class="text-[8px]">total</span>
+            <p class="p-2 text-[48px]">{{ totalChamadosAlta() }}</p>
+          </div>
+          <div
+            v-if="!dialog"
+            class="flex flex-col items-center w-40 h-28 rounded-lg shadow-md shadow-yellow-400 p-2 bg-zinc-800"
+          >
+            <span class="text-[12px]">PRIORIDADE MÉDIA</span>
+            <span class="text-[8px]">total</span>
+            <p class="p-2 text-[48px]">{{ totalChamadosBaixa() }}</p>
+          </div>
+          <div
+            v-if="!dialog"
+            class="flex flex-col items-center w-40 h-28 rounded-lg shadow-md shadow-blue-400 p-2 bg-zinc-800"
+          >
+            <span class="text-[12px]">PRIORIDADE BAIXA</span>
+            <span class="text-[8px]">total</span>
+            <p class="p-2 text-[48px]">{{ totalChamadosMedia() }}</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div
+            v-if="!dialog"
+            class="flex flex-col items-center w-40 h-32 rounded-lg shadow-lg p-2 bg-zinc-800"
+          >
+            <span class="text-[12px]">CHAMADOS DO DIA</span>
+            <p class="p-2 text-[48px]">{{ _listaChamadosDiaAtual.length }}</p>
+          </div>
           <Button
             v-if="!dialog"
-            class="flex text-[16px] flex-col gap-4 bg-indigo-800 rounded-[8px] w-40 h-40 shadow-md"
+            class="flex text-[16px] flex-col gap-4 bg-indigo-800 rounded-[8px] w-40 h-48 shadow-md"
             @click="abrirModal"
             @fecharModal="fecharModal"
           >
@@ -172,13 +221,8 @@
             Chamado
             <icon class="fa-solid fa-users-gear text-[32px]"></icon>
           </Button>
-          <div
-            class="flex flex-col items-center w-40 h-32 rounded-lg shadow-lg p-2 bg-zinc-800"
-          >
-            <span class="text-[12px]">CHAMADOS DO DIA</span>
-            <p class="p-2 text-[48px]">{{ _listaChamadosDiaAtual.length }}</p>
-          </div>
         </div>
+
         <div class="ModalPage" v-if="dialog">
           <ModalAddChamado
             @fecharModal="fecharModal"
@@ -195,7 +239,8 @@
       <div class="container-acoes">
         <div class="container-prioridade">
           <div
-            class="flex flex-col bg-zinc-800 rounded-lg items-center min-w-[900px] max-w-[900px] ml-4 overflow-y-hidden mt-2 h-60"
+            v-if="!dialog"
+            class="flex flex-col bg-zinc-800 rounded-lg items-center min-w-[900px] max-w-[900px] ml-4 overflow-y-hidden h-60"
           >
             <p class="absolute p-2 bg-zinc-700 mt-4 rounded-lg" v-if="!dialog">
               Chamados Pendentes com prioridade alta
@@ -212,25 +257,28 @@
                 <div class="">
                   <Dialog>
                     <DialogTrigger as-child>
-                      <Card class="h-40 w-36 bg-indigo-900 cursor-pointer">
+                      <Card
+                        class="h-40 w-36 bg-zinc-900 border-2 border-red-700 cursor-pointer"
+                      >
                         <CardContent
-                          class="flex flex-col aspect-square items-center gap-6"
+                          class="flex flex-col aspect-square items-center gap-2"
                         >
                           <div
-                            class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-yellow-700"
+                            class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-red-700"
                           ></div>
+                          <i
+                            class="fa-brands fa-font-awesome text-red-700 text-[24px]"
+                          ></i>
+
                           <div class="flex flex-col max-h-[48px]">
                             <span class="text-[12px] font-semibold"
                               ><span class=""></span>Empresa:
-                              {{ chamado.Empresa }}</span
+                              {{ formatText(chamado.Empresa, 1) }}</span
                             >
 
                             <span class="text-[12px] font-semibold">
                               Abertura: {{ chamado.dAbertura }}</span
                             >
-                          </div>
-                          <div>
-                            <i class="fa-solid fa-eye"></i>
                           </div>
                         </CardContent>
                       </Card>
@@ -286,36 +334,41 @@
           </div>
         </div>
         <div
-          class="bg-zinc-800 rounded-lg flex flex-col items-center min-w-[900px] max-w-[900px] ml-2 overflow-y-hidden mt-2 h-56"
+          class="bg-zinc-800 rounded-lg flex flex-col items-center min-w-[900px] max-w-[900px] ml-2 overflow-y-hidden h-56"
         >
-          <p class="absolute p-2 bg-zinc-700 rounded-lg" v-if="!dialog">
+          <p class="absolute p-2 mt-2 bg-zinc-700 rounded-lg" v-if="!dialog">
             Chamados Pendentes Geral
           </p>
 
-          <div class="flex mt-12 gap-2">
+          <div class="flex mt-14 gap-2">
+            <div class="mt-16" v-if="listaPendentes.length === 0">
+              não há chamados pendentes
+            </div>
             <div v-for="(chamado, index) in listaPendentes" :key="index">
               <div class="">
                 <Dialog>
                   <DialogTrigger as-child>
-                    <Card class="h-40 w-36 bg-zinc-700 cursor-pointer">
+                    <Card
+                      class="h-40 w-36 bg-zinc-900 cursor-pointer border-2 border-yellow-400"
+                    >
                       <CardContent
-                        class="flex flex-col aspect-square items-center gap-6"
+                        class="flex flex-col aspect-square items-center gap-2"
                       >
                         <div
-                          class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-indigo-900"
+                          class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-yellow-400"
                         ></div>
+                        <i
+                          class="fa-brands fa-font-awesome text-yellow-400 text-[24px]"
+                        ></i>
                         <div class="flex flex-col max-h-[48px]">
                           <span class="text-[12px] font-semibold"
                             ><span class=""></span>Empresa:
-                            {{ chamado.Empresa }}</span
+                            {{ formatText(chamado.Empresa, 1) }}</span
                           >
 
                           <span class="text-[12px] font-semibold">
                             Abertura: {{ chamado.dAbertura }}</span
                           >
-                        </div>
-                        <div>
-                          <i class="fa-solid fa-eye"></i>
                         </div>
                       </CardContent>
                     </Card>
@@ -396,7 +449,8 @@
                     <div class="flex gap-2 p-2">
                       <div class="flex flex-col gap-4">
                         <i
-                          class="fa-solid fa-eye text-[24px] text-green-600"
+                          :class="getStatusflag(chamado.prioridade)"
+                          class="fa-brands fa-font-awesome text-[24px]"
                         ></i>
                         <icon
                           class="fa-solid fa-users-gear text-[24px] text-green-600"
@@ -406,7 +460,7 @@
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Titulo:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 2) }}
+                            {{ formatText(chamado.titulo, 1) }}
                           </p>
                         </div>
                         <div class="flex items-center gap-2">
@@ -417,7 +471,7 @@
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Empresa:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 1) }}
+                            {{ formatText(chamado.Empresa, 1) }}
                           </p>
                         </div>
                       </div>
@@ -493,7 +547,8 @@
                     <div class="flex gap-2 p-2">
                       <div class="flex flex-col gap-4">
                         <i
-                          class="fa-solid fa-eye text-[24px] text-yellow-600"
+                          :class="getStatusflag(chamado.prioridade)"
+                          class="fa-brands fa-font-awesome text-[24px]"
                         ></i>
                         <icon
                           class="fa-solid fa-users-gear text-[24px] text-yellow-600"
@@ -503,20 +558,20 @@
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Titulo:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 2) }}
+                            {{ formatText(chamado.titulo, 1) }}
                           </p>
                         </div>
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Nome:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 1) }}
+                            {{ formatText(chamado.Cliente, 1) }}
                           </p>
                         </div>
 
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Empresa:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 1) }}
+                            {{ formatText(chamado.Empresa, 1) }}
                           </p>
                         </div>
                       </div>
@@ -591,7 +646,10 @@
                   <DialogTrigger as-child>
                     <div class="flex gap-2 p-2">
                       <div class="flex flex-col gap-4">
-                        <i class="fa-solid fa-eye text-[24px] text-red-600"></i>
+                        <i
+                          :class="getStatusflag(chamado.prioridade)"
+                          class="fa-brands fa-font-awesome text-[24px]"
+                        ></i>
                         <icon
                           class="fa-solid fa-users-gear text-[24px] text-red-600"
                         ></icon>
@@ -600,7 +658,7 @@
                         <div class="flex items-center gap-2">
                           <span class="font-medium">Titulo:</span>
                           <p class="text-[12px]">
-                            {{ formatText(chamado.titulo, 2) }}
+                            {{ formatText(chamado.titulo, 1) }}
                           </p>
                         </div>
                         <div class="flex items-center gap-2">
@@ -840,8 +898,9 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'vue3-toastify'
 import { useStore } from 'vuex'
 import axios from 'axios'
-import { format, getDate } from 'date-fns'
+import { format } from 'date-fns'
 import formatText from '@/utils/formartText.ts'
+import { getStatusflag } from '@/utils/coresDiv.ts'
 
 interface Chamado {
   Analista: string
@@ -886,7 +945,7 @@ const dateEnd = ref<Date>()
 const _listaFiltrada = ref<unknown[]>([])
 const _listaChamadosDiaAtual = ref<[]>([])
 const recarregar = ref<Boolean>(false)
-const hoje = ref<String>('')
+
 const sBuscaEmpresa = ref<string>('')
 const sBuscaStatus = ref<string>('')
 const sBuscaSistemas = ref<string>('')
@@ -1430,6 +1489,31 @@ const listaChamadosPendentes = () => {
     )
   }
 }
+const totalChamadosAlta = () => {
+  if (itensChamado.value.length) {
+    const chamadosAlta = listaResultado.value.filter(
+      (chamado) => chamado.prioridade === 'Alta'
+    )
+    return chamadosAlta.length
+  }
+}
+const totalChamadosBaixa = () => {
+  if (itensChamado.value.length) {
+    const chamadosAlta = listaResultado.value.filter(
+      (chamado) => chamado.prioridade === 'Baixa'
+    )
+    return chamadosAlta.length
+  }
+}
+
+const totalChamadosMedia = () => {
+  if (itensChamado.value.length) {
+    const chamadosAlta = listaResultado.value.filter(
+      (chamado) => chamado.prioridade === 'Media'
+    )
+    return chamadosAlta.length
+  }
+}
 
 const TotalChamadosPDV = () => {
   if (itensChamado.value.length) {
@@ -1492,7 +1576,7 @@ const TotalChamadosPreVenda = () => {
   width: 50%;
   color: white;
   max-height: 88vh;
-  margin-top: 2%;
+  margin-top: 1%;
 
   display: flex;
   flex-direction: column;
@@ -1516,6 +1600,7 @@ const TotalChamadosPreVenda = () => {
   z-index: 1; /* Garante que o texto esteja acima dos elementos abaixo */
   text-align: center;
   border-radius: 8px;
+  box-shadow: 100px;
 }
 .itens {
   width: 100%;
@@ -1581,7 +1666,7 @@ const TotalChamadosPreVenda = () => {
 
   display: flex;
   min-width: 100%;
-
+  margin-top: 1%;
   display: flex;
 }
 

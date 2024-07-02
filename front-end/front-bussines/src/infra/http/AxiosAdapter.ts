@@ -7,8 +7,13 @@ export default class AxiosAdapter implements HttpClient {
     const response = await axios.get(url)
     return response.data
   }
-  post(url: string, body: any): Promise<any> {
-    throw new Error('Method not implemented.')
+  async post(url: string, body: any): Promise<any> {
+    try {
+      const submit = await axios.post(url, body)
+      return submit
+    } catch (error) {
+      console.log('error na requisição', error)
+    }
   }
   put(url: string, params?: any): Promise<any> {
     throw new Error('Method not implemented.')

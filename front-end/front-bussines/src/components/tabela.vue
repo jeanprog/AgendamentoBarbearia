@@ -187,7 +187,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
-import getStatusClasses from '@/utils/coresDiv'
+import { getStatusClasses } from '@/utils/coresDiv'
 /* const mensagem = ref(props.mensagem) */
 /*
   headers.value = [

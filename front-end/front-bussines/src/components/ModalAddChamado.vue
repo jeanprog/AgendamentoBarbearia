@@ -98,7 +98,7 @@
                 <SelectItem class="hover:bg-zinc-600" value="Media"
                   >Media</SelectItem
                 >
-                <SelectItem class="hover:bg-zinc-600" value="fechado"
+                <SelectItem class="hover:bg-zinc-600" value="Baixa"
                   >Baixa</SelectItem
                 >
               </SelectGroup>

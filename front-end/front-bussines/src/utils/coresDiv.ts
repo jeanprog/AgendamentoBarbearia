@@ -3,7 +3,7 @@ const getStatusClasses = (status: string) => {
     case 'aberto':
       return 'bg-green-700 border-green-700'
     case 'fechado':
-      return 'bg-red-700 border-red-700'
+      return 'bg-blue-900 border-blue-900'
     case 'pendente':
       return 'bg-yellow-700 border-yellow-700'
     default:
@@ -11,4 +11,17 @@ const getStatusClasses = (status: string) => {
   }
 }
 
-export default getStatusClasses
+const getStatusflag = (status: string) => {
+  switch (status) {
+    case 'Alta':
+      return 'text-red-700'
+    case 'Media':
+      return 'text-yellow-400'
+    case 'Baixa':
+      return 'text-blue-400'
+    default:
+      return 'bg-gray-400 border-gray-400' // Classe padrão para outros estados
+  }
+}
+
+export { getStatusClasses, getStatusflag }

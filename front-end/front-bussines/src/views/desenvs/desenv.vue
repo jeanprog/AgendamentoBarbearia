@@ -56,6 +56,7 @@ import { toast } from 'vue3-toastify'
 import { z } from 'zod'
 import fomatarData from '../../utils/maskDate.ts'
 import VersaoGateway from '@/infra/Gateways/VersaoGateway.ts'
+import Versao from '@/entitys/Versao.ts'
 
 interface versao {
   id: number
@@ -79,7 +80,7 @@ let titlepage = ref('Solicitações desenvolvimento')
 const dateStart = ref<Date>()
 const dateEnd = ref<Date>()
 
-const listVersoes = ref<versao[]>([])
+const listVersoes = ref<Versao[]>([])
 const valueVersao = ref<String>('')
 const valueApp = ref<String>('')
 const selectVersao = ref<string>('')
@@ -101,6 +102,11 @@ const data = [
   { name: 'Jun', total: 2 }
 ]
 
+const todosGateway = inject('versaoGateway') as VersaoGateway
+if (!todosGateway) {
+  throw new Error('TodosGateway não foi injetado corretamente')
+}
+
 /* const maxY = 60 */
 
 onMounted(() => {
@@ -110,10 +116,6 @@ onMounted(() => {
 
 const todoVersoes = async () => {
   try {
-    const todosGateway = inject('versaoGateway') as VersaoGateway
-    if (!todosGateway) {
-      throw new Error('TodosGateway não foi injetado corretamente')
-    }
     const todosData = await todosGateway.getTodoVersao()
     console.log(todosData, 'teste clean ')
     if (todosData) {
@@ -167,7 +169,7 @@ const cadastrarVersao = async () => {
       versao: valueVersao.value as string,
       datCri: new Date()
     }
-    await postVersoes(data)
+    await todosGateway.addVersao(data)
     todoVersoes()
     toastNotify('adicionado com sucesso')
     valueVersao.value = ''
@@ -306,6 +308,18 @@ const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
         class="w-full h-80 rounded-[24px] bg-zinc-800 flex flex-col items-center gap-2"
       >
         <p class="text-sm mt-4">Cadastro de versões</p>
+        <div class="relative items-center w-70">
+          <Input
+            id="search"
+            type="text"
+            placeholder="Search..."
+            class="pl-10 bg-zinc-900 rounded-[12px] text-zinc-600 w-70"
+          />
+          <span
+            class="absolute start-0 inset-y-0 flex items-center justify-center px-2 text-zinc-600"
+            ><i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+        </div>
         <div
           class="flex flex-col gap-2 h-52 overflow-auto hover:overflow-scroll pt-2"
           id="scroll"
