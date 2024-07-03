@@ -162,7 +162,6 @@ const filtrarPorDatas = async () => {
 
 const cadastrarVersao = async () => {
   console.log(valueVersao.value, valueApp.value)
-
   if (valueVersao.value && valueApp.value) {
     const data = {
       aplicativo: valueApp.value as string,

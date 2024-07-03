@@ -19,5 +19,6 @@ export default class VersoesList {
       versao.id // 'id' é opcional
     )
     this.versoes.push(newVersao)
+    return console.log(this.versoes)
   }
 }
