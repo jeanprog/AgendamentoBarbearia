@@ -1,13 +1,18 @@
 import Versao from '@/entitys/Versao'
 
+import VersaoGatewayHttp from '@/infra/Gateways/VersaoGatewayHttp'
+
 export default class VersoesList {
   versoes: Versao[]
+  gateway: VersaoGatewayHttp
 
-  constructor() {
+  constructor(gateway: VersaoGatewayHttp) {
     this.versoes = []
+    this.gateway = gateway
   }
 
-  public getAllVersao(): Versao[] {
+  async getAllVersao(): Promise<Versao[]> {
+    this.versoes = await this.gateway.getTodoVersao()
     return this.versoes
   }
 
