@@ -18,7 +18,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import AxiosAdapter from './infra/http/AxiosAdapter'
 import TodosGatewayHttp from './infra/Gateways/VersaoGatewayHttp'
 /* require('dotenv').config();  */
-
+import VersoesList from './entitys/VersoesList'
 const vuetify = createVuetify({
   components,
   directives
@@ -27,9 +27,10 @@ const vuetify = createVuetify({
 const httpClient = new AxiosAdapter()
 const baseUrl = `http://${import.meta.env.VITE_IP_URL}:3000`
 const TodosGateway = new TodosGatewayHttp(httpClient, baseUrl)
+const versaoList = new VersoesList(TodosGateway)
 
 createApp(App)
-  .provide('versaoGateway', TodosGateway)
+  .provide('versaoList', versaoList)
   .use(store)
   .use(router)
   .use(vuetify)

@@ -58,6 +58,9 @@ import fomatarData from '../../utils/maskDate.ts'
 import VersaoGateway from '@/infra/Gateways/VersaoGateway.ts'
 import Versao from '@/entitys/Versao.ts'
 
+import VersoesList from '@/entitys/VersoesList.ts'
+import TodosGatewayHttp from '@/infra/Gateways/VersaoGatewayHttp.ts'
+
 interface versao {
   id: number
   aplicativo: string
@@ -102,9 +105,14 @@ const data = [
   { name: 'Jun', total: 2 }
 ]
 
-const todosGateway = inject('versaoGateway') as VersaoGateway
+/* const todosGateway = inject('versaoGateway') as VersaoGateway
 if (!todosGateway) {
   throw new Error('TodosGateway não foi injetado corretamente')
+} */
+
+const versoes = inject('versaoList') as VersoesList
+if (!versoes) {
+  throw new Error('não foi injetado')
 }
 
 /* const maxY = 60 */
@@ -116,8 +124,7 @@ onMounted(() => {
 
 const todoVersoes = async () => {
   try {
-    const todosData = await todosGateway.getTodoVersao()
-    console.log(todosData, 'teste clean ')
+    const todosData = await versoes.getAllVersao()
     if (todosData) {
       listVersoes.value = todosData
     }
@@ -168,7 +175,7 @@ const cadastrarVersao = async () => {
       versao: valueVersao.value as string,
       datCri: new Date()
     }
-    await todosGateway.addVersao(data)
+    await versoes.addVersao(data)
     todoVersoes()
     toastNotify('adicionado com sucesso')
     valueVersao.value = ''
@@ -503,7 +510,7 @@ const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
                           <SelectItem
                             v-for="(versao, index) in listVersoes"
                             :key="index"
-                            :value="versao.id.toString()"
+                            :value="versao.id?.toString()"
                             @click="capturaIdVersao()"
                           >
                             {{ versao.aplicativo }}

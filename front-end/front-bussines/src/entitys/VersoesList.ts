@@ -1,5 +1,4 @@
 import Versao from '@/entitys/Versao'
-
 import VersaoGatewayHttp from '@/infra/Gateways/VersaoGatewayHttp'
 
 export default class VersoesList {
@@ -16,14 +15,15 @@ export default class VersoesList {
     return this.versoes
   }
 
-  public addVersao(versao: Versao) {
+  async addVersao(versao: Versao) {
     const newVersao = new Versao(
       versao.aplicativo,
       versao.versao,
       versao.datCri,
       versao.id // 'id' é opcional
     )
-    this.versoes.push(newVersao)
-    return console.log(this.versoes)
+    await this.gateway.addVersao(versao)
+
+    return console.log(newVersao)
   }
 }

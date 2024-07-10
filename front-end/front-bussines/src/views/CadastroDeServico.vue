@@ -264,8 +264,10 @@
                           class="flex flex-col aspect-square items-center gap-2"
                         >
                           <div
-                            class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-red-700"
-                          ></div>
+                            class="flex justify-center min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-red-700"
+                          >
+                            <p>{{ chamado.Empresa.toUpperCase() }}</p>
+                          </div>
                           <i
                             class="fa-brands fa-font-awesome text-red-700 text-[24px]"
                           ></i>
@@ -355,8 +357,12 @@
                         class="flex flex-col aspect-square items-center gap-2"
                       >
                         <div
-                          class="flex min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-yellow-400"
-                        ></div>
+                          class="flex justify-center min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-yellow-400"
+                        >
+                          <p class="text-black font-bold">
+                            {{ chamado.Empresa.toUpperCase() }}
+                          </p>
+                        </div>
                         <i
                           class="fa-brands fa-font-awesome text-yellow-400 text-[24px]"
                         ></i>
