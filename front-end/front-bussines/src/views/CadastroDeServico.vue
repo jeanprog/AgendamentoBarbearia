@@ -206,14 +206,26 @@
         <div class="flex flex-col gap-8">
           <div
             v-if="!dialog"
-            class="flex flex-col items-center w-40 h-32 rounded-lg shadow-lg p-2 bg-zinc-800"
+            class="flex flex-col items-center w-40 h-24 rounded-lg shadow-lg p-2 bg-zinc-800"
           >
             <span class="text-[12px]">CHAMADOS DO DIA</span>
             <p class="p-2 text-[48px]">{{ _listaChamadosDiaAtual.length }}</p>
           </div>
+          <div
+            v-if="!dialog"
+            class="flex flex-col items-center w-40 h-24 rounded-lg shadow-lg p-2 bg-zinc-800"
+          >
+            <span class="text-[12px]">TOTAL DO PERIODO</span>
+
+            <p v-if="_listaFiltrada.length > 0" class="p-2 text-[48px]">
+              {{ _listaFiltrada.length }}
+            </p>
+            <p v-if="_listaFiltrada.length === 0" class="p-2 text-[48px]">0</p>
+          </div>
+
           <Button
             v-if="!dialog"
-            class="flex text-[16px] flex-col gap-4 bg-indigo-800 rounded-[8px] w-40 h-48 shadow-md"
+            class="flex text-[16px] flex-col gap-4 bg-indigo-800 rounded-[8px] w-40 h-28 shadow-md"
             @click="abrirModal"
             @fecharModal="fecharModal"
           >
@@ -830,7 +842,7 @@
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
       <div
-        class="flex flex-col justify-center items-center max-h-[25rem] bg-zinc-800 rounded-2xl"
+        class="flex flex-col justify-center items-center max-h-[26rem] bg-zinc-800 rounded-2xl"
       >
         <!-- <p v-if="!dialog" class="mt-4">Todos os chamados Recentes</p> -->
         <div class="flex items-center gap-10 w-full pl-12 min-h-12 text-[14px]">
@@ -1004,6 +1016,7 @@ const limpaFiltrosBusca = () => {
 
   sBuscaSistemas.value = ''
   limpardatas.value = true
+  _listaFiltrada.value = []
 
   /*  if (sBuscaStatus.value) {
     sBuscaStatus.value = undefined

@@ -15,6 +15,11 @@ export default class VersoesList {
     return this.versoes
   }
 
+  async delVersao(id: number) {
+    await this.gateway.deleteVersao(id)
+    return 'deletado com sucess'
+  }
+
   async addVersao(versao: Versao) {
     const newVersao = new Versao(
       versao.aplicativo,
@@ -23,7 +28,6 @@ export default class VersoesList {
       versao.id // 'id' é opcional
     )
     await this.gateway.addVersao(versao)
-
     return console.log(newVersao)
   }
 }

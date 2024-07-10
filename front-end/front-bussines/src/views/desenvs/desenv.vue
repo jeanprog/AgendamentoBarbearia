@@ -191,7 +191,7 @@ const deleteVersao = async (id: number) => {
   console.log('peguei o id', id)
   // comentei estar parte pra poder adiciona a regra de deletar somente se não tiver associado a solicitações !
 
-  await delVersaoService(id)
+  await versoes.delVersao(id)
   todoVersoes()
   /*   toastNotify('Ainda não é permitido remover uma versão') */
 }

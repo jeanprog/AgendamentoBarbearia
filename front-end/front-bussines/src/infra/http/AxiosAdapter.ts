@@ -18,7 +18,9 @@ export default class AxiosAdapter implements HttpClient {
   put(url: string, params?: any): Promise<any> {
     throw new Error('Method not implemented.')
   }
-  delete(url: string, params?: any): Promise<any> {
-    throw new Error('Method not implemented.')
+  async delete(url: string, params?: any): Promise<any> {
+    const remove = await axios.delete(url, params)
+    return remove
   }
+  // verificar no back-end se a versão está vinculada alguma solicitação.
 }

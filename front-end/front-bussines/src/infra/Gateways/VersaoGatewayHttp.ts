@@ -25,4 +25,11 @@ export default class TodosGatewayHttp implements VersaoGateway {
     const versoes = await this.httpClient.get(`${this.baseUrl}/versoes`)
     return versoes
   }
+
+  async deleteVersao(id: number): Promise<Versao> {
+    const deletar = await this.httpClient.delete(
+      `${this.baseUrl}/versoes/${id}`
+    )
+    return deletar
+  }
 }
