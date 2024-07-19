@@ -146,6 +146,11 @@
             </DialogContent>
           </Dialog>
         </div>
+        <Button
+          @click="emitEventStatus(chamado)"
+          class="rounded-lg bg-blue-900 shadow-lg"
+          >finalizar</Button
+        >
       </TableRow>
       <div class="h-4"></div>
     </TableBody>
@@ -239,6 +244,10 @@ onMounted(() => {
   /*   obterDadosTratadosChamado() */
   /*  console.log(props.itensTabela, 'teste aqu') */
 })
+
+const emitEventStatus = (chamado: any) => {
+  emit('finalizar', chamado)
+}
 
 const capturaItem = (chamado: any) => {
   console.log(chamado, 'capturei ')

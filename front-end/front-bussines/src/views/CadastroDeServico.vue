@@ -184,7 +184,10 @@
           >
             <span class="text-[12px]">PRIORIDADE ALTA</span>
             <span class="text-[8px]">total</span>
-            <p class="p-2 text-[48px]">{{ totalChamadosAlta() }}</p>
+            <p class="p-2 text-[48px]">
+              {{ totalChamadosAlta() }}
+            </p>
+            <i class="fa-solid fa-circle-notch"></i>
           </div>
           <div
             v-if="!dialog"
@@ -328,17 +331,25 @@
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button
-                          class="bg-indigo-800 rounded-lg hover-zinc-300 focus:outline-none"
-                          type="submit"
-                          @click="atualizarStatusFechado(chamado)"
-                        >
-                          <DialogClose
-                            class="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                        <div class="flex justify-between w-full">
+                          <Button
+                            @click="abrirModalEditar(chamado)"
+                            class="bg-yellow-800 rounded-lg hover-zinc-300 focus:outline-none w-28"
                           >
-                            Finalizar Chamado
-                          </DialogClose>
-                        </Button>
+                            Editar
+                          </Button>
+                          <Button
+                            class="bg-indigo-800 rounded-lg hover-zinc-300 focus:outline-none"
+                            type="submit"
+                            @click="atualizarStatusFechado(chamado)"
+                          >
+                            <DialogClose
+                              class="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                            >
+                              Finalizar Chamado
+                            </DialogClose>
+                          </Button>
+                        </div>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
@@ -359,7 +370,7 @@
               não há chamados pendentes
             </div>
             <div v-for="(chamado, index) in listaPendentes" :key="index">
-              <div class="">
+              <div v-if="!dialog">
                 <Dialog>
                   <DialogTrigger as-child>
                     <Card
@@ -422,17 +433,25 @@
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button
-                        class="bg-indigo-800 rounded-lg hover-zinc-300 focus:outline-none"
-                        type="submit"
-                        @click="atualizarStatusFechado(chamado)"
-                      >
-                        <DialogClose
-                          class="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                      <div class="flex justify-between w-full">
+                        <Button
+                          @click="abrirModalEditar(chamado)"
+                          class="bg-yellow-800 rounded-lg hover-zinc-300 focus:outline-none w-28"
                         >
-                          Finalizar Chamado
-                        </DialogClose>
-                      </Button>
+                          Editar
+                        </Button>
+                        <Button
+                          class="bg-indigo-800 rounded-lg hover-zinc-300 focus:outline-none"
+                          type="submit"
+                          @click="atualizarStatusFechado(chamado)"
+                        >
+                          <DialogClose
+                            class="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                          >
+                            Finalizar Chamado
+                          </DialogClose>
+                        </Button>
+                      </div>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -540,7 +559,14 @@
                         {{ chamado.dFechamento }}
                       </p>
                     </div>
-                    <DialogFooter> </DialogFooter>
+                    <DialogFooter>
+                      <Button
+                        @click="abrirModalEditar(chamado)"
+                        class="w-32 rounded-lg bg-indigo-800 shadow-lg"
+                      >
+                        editar
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </CardContent>
@@ -640,7 +666,14 @@
                         {{ chamado.dFechamento }}
                       </p>
                     </div>
-                    <DialogFooter> </DialogFooter>
+                    <DialogFooter>
+                      <Button
+                        @click="abrirModalEditar(chamado)"
+                        class="w-32 rounded-lg bg-indigo-800 shadow-lg"
+                      >
+                        editar
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </CardContent>
@@ -738,7 +771,14 @@
                         {{ chamado.dFechamento }}
                       </p>
                     </div>
-                    <DialogFooter> </DialogFooter>
+                    <DialogFooter>
+                      <Button
+                        @click="abrirModalEditar(chamado)"
+                        class="w-32 rounded-lg bg-indigo-800 shadow-lg"
+                      >
+                        editar
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
               </CardContent>
@@ -859,6 +899,7 @@
           class=""
           v-if="!dialog && listaPronta"
           @editar="abrirModalEditar"
+          @finalizar="atualizarStatusFechado"
           :listaFiltrada="novaLista"
           :itensTabela="itensChamado"
         />
@@ -1233,7 +1274,7 @@ const filtrarPorDatas = async () => {
     console.log('case sem datas preenchidas ')
   }
 }
-
+// preciso refatorar isso aqui ...
 const obterDadosTratadosChamado = async () => {
   try {
     const responseClientes = await axios.get(

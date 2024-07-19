@@ -1,12 +1,17 @@
-import Versao from './Versao'
+import SolicitacaoGatewayHttp from '@/infra/Gateways/SolicitacaoGatewayHttp'
+import Solicitacao from './Solicitacao'
 
 export default class SolicitacoesList {
-  solicitacoes: Versao[]
-  constructor() {
+  solicitacoes: Solicitacao[]
+  gateway: SolicitacaoGatewayHttp
+  constructor(gateway: SolicitacaoGatewayHttp) {
     this.solicitacoes = []
+    this.gateway = gateway
   }
 
-  getTodoSolicitacoes(): Versao[] {
+  async getTodoSolicitacoes(): Promise<Solicitacao[]> {
+    this.solicitacoes = await this.gateway.getTodoSolicatacao()
+
     return this.solicitacoes
   }
 }
