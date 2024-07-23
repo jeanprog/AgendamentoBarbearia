@@ -41,9 +41,6 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 
 import {
-  getVersoes,
-  postVersoes,
-  delVersaoService,
   requestSolucaoVersao,
   getSolucaoVersao
 } from '../../services/versoesServices.ts'
@@ -55,18 +52,12 @@ import { VisAxis, VisStackedBar, VisXYContainer } from '@unovis/vue'
 import { toast } from 'vue3-toastify'
 import { z } from 'zod'
 import fomatarData from '../../utils/maskDate.ts'
-import VersaoGateway from '@/infra/Gateways/VersaoGateway.ts'
+
 import Versao from '@/entitys/Versao.ts'
 
 import VersoesList from '@/entitys/VersoesList.ts'
-import TodosGatewayHttp from '@/infra/Gateways/VersaoGatewayHttp.ts'
-
-interface versao {
-  id: number
-  aplicativo: string
-  versao: string
-  datCri: Date
-}
+import SolicitacoesList from '@/entitys/SolicitacoesList.ts'
+import Solicitacao from '@/entitys/Solicitacao.ts'
 
 interface PropsSolucoesVersoes {
   id: number
@@ -93,7 +84,7 @@ const tituloDesenv = ref<string>('')
 const descricaoDesenv = ref<string>('')
 const selectAppVersao = ref<string>('')
 const camposObrigatorios = ref<Boolean>(false)
-const arraySolicitacoes = ref<PropsSolucoesVersoes[]>([])
+const arraySolicitacoes = ref<Solicitacao[]>([])
 /* const descricaoSolucao = ref<string>('')
  */
 const data = [
@@ -115,6 +106,11 @@ if (!versoes) {
   throw new Error('não foi injetado')
 }
 
+const solicitacoes = inject('solicitacaoList') as SolicitacoesList
+
+if (!solicitacoes) {
+  throw new Error('sua classe solicitações não foi injetada')
+}
 /* const maxY = 60 */
 
 onMounted(() => {
@@ -274,9 +270,9 @@ const requestDesenv = async (data: any) => {
 
 const todasSolicitacoes = async () => {
   try {
-    const response = await getSolucaoVersao()
+    const response = await solicitacoes.getTodoSolicitacoes()
     if (response) {
-      arraySolicitacoes.value = response.data
+      arraySolicitacoes.value = response
       console.log(arraySolicitacoes.value, 'lista')
     }
     return

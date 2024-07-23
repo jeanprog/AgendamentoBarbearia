@@ -31,29 +31,50 @@
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Total</p>
               <p class="text-zinc-400 text-[12px]">Chamados</p>
-              <p class="text-white text-[14px]">{{ itensChamado.length }}</p>
+              <p v-if="listaPronta" class="text-white text-[14px]">
+                {{ itensChamado.length }}
+              </p>
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Dia</p>
-              <p class="text-white text-[14px]">
+              <p v-if="listaPronta" class="text-white text-[14px]">
                 {{ _listaChamadosDiaAtual.length }}
               </p>
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">PDV</p>
-              <p class="text-white text-[14px]">{{ chamadosPDV.length }}</p>
+              <p v-if="listaPronta" class="text-white text-[14px]">
+                {{ chamadosPDV.length }}
+              </p>
+
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Retaguarda</p>
-              <p class="text-white text-[14px]">
+              <p v-if="listaPronta" class="text-white text-[14px]">
                 {{ chamadosRetaguarda.length }}
               </p>
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
           </div>
           <div class="flex gap-2">
@@ -61,31 +82,51 @@
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Ecommerce</p>
-              <p class="text-white text-[14px]">
+              <p v-if="listaPronta" class="text-white text-[14px]">
                 {{ chamadosEcommerce.length }}
               </p>
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Emissor</p>
-              <p class="text-white text-[14px]">{{ chamadosEmissor.length }}</p>
+              <p v-if="listaPronta" class="text-white text-[14px]">
+                {{ chamadosEmissor.length }}
+              </p>
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Etiquetas</p>
-              <p class="text-white text-[14px]">
+              <p v-if="listaPronta" class="text-white text-[14px]">
                 {{ chamadosEtiquetas.length }}
               </p>
+
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
             <Card
               class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Pré venda</p>
-              <p class="text-white text-[14px]">
+              <p v-if="listaPronta" class="text-white text-[14px]">
                 {{ chamadosPreVenda.length }}
               </p>
+
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[12px] animate-spin"
+              ></i>
             </Card>
           </div>
           <div
@@ -184,10 +225,14 @@
           >
             <span class="text-[12px]">PRIORIDADE ALTA</span>
             <span class="text-[8px]">total</span>
-            <p class="p-2 text-[48px]">
+            <p class="p-2 text-[32px]">
               {{ totalChamadosAlta() }}
+
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[48px] animate-spin"
+              ></i>
             </p>
-            <i class="fa-solid fa-circle-notch"></i>
           </div>
           <div
             v-if="!dialog"
@@ -195,7 +240,13 @@
           >
             <span class="text-[12px]">PRIORIDADE MÉDIA</span>
             <span class="text-[8px]">total</span>
-            <p class="p-2 text-[48px]">{{ totalChamadosBaixa() }}</p>
+            <p class="p-2 text-[48px]">
+              {{ totalChamadosBaixa() }}
+              <i
+                v-if="!listaPronta"
+                class="fa-solid fa-circle-notch text-[48px] animate-spin"
+              ></i>
+            </p>
           </div>
           <div
             v-if="!dialog"
@@ -204,6 +255,10 @@
             <span class="text-[12px]">PRIORIDADE BAIXA</span>
             <span class="text-[8px]">total</span>
             <p class="p-2 text-[48px]">{{ totalChamadosMedia() }}</p>
+            <i
+              v-if="!listaPronta"
+              class="fa-solid fa-circle-notch text-[48px] animate-spin"
+            ></i>
           </div>
         </div>
         <div class="flex flex-col gap-8">
@@ -882,10 +937,17 @@
       </div>
       <!--   <v-btn :elevation="12" class="mt-2">Filtrar</v-btn> -->
       <div
-        class="flex flex-col justify-center items-center max-h-[26rem] bg-zinc-800 rounded-2xl"
+        class="flex flex-col justify-center items-center min-h-[26rem] max-h-[26rem] bg-zinc-800 rounded-2xl"
       >
         <!-- <p v-if="!dialog" class="mt-4">Todos os chamados Recentes</p> -->
-        <div class="flex items-center gap-10 w-full pl-12 min-h-12 text-[14px]">
+        <i
+          v-if="!listaPronta"
+          class="fa-solid fa-circle-notch text-[112px] animate-spin"
+        ></i>
+        <div
+          v-if="listaPronta"
+          class="flex items-center gap-10 w-full pl-12 min-h-12 text-[14px]"
+        >
           <p>Empresa</p>
           <p>Funcionário</p>
           <p>Sistema</p>
@@ -949,17 +1011,20 @@ import {
   postChamado,
   atualizarChamado,
   getChamadosPorData,
-  getChamadosDiaAtual
+  getChamadosDiaAtual,
+  todoChamados
 } from '../services/RequestsChamados.ts'
 import { Button } from '../components/ui/button'
 import { Input } from '@/components/ui/input'
 
 import { toast } from 'vue3-toastify'
 import { useStore } from 'vuex'
-import axios from 'axios'
+
 import { format } from 'date-fns'
 import formatText from '@/utils/formartText.ts'
 import { getStatusflag } from '@/utils/coresDiv.ts'
+import todoClientes from '@/services/clientesServices.ts'
+import authUser from '@/services/authService.ts'
 
 interface Chamado {
   Analista: string
@@ -1087,21 +1152,15 @@ const retornaChamadosIgualDiaAtual = async () => {
   if (storedData) {
     const parsedData = JSON.parse(storedData)
     const id = parsedData.id
-    const response = await getChamadosDiaAtual(id)
-    try {
-      const responseClientes = await axios.get(
-        `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
-      )
-      /* const responseChamados = await axios.get(
-      `http://localhost:3000/servicos/user/${idUser.value}`
-    )  */ // refatorar aqui promisse allslteld
-      const responseUser = await axios.get(
-        `http://${import.meta.env.VITE_IP_URL}:3000/user-login`
-      )
 
-      const listaClientes = responseClientes.data
+    try {
+      const response = await getChamadosDiaAtual(id)
+      const responseClientes = await todoClientes()
+      const responseUser = await authUser()
+
+      const listaClientes = responseClientes
       const listaChamados = response.data
-      const listaAnalista = responseUser.data
+      const listaAnalista = responseUser
 
       if (
         listaChamados.length > 0 &&
@@ -1277,19 +1336,11 @@ const filtrarPorDatas = async () => {
 // preciso refatorar isso aqui ...
 const obterDadosTratadosChamado = async () => {
   try {
-    const responseClientes = await axios.get(
-      `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
-    )
-    const responseChamados = await axios.get(
-      `http://${import.meta.env.VITE_IP_URL}:3000/servicos/user/${idUser.value}`
-    ) // refatorar aqui promisse allslteld
-    const responseUser = await axios.get(
-      `http://${import.meta.env.VITE_IP_URL}:3000/user-login`
-    )
-
-    const listaClientes = responseClientes.data
-    const listaChamados = responseChamados.data
-    const listaAnalista = responseUser.data
+    const [listaClientes, listaChamados, listaAnalista] = await Promise.all([
+      todoClientes(),
+      todoChamados(),
+      authUser()
+    ])
 
     if (listaClientes.length > 0 && listaChamados.length > 0) {
       listaResultado.value = listaChamados.map((chamado: any) => {
@@ -1320,13 +1371,15 @@ const obterDadosTratadosChamado = async () => {
         listaPronta.value = true
 
         if (itensChamado.value.length > 0) {
-          TotalChamadosPDV()
-          TotalChamadosRetaguarda()
-          TotalChamadosEcommerce()
-          TotalChamadosEmissor()
-          TotalChamadosEtiquetas()
-          TotalChamadosPreVenda()
-          listaChamadosPendentes()
+          await Promise.allSettled([
+            TotalChamadosPDV(),
+            TotalChamadosRetaguarda(),
+            TotalChamadosEcommerce(),
+            TotalChamadosEmissor(),
+            TotalChamadosEtiquetas(),
+            TotalChamadosPreVenda(),
+            listaChamadosPendentes()
+          ])
         }
       }
 
@@ -1344,20 +1397,12 @@ const obterDadosTratadosChamado = async () => {
 
 const chamadosFiltrados = async () => {
   try {
-    const responseClientes = await axios.get(
-      `http://${import.meta.env.VITE_IP_URL}:3000/clientes`
-    )
-    /* const responseChamados = await axios.get(
-      `http://localhost:3000/servicos/user/${idUser.value}`
-    )  */ // refatorar aqui promisse allslteld
-    const responseUser = await axios.get(
-      `http://${import.meta.env.VITE_IP_URL}:3000/user-login`
-    )
-
-    const listaClientes = responseClientes.data
+    const [listaClientes, listaAnalista] = await Promise.all([
+      todoClientes(),
+      todoChamados(),
+      authUser()
+    ])
     const listaChamados = _listaFiltrada.value
-    const listaAnalista = responseUser.data
-
     if (listaClientes.length > 0 && _listaFiltrada.value.length > 0) {
       listaResultado.value = listaChamados.map((chamado: any) => {
         const clienteCorrespondente = listaClientes.find(
@@ -1508,6 +1553,7 @@ const obterDadosAuthLogin = () => {
   const dadosLogin = localStorage.getItem('user')
   if (dadosLogin) {
     const dadosJson = JSON.parse(dadosLogin)
+
     idUser.value = parseInt(dadosJson.id)
     idRede.value = parseInt(dadosJson.rede)
   }

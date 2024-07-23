@@ -1,3 +1,5 @@
+import obterDadosAuthLogin from '@/utils/dadosAuth'
+
 import axios from 'axios'
 /* require('dotenv').config(); */
 
@@ -15,6 +17,22 @@ interface chamado {
   statusChamadoAtual: number | null
 }
 
+const todoChamados = async (): Promise<chamado[]> => {
+  const auth = obterDadosAuthLogin()
+  if (auth) {
+    const { iduser } = auth
+    try {
+      const chamados = await axios.get(
+        `http://${import.meta.env.VITE_IP_URL}:3000/servicos/user/${iduser}`
+      )
+      return chamados.data || []
+    } catch (error) {
+      console.log('requisição chamados com error', error) // refatorar aqui promisse allslteld
+    }
+    return []
+  }
+  return []
+}
 /* const obterDadosTratadosChamado = async () => {
   try {
     const responseClientes = await axios.get(
@@ -122,5 +140,6 @@ export {
   postChamado,
   atualizarChamado,
   getChamadosPorData,
-  getChamadosDiaAtual
+  getChamadosDiaAtual,
+  todoChamados
 }

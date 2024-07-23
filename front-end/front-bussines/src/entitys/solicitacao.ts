@@ -1,5 +1,5 @@
 export default class Solicitacao {
-  idVersao: number
+  idVersao?: number
   aplicativo: string
   usuarioId: number
   desenvolvedor: string
