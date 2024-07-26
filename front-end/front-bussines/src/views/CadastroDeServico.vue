@@ -8,6 +8,11 @@
           v-if="!dialog"
           class="flex ml-4 flex-col justify-center items-center gap-2 w-50 bg-zinc-800 rounded-[14px] p-2"
         >
+          <i
+            v-if="!listaPronta"
+            class="fa-solid fa-circle-notch text-[12px] animate-spin"
+          ></i>
+
           Informações Gerais de chamados
           <div class="flex gap-2">
             <popoverTeste
@@ -28,7 +33,7 @@
           </div>
           <div class="flex gap-2">
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Total</p>
               <p class="text-zinc-400 text-[12px]">Chamados</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -40,7 +45,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Dia</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -52,7 +57,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">PDV</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -65,7 +70,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Retaguarda</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -79,7 +84,7 @@
           </div>
           <div class="flex gap-2">
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Ecommerce</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -91,7 +96,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Emissor</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -103,7 +108,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Etiquetas</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -116,7 +121,7 @@
               ></i>
             </Card>
             <Card
-              class="flex flex-col items-center w-20 h-20 bg-zinc-900 shadow-lg"
+              class="flex flex-col items-center w-20 h-16 bg-zinc-900 shadow-lg"
               ><p class="text-zinc-400 text-[12px]">Chamados</p>
               <p class="text-zinc-400 text-[12px]">Pré venda</p>
               <p v-if="listaPronta" class="text-white text-[14px]">
@@ -241,7 +246,7 @@
             <span class="text-[12px]">PRIORIDADE MÉDIA</span>
             <span class="text-[8px]">total</span>
             <p class="p-2 text-[48px]">
-              {{ totalChamadosBaixa() }}
+              {{ totalChamadosMedia() }}
               <i
                 v-if="!listaPronta"
                 class="fa-solid fa-circle-notch text-[48px] animate-spin"
@@ -254,7 +259,7 @@
           >
             <span class="text-[12px]">PRIORIDADE BAIXA</span>
             <span class="text-[8px]">total</span>
-            <p class="p-2 text-[48px]">{{ totalChamadosMedia() }}</p>
+            <p class="p-2 text-[48px]">{{ totalChamadosBaixa() }}</p>
             <i
               v-if="!listaPronta"
               class="fa-solid fa-circle-notch text-[48px] animate-spin"
@@ -307,6 +312,27 @@
       <!--  final da divisão parte de cima esquerda -->
 
       <div class="container-acoes">
+        <div class="flex gap-2 p-2 max-w-[900px]">
+          <div>
+            <BarChartLine
+              v-if="listaPronta"
+              :pdv="chamadosPDV.length"
+              :back="chamadosRetaguarda.length"
+              :emissor="chamadosEmissor.length"
+              :etiquetas="chamadosEtiquetas.length"
+              :pre="chamadosPreVenda.length"
+              :ecommerce="chamadosEcommerce.length"
+            />
+          </div>
+          <div>
+            <BarChartPrioridade
+              v-if="listaPronta"
+              :alta="totalChamadosAlta()"
+              :media="totalChamadosMedia()"
+              :baixa="totalChamadosBaixa()"
+            />
+          </div>
+        </div>
         <div class="container-prioridade">
           <div
             v-if="!dialog"
@@ -413,7 +439,7 @@
             </div>
           </div>
         </div>
-        <div
+        <!--  <div
           class="bg-zinc-800 rounded-lg flex flex-col items-center min-w-[900px] max-w-[900px] ml-2 overflow-y-hidden h-56"
         >
           <p class="absolute p-2 mt-2 bg-zinc-700 rounded-lg" v-if="!dialog">
@@ -513,7 +539,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="body-right" v-if="!dialog">
@@ -1019,7 +1045,9 @@ import { Input } from '@/components/ui/input'
 
 import { toast } from 'vue3-toastify'
 import { useStore } from 'vuex'
-
+import BarChart from '@/components/BarChart.vue'
+import BarChartPrioridade from '@/components/BarChartPrioridade.vue'
+import BarChartLine from '@/components/ui/BarChartLine.vue'
 import { format } from 'date-fns'
 import formatText from '@/utils/formartText.ts'
 import { getStatusflag } from '@/utils/coresDiv.ts'

@@ -4,6 +4,7 @@ import axios from 'axios'
 /* require('dotenv').config(); */
 
 interface chamado {
+  nameUser: any
   titulo: string | null
   prioridade: string | null
   sistema: string | null
