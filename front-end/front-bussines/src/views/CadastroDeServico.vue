@@ -315,7 +315,7 @@
         <div class="flex gap-2 p-2 max-w-[900px]">
           <div>
             <BarChartLine
-              v-if="listaPronta"
+              v-if="listaPronta && !dialog"
               :pdv="chamadosPDV.length"
               :back="chamadosRetaguarda.length"
               :emissor="chamadosEmissor.length"
@@ -326,7 +326,7 @@
           </div>
           <div>
             <BarChartPrioridade
-              v-if="listaPronta"
+              v-if="listaPronta && !dialog"
               :alta="totalChamadosAlta()"
               :media="totalChamadosMedia()"
               :baixa="totalChamadosBaixa()"
@@ -338,7 +338,10 @@
             v-if="!dialog"
             class="flex flex-col bg-zinc-800 rounded-lg items-center min-w-[900px] max-w-[900px] ml-4 overflow-y-hidden h-60"
           >
-            <p class="absolute p-2 bg-zinc-700 mt-4 rounded-lg" v-if="!dialog">
+            <p
+              class="absolute p-2 bg-zinc-700 mt-4 rounded-lg font-bold text-indigo-400"
+              v-if="!dialog"
+            >
               Chamados Pendentes com prioridade alta
             </p>
 
@@ -362,7 +365,9 @@
                           <div
                             class="flex justify-center min-h-8 min-w-[9rem] rounded-lg overflow-x-hidden bg-red-700"
                           >
-                            <p>{{ chamado.Empresa.toUpperCase() }}</p>
+                            <p class="text-[12px]">
+                              {{ chamado.Empresa.toUpperCase() }}
+                            </p>
                           </div>
                           <i
                             class="fa-brands fa-font-awesome text-red-700 text-[24px]"
@@ -370,12 +375,16 @@
 
                           <div class="flex flex-col max-h-[48px]">
                             <span class="text-[12px] font-semibold"
-                              ><span class=""></span>Empresa:
+                              ><span class="text-indigo-400 font-bold"
+                                >Empresa:</span
+                              >
                               {{ formatText(chamado.Empresa, 1) }}</span
                             >
-
+                            <span class="text-indigo-400 text-[12px] font-bold">
+                              Abertura:
+                            </span>
                             <span class="text-[12px] font-semibold">
-                              Abertura: {{ chamado.dAbertura }}</span
+                              {{ chamado.dAbertura }}</span
                             >
                           </div>
                         </CardContent>
@@ -576,7 +585,7 @@
                       </div>
                       <div class="flex flex-col">
                         <div class="flex items-center gap-2">
-                          <span class="font-medium">Titulo:</span>
+                          <span class="text-indigo-400 font-bold">Titulo:</span>
                           <p class="text-[12px]">
                             {{ formatText(chamado.titulo, 1) }}
                           </p>
@@ -972,7 +981,7 @@
         ></i>
         <div
           v-if="listaPronta"
-          class="flex items-center gap-10 w-full pl-12 min-h-12 text-[14px]"
+          class="flex items-center gap-10 w-full pl-12 min-h-12 text-[14px] text-indigo-400 font-bold"
         >
           <p>Empresa</p>
           <p>Funcionário</p>
@@ -1700,6 +1709,7 @@ const TotalChamadosPreVenda = () => {
 
 <style scoped>
 .body {
+  font-family: 'Poppins';
   min-width: 100%;
   min-height: 100%;
   overflow: hidden;
@@ -1707,6 +1717,7 @@ const TotalChamadosPreVenda = () => {
   display: flex;
 }
 .body-left {
+  font-family: 'Poppins';
   width: 50%;
   color: white;
   max-height: 88vh;

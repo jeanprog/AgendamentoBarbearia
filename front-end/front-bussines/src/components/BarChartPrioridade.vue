@@ -27,6 +27,20 @@ const props = defineProps({
   media: Number,
   baixa: Number
 })
+
+const colors = {
+  purple: {
+    default: 'rgba(149, 76, 233, 1)',
+    half: 'rgba(63, 81, 181, 0.5)',
+    quarter: 'rgba(149, 76, 233, 0.25)',
+    zero: 'rgba(149, 76, 233, 0)'
+  },
+  indigo: {
+    default: 'rgba(80, 102, 120, 1)',
+    quarter: 'rgba(80, 102, 120, 0.25)'
+  }
+}
+
 /* const selectItems = [
     "PDV",
     "Back-office",
@@ -51,7 +65,7 @@ const chartData = ref({
       data: [],
       backgroundColor: ['#3f51b5', '#3f51b5', '#3f51b5'],
       borderRadius: 10,
-      barThickness: 50,
+      barThickness: 90,
       padding: 10
     }
   ]
@@ -76,15 +90,24 @@ const chartOptions = ref({
   responsive: true,
   scales: {
     x: {
+      grid: {
+        display: false
+      },
       ticks: {
-        padding: 10,
-        stepSize: 1 // Adjust if needed
+        padding: 0,
+        stepSize: 1,
+        color: colors.indigo.default // Adjust if needed,
       }
     },
     y: {
       beginAtZero: true,
+      grid: {
+        color: colors.indigo.quarter
+      },
       ticks: {
-        padding: 10,
+        color: colors.indigo.default,
+        padding: 0,
+
         // Display exact values on the y-axis
         callback: function (value) {
           if (Number.isInteger(value)) {

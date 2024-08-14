@@ -59,8 +59,6 @@ import VersoesList from '@/entitys/VersoesList.ts'
 import SolicitacoesList from '@/entitys/SolicitacoesList.ts'
 import Solicitacao from '@/entitys/Solicitacao.ts'
 
-import BarChart from '@/components/BarChart.vue'
-
 interface PropsSolucoesVersoes {
   id: number
   aplicativo: string
@@ -448,8 +446,7 @@ const cadastrarSolucao = (idSolicitacao: number, idVersao: number) => {
           </p>
           <p class="text-zinc-400 text-[12px]">data de criação: 29/02/1994</p>
         </div>
-        <div>teste</div>
-        <BarChart />
+        <Input class="border-2 border-black" />
       </div>
       <div
         class="flex flex-col w-100 h-4/6 bg-zinc-800 rounded-[24px] gap-2 py-4 items-center"

@@ -4,7 +4,6 @@
       <v-icon :class="{ rotated: drawer }" @click="toggleDrawer">{{
         drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'
       }}</v-icon>
-      <v-titles style="margin-left: 24%"> Bem vindo, {{ user }}</v-titles>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -56,6 +55,8 @@
       </div>
     </v-navigation-drawer>
   </v-app>
+
+  <!--  <v-icon :class="{ 'rotated': drawer }" @click="toggleDrawer">{{ drawer ? 'fa-solid fa-xmark' : 'fa-solid fa-bars' }}</v-icon> -->
 </template>
 
 <script setup lang="ts">
@@ -106,7 +107,7 @@ const toggleDrawer = () => {
   padding-left: 4%;
   background-color: #3f51b5 !important;
   color: white !important;
-  height: 10%;
+  height: 6%;
 }
 .menu {
   background-color: #3f51b5 !important;
@@ -118,7 +119,7 @@ const toggleDrawer = () => {
   transform: rotate(180deg);
 }
 .cabeçalho {
-  max-height: 10%;
-  font-family: 'Montserrat', sans-serif;
+  max-height: 6%;
+  font-family: 'Poppins', sans-serif;
 }
 </style>

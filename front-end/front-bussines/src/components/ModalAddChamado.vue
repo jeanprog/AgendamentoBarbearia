@@ -26,7 +26,7 @@
           <Button
             v-if="!dialog"
             @click="RedirectConsultaDecliente"
-            class="bg-red-400 w-60 h-12"
+            class="bg-indigo-500 rounded-lg w-60 h-12"
           >
             Buscar Cliente
           </Button>
@@ -46,7 +46,7 @@
             <SelectTrigger
               required
               v-bind:disabled="!existeCliente"
-              className="w-[280px] h-12 bg-zinc-600"
+              className="w-[280px] h-12 bg-zinc-600 rounded-lg "
             >
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -59,11 +59,11 @@
             </SelectContent>
           </Select>
 
-          <Select v-model="sistema" class="bg-zinc-600">
+          <Select v-model="sistema" class="bg-zinc-600 rounded-lg">
             <SelectTrigger
               required
               v-bind:disabled="!existeCliente"
-              className="w-[280px] h-12 bg-zinc-600"
+              className="w-[280px] h-12 bg-zinc-600 rounded-lg"
             >
               <SelectValue placeholder="Sistema" />
             </SelectTrigger>
@@ -86,7 +86,7 @@
             <SelectTrigger
               required
               v-bind:disabled="!existeCliente"
-              className="w-[280px] h-12 bg-zinc-600"
+              className="w-[280px] h-12 bg-zinc-600 rounded-lg"
             >
               <SelectValue placeholder="Prioridade" />
             </SelectTrigger>
@@ -104,6 +104,9 @@
               </SelectGroup>
             </SelectContent>
           </Select>
+          <p class="text-red font-bold" v-if="formNull">
+            Preencha todo o formulário
+          </p>
 
           <!--    <Input class="w-40 h-8 bg-zinc-400"></Input>
           <Input class="w-40 h-8 bg-zinc-400"></Input>
@@ -111,122 +114,24 @@
           <Input class="w-40 h-8 bg-zinc-400"></Input> -->
         </div>
       </div>
+
       <Textarea
         class="bg-zinc-600 rounded-lg h-44"
         placeholder="Descrição do chamado"
         v-model="descricao"
       ></Textarea>
+
       <div class="flex gap-4 mt-4">
         <!--   @click="submitFormulario" -->
-        <Button class="bg-green-700 w-40" @click="submitFormulario"
+        <Button
+          class="bg-green-700 w-40 h-12 rounded-lg"
+          @click="submitFormulario"
           >Salvar</Button
         >
-        <Button class="bg-red-700 w-40" @click="fecharModal">Fechar</Button>
+        <Button class="bg-red-700 w-40 h-12 rounded-lg" @click="fecharModal"
+          >Fechar</Button
+        >
       </div>
-      <!--    <v-container class="ContainerForm">
-        <v-row>
-          <v-col cols="12" sm="6">
-            <Input
-              class="bg-zinc-600 h-16 w-80 rounded-lg"
-              v-model="titulo"
-              placeholder="Titulo"
-              required
-              v-bind:disabled="!existeCliente"
-            ></Input>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-select
-              class="InputModal"
-              v-model="statusChamadoString"
-              :items="['aberto', 'pendente', 'fechado']"
-              label="Status"
-              required
-              v-bind:disabled="!existeCliente"
-            ></v-select>
-          </v-col>
-          <v-col class="border-2" v-if="!dialog" cols="12" sm="6" md="4">
-            <Input
-              class="bg-zinc-600 h-16 w-80 rounded-lg"
-              v-if="!dialog"
-              v-model="nomeCliente"
-              placeholder="Nome Cliente"
-              persistent-hint
-              required
-              v-bind:disabled="!existeCliente"
-            ></Input>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <div v-if="dialog" class="ContainerBuscaCliente">
-              <buscaCliente />
-            </div>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <Input
-              class="bg-zinc-600 h-16 w-80 rounded-lg"
-              v-if="!dialog"
-              v-model="empresa"
-              placeholder="Empresa"
-              required
-              v-bind:disabled="!existeCliente"
-            ></Input>
-          </v-col>
-
-          <v-col cols="12">
-            <v-textarea
-              class="InputModal"
-              clearable
-              clear-icon="mdi-close-circle"
-              v-model="descricao"
-              label="Descrição"
-              required
-              v-bind:disabled="!existeCliente"
-            ></v-textarea>
-          </v-col>
-
-          <v-col cols="12" sm="6">
-            <v-select
-              class="InputModal"
-              v-model="sistema"
-              :items="[
-                'PDV',
-                'Back-office',
-                'Emissor Nf-e',
-                'Etiquetas',
-                'Financeiro',
-                'Pré-Venda Mobile',
-                'laser Report',
-                'ecommerce',
-                'etiquetas'
-              ]"
-              label="Sistemas"
-              v-bind:disabled="!existeCliente"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-select
-              class="InputModal"
-              v-model="prioridade"
-              :items="['Alta', 'Media', 'Baixa']"
-              label="Prioridade"
-              v-bind:disabled="!existeCliente"
-            ></v-select>
-          </v-col>
-        </v-row>
-        <v-row class="fluid">
-          <v-btn color="#67159C" variant="text" @click="fecharModal">
-            Close
-          </v-btn>
-          <v-btn
-            color="blue-darken-1"
-            variant="text"
-            @click="submitFormulario"
-            v-bind:disabled="!existeCliente"
-          >
-            Save
-          </v-btn>
-          <small>*Todos os campos obrigatórios</small>
-        </v-row>
-      </v-container> -->
     </v-card-text>
   </v-card>
 </template>
@@ -234,8 +139,7 @@
 <script setup lang="ts">
 import 'vue3-toastify/dist/index.css'
 import { ref, defineEmits } from 'vue'
-/* import axios from 'axios'
-import RequestsChamados from '../../src/services/RequestsChamados.ts' */
+
 import {
   Select,
   SelectContent,
@@ -253,10 +157,9 @@ import { useRoute } from 'vue-router'
 
 import { useStore } from 'vuex'
 import { onMounted } from 'vue'
+import { z, ZodError } from 'zod'
+import { toast } from 'vue3-toastify'
 
-/* import { toast } from 'vue3-toastify' */
-
-/* const route = useRoute() */
 const store = useStore()
 const route = useRoute()
 
@@ -264,6 +167,16 @@ const dialog = ref(false)
 /* const user = ref(route.params.user) */
 const props = defineProps(['editarChamado'])
 
+const schema = z.object({
+  nomeCliente: z.string().min(1, 'Nome Cliente é obrigatório'),
+  empresa: z.string().min(1, 'Empresa é obrigatória'),
+  titulo: z.string().optional(),
+  statusChamadoString: z.string().nonempty('Status é obrigatório'),
+  sistema: z.string().nonempty('Sistema é obrigatório'),
+  prioridade: z.string().nonempty('Prioridade é obrigatória'),
+  descricao: z.string().min(1, 'Descrição do chamado é obrigatória')
+})
+const formNull = ref<boolean>(false)
 let empresa = ref<string>('')
 let statusChamadoString = ref<string | null>('')
 let id = ref<number>()
@@ -350,68 +263,6 @@ const recuperaDadosDoForm = () => {
   }
 }
 
-/*   const recuperaEstadoForm = store.getters.recuperarValoresForm */
-/*  if (props.editarChamado === undefined && recuperaEstadoForm !== null) {
-    // recuperando valores do formulário quando estou em um novo chamado.
-
-    console.log('remontando os valores na troca do cliente', recuperaEstadoForm)
-
-    if (recuperaEstadoForm) {
-      // em um novo chamado peguei o estado do form
-      // conteudo problematico
-      console.log('teste', recuperaEstadoForm)
-      titulo.value = recuperaEstadoForm.titulo
-      statusChamadoString.value = recuperaEstadoForm.statusChamadoString
-      prioridade.value = recuperaEstadoForm.prioridade
-      descricao.value = recuperaEstadoForm.descricao
-      sistema.value = recuperaEstadoForm.sistema
-    }
-  }
-
-  const clienteEscolhido = store.getters.obterCliente
-
-  if (clienteEscolhido) {
-    existeCliente.value = true
-    nomeCliente.value = clienteEscolhido.nome
-    empresa.value = clienteEscolhido.empresa
-    idCliente.value = clienteEscolhido.id
-  }
-
-  const existChamado = store.getters.recuperarChamado
-  console.log(existChamado)
-  if (existChamado) {
-    // quando eu editei e fui trocar o cliente eu salvei no estado do form pra trazer os valores remontando aqui
-    // então veirifquei se existia um chamado.
-    titulo.value = store.getters.recuperarChamado.titulo
-
-    sistema.value = store.getters.recuperarChamado.sistema
-    prioridade.value = store.getters.recuperarChamado.prioridade
-    descricao.value = store.getters.recuperarChamado.descricao
-    statusChamadoString.value = store.getters.recuperarChamado.status
-    trocaDeCliente.value = true
-    /*   props.editarChamado.id = store.getters.recuperarChamado.id
-    props.editarChamado.dAbertura = store.getters.recuperarChamado.dAbertura
-    props.editarChamado.usuarioId = store.getters.recuperarChamado.usuarioId
-
-    atualizaChamado.value = true
-  }
-
-  if (props.editarChamado !== undefined && props.editarChamado !== null) {
-    // logica aqui
-
-    existeCliente.value = true
-    titulo.value = props.editarChamado?.titulo
-    nomeCliente.value = props.editarChamado?.Cliente
-    empresa.value = props.editarChamado?.Empresa
-    sistema.value = props.editarChamado?.sistema
-    prioridade.value = props.editarChamado?.prioridade
-    descricao.value = props.editarChamado?.descricao
-    statusChamadoString.value = props.editarChamado?.status
-    idCliente.value = props.editarChamado?.clienteId
-
-    atualizaChamado.value = true
-  } */
-
 const testeReatividade = () => {
   return console.log(titulo.value, 'acionei o metodo')
 }
@@ -440,112 +291,43 @@ const RedirectConsultaDecliente = () => {
     usuarioId: idUser.value,
     clienteId: idCliente.value
   }
-
-  /* if (
-    props.editarChamado !== undefined &&
-    props.editarChamado !== null &&
-    atualizaChamado.value === true
-  ) {
-    props.editarChamado.status = statusChamadoString.value
-    const formatItem = {
-      atualizaChamado: atualizaChamado.value,
-      ...props.editarChamado
-    }
-    // desestruturação devolve item , menos os campos desestruturado .
-    console.log(
-      formatItem,
-      ' verificando se a consulta cai aqui na busca por cliente quando está editando'
-    )
-    store.dispatch('atualizaChamado', formatItem)
-    emit('consultarClientes', data) // se estou editando aqui eu salvo o estado do form pra trocar o cliente .
-  } else {
-    console.log('salvando o valores do novo chamado')
-    store.dispatch('salvaValores', data)
-    emit('consultarClientes', data)
-  }  */
   emit('consultarClientes', data)
 }
 
 const submitFormulario = async () => {
-  const data = {
-    id: id.value,
-    titulo: titulo.value,
-    nomeCliente: nomeCliente.value,
-    empresa: empresa.value,
-    sistema: sistema.value,
-    prioridade: prioridade.value,
-    descricao: descricao.value,
-    statusChamadoString: statusChamadoString.value,
-    redeId: redeId.value,
-    usuarioId: idUser.value,
-    clienteId: idCliente.value
-  }
-
-  emit('submitChamado', data)
-  /*  if (novoChamado.value === true) {
-    const dataForm = {
-      statusChamadoAtual: statusChamadoString.value,
-      descricao: descricao.value,
-      prioridade: prioridade.value,
+  try {
+    const data = {
+      id: id.value,
       titulo: titulo.value,
-
+      nomeCliente: nomeCliente.value,
+      empresa: empresa.value,
       sistema: sistema.value,
+      prioridade: prioridade.value,
+      descricao: descricao.value,
+      statusChamadoString: statusChamadoString.value,
+      redeId: redeId.value,
+      usuarioId: idUser.value,
       clienteId: idCliente.value
     }
 
-    console.log('estou envinando um novo chamado ', dataForm)
-    emit('submitChamado', dataForm)
-  }
-
-  // verificando no clique do botão se é editar e enviando o form pra atualziar
-  // nesse primeiro if foi verificado o comportamento no caso de editar e não trocar o cliente .
-  if (trocaDeCliente.value === true) {
-    // se troquei o cliente então troco da onde estou recuperando a informação.
-    console.log(idCliente.value)
-    const clienteEscolhido = store.getters.obterCliente
-    /*  const data = {
-      id: store.getters.recuperarChamado.id, // trocar pelo state
-      descricao: descricao.value,
-      sistema: sistema.value,
-      prioridade: prioridade.value,
-      status: statusChamadoString.value,
-      clienteId: idCliente.value,
-      usuarioId: store.getters.recuperarChamado.usuarioId,
-      titulo: titulo.value,
-      atualizaChamado: atualizaChamado.value,
-      dAbertura: store.getters.recuperarChamado.dAbertura
-    }
-    console.log(
-      'teste pra cair na troca de cliente dentro de atualizar um pedido',
-      data
-    )
+    schema.parse(data)
+    formNull.value = false
     emit('submitChamado', data)
-  }
-  if (
-    props.editarChamado !== undefined &&
-    props.editarChamado !== null &&
-    atualizaChamado.value === true
-  ) {
-    props.editarChamado.status = statusChamadoString.value
-    atualizaChamado.value === true
-
-    const data = {
-      id: props.editarChamado.id,
-      descricao: descricao.value,
-      sistema: sistema.value,
-      prioridade: prioridade.value,
-      status: statusChamadoString.value,
-      clienteId: idCliente.value,
-      usuarioId: props.editarChamado.usuarioId,
-      titulo: titulo.value,
-      atualizaChamado: atualizaChamado.value,
-      dAbertura: props.editarChamado.dAbertura
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.error(error.errors) // Mostra erros de validação
+    } else {
+      console.error(error) // Mostra outros erros
     }
+    notifyFormNull()
+  }
+}
 
-    // desestruturação devolve item , menos os campos desestruturado .
-
-    emit('submitChamado', data)
-  } */
+const notifyFormNull = () => {
+  toast('formulário precisa ser preenchido', {
+    autoClose: 1000
+  })
+  formNull.value = true
 }
 </script>
 

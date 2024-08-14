@@ -2,9 +2,11 @@
   <Header />
   <div class="main">
     <!-- Conteúdo da Dashboard -->
-    <h3 class="title">Gerenciamento de Chamados
-     
-    </h3>
+    <h1 class="title">Gerenciamento de Chamados</h1>
+    <h2 class="text-[32px] text-indigo-400 text-bold">
+      {{ getSaudacao() }}
+      <span class="text-white"> {{ user.toUpperCase() }}</span>
+    </h2>
 
     <div class="bodydash">
       <div class="cardsleft">
@@ -49,17 +51,28 @@ import { router } from '../router'
 
 const route = useRoute()
 
-const user = ref(route.params.user)
+const user = ref(route.params.user.toString())
 
 onMounted(() => {
   const date = new Date()
   console.log(date)
-
 })
 
 const RedirectCadastroDeServico = () => {
   router.push({ name: 'CadastroDeServico', params: { user: user.value } })
   console.log('evento acionado')
+}
+
+const getSaudacao = () => {
+  const horaAtual = new Date().getHours()
+  console.log(horaAtual)
+  if (horaAtual >= 5 && horaAtual < 12) {
+    return 'Bom dia'
+  } else if (horaAtual >= 12 && horaAtual < 18) {
+    return 'Boa tarde'
+  } else {
+    return 'Boa noite'
+  }
 }
 </script>
 
@@ -71,6 +84,7 @@ const RedirectCadastroDeServico = () => {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  font-family: 'Poppins';
 }
 
 .bodydash {

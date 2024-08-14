@@ -2,7 +2,7 @@
   <HeaderVoltar :title="titlepage" />
 
   <div class="w-100 h-100 border">
-    <div class="w-100 h-20 flex flex-col align-center">
+    <div class="w-100 h-30 flex flex-col align-center">
       <v-select
         class="mt-2 w-50 rounded"
         label="Selecione o campo da busca"
@@ -12,19 +12,33 @@
         density="compact"
         v-model="tipoBusca"
       ></v-select>
-      <v-text-field
-        class="w-50"
-        density="compact"
-        variant="solo"
-        label="Buscar clientes"
-        append-inner-icon="fa-brands fa-searchengin"
-        single-line
-        hide-details
+      <div class="relative w-50 h-16 items-center">
+        <Input
+          id="search"
+          type="text"
+          placeholder="Buscar Clientes"
+          class="pl-10 border-[1px] border-zinc-400 bg-zinc-900 rounded-lg"
+          v-model="clienteBusca"
+          @input="filteredClientes"
+          bg-color="#1E1E26"
+        />
+        <span
+          class="absolute start-0 inset-y-0 flex text-white items-center justify-center px-2"
+        >
+          <i
+            class="size-12 text-[24px] text-muted-foreground fa-brands fa-searchengin"
+          ></i>
+
+          <!-- <Search class="size-6 text-muted-foreground" /> -->
+        </span>
+      </div>
+      <!--  <Input
+        class="w-50 h-16 border-[1px] border-zinc-400 bg-zinc-900 rounded-lg"
+        placeholder="Buscar Clientes"
         v-model="clienteBusca"
         @input="filteredClientes"
-        :elevation="12"
         bg-color="#1E1E26"
-      ></v-text-field>
+      ></Input> -->
     </div>
 
     <!-- <div class="container-cards">
@@ -154,6 +168,7 @@ import { onMounted, ref } from 'vue'
 import { router } from '../router'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import { Input } from '@/components/ui/input'
 
 import todoClientes from '@/services/clientesServices'
 
@@ -192,8 +207,8 @@ const iniciaChamado = async (cliente: Cliente) => {
 }
 
 const listaDeClientes = async () => {
- const response = await todoClientes()
-  if(response) { 
+  const response = await todoClientes()
+  if (response) {
     clientes.value = response
   }
 }

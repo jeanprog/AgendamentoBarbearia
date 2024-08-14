@@ -40,7 +40,7 @@ createApp(App)
   .use(store)
   .use(router)
   .use(vuetify)
-  .use(PrimeVue)
+
   .use(createModal())
   .use(Vue3Toastify, {
     autoClose: 3000
